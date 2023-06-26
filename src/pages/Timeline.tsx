@@ -5,6 +5,8 @@ import SideMenu from "@/components/SideMenu";
 import Post from "@/components/Post";
 import Container from "@mui/material/Container";
 import ScrollLayout from "@/components/ScrollLayout";
+import CreatePost from "@/components/CreatePost";
+import useDialog from "@/hooks/useDialog";
 
 export const TimeLine = () => {
   const actor = useStore((state) => state.actor);
@@ -12,6 +14,8 @@ export const TimeLine = () => {
   const session = useStore((state) => state.session);
   const getProfile = useStore((state) => state.getProfile);
   const getTimeline = useStore((state) => state.getTimeline);
+
+  const [isCreateOpen, openCreateDialog, closeCreateDialog] = useDialog();
 
   useEffect(() => {
     getProfile(session.did);
@@ -27,7 +31,7 @@ export const TimeLine = () => {
       <SideMenu
         profile={actor}
         onClickNewPost={() => {
-          return;
+          openCreateDialog();
         }}
       />
       <main>
@@ -40,6 +44,7 @@ export const TimeLine = () => {
           })}
         </ScrollLayout>
       </main>
+      <CreatePost title="send post" open={isCreateOpen} onClose={closeCreateDialog} />
     </Container>
   );
 };
