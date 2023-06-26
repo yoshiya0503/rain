@@ -29,7 +29,7 @@ export const SideMenu = (props: Props) => {
     { name: "Search", icon: <Search /> },
     { name: "Feeds", icon: <Feed /> },
     { name: "Notifications", icon: <Notifications /> },
-    { name: "AccoutCircle", icon: <AccountCircle /> },
+    { name: "Profile", icon: <AccountCircle /> },
     { name: "Settings", icon: <Settings /> },
   ];
 

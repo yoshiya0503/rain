@@ -9,21 +9,25 @@ import Avatar from "@mui/material/Avatar";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LoopIcon from "@mui/icons-material/Loop";
-import { AppBskyFeedDefs } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+
+type Post = AppBskyFeedDefs.PostView & {
+  record?: AppBskyFeedPost.Record;
+};
 
 type Props = {
-  post: AppBskyFeedDefs.FeedViewPost;
+  post: Post;
 };
 
 export const Post = (props: Props) => {
   return (
-    <Card sx={{ m: 1, maxWidth: 345 }}>
+    <Card sx={{ m: 1, maxWidth: 480 }}>
       <CardHeader
-        avatar={<Avatar src={props.post.reply?.root?.author.avatar} />}
-        title={props.post.reply?.root?.author.displayName}
-        subheader={props.post.reply?.root?.author.handle}
+        avatar={<Avatar src={props.post.author.avatar} />}
+        title={props.post.author.displayName}
+        subheader={props.post.author.handle}
       />
-      <CardContent>{props.post.reply?.root?.record.text}</CardContent>
+      <CardContent>{props.post.record.text}</CardContent>
       <CardActions>
         <ChatBubbleIcon />
         <LoopIcon />
@@ -31,9 +35,6 @@ export const Post = (props: Props) => {
       </CardActions>
     </Card>
   );
-  return <div>{props.post.reply?.parent?.author.displayName}</div>;
-  //return <div>{props.post.post?.author.displayName}</div>;
-  //return <div>{props.post.reply?.root?.author.displayName}</div>;
 };
 
 export default Post;

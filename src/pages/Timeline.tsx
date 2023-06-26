@@ -1,10 +1,10 @@
 import _ from "lodash";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
 import SideMenu from "@/components/SideMenu";
 import Post from "@/components/Post";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
+import ScrollLayout from "@/components/ScrollLayout";
 
 export const TimeLine = () => {
   const actor = useStore((state) => state.actor);
@@ -18,7 +18,9 @@ export const TimeLine = () => {
     getTimeline();
   }, [getProfile, getTimeline, session]);
 
-  console.log(feed);
+  const onScrollLimit = useCallback(() => {
+    getTimeline();
+  }, [getTimeline]);
 
   return (
     <Container sx={{ display: "flex", p: 2 }}>
@@ -29,11 +31,14 @@ export const TimeLine = () => {
         }}
       />
       <main>
-        <Container>
-          {_.map(feed, (post, key) => (
-            <Post key={key} post={post} />
-          ))}
-        </Container>
+        <ScrollLayout onScrollLimit={onScrollLimit}>
+          {_.map(feed, (item, key) => {
+            if (item.reply) {
+              return <Post key={key} post={item.reply.root} />;
+            }
+            return <Post key={key} post={item.post} />;
+          })}
+        </ScrollLayout>
       </main>
     </Container>
   );
