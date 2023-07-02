@@ -14,6 +14,7 @@ export const TimeLine = () => {
   const session = useStore((state) => state.session);
   const getProfile = useStore((state) => state.getProfile);
   const getTimeline = useStore((state) => state.getTimeline);
+  const post = useStore((state) => state.post);
 
   const [isCreateOpen, openCreateDialog, closeCreateDialog] = useDialog();
 
@@ -44,7 +45,7 @@ export const TimeLine = () => {
           })}
         </ScrollLayout>
       </main>
-      <CreatePost title="send post" open={isCreateOpen} onClose={closeCreateDialog} />
+      <CreatePost title="send post" open={isCreateOpen} onClose={closeCreateDialog} onPost={post} />
     </Container>
   );
 };

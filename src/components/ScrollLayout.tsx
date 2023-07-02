@@ -19,7 +19,7 @@ export const ScrollLayout = (props: Props) => {
     if (nearBottom < 100) {
       props.onScrollLimit();
     }
-    if (15000 < e.currentTarget.scrollTop) {
+    if (5000 < e.currentTarget.scrollTop) {
       setHasScroll(true);
     }
     if (e.currentTarget.scrollTop < 3000) {
