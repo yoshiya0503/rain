@@ -1,11 +1,14 @@
 import { useState } from "react";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import LabelProgress from "@/components/LabelProgress";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { AppBskyFeedPost } from "@atproto/api";
 
 type Props = {
@@ -27,20 +30,33 @@ export const CreatePost = (props: Props) => {
     props.onClose();
   };
 
+  const isNotPostable = 300 < text.length;
+
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm">
       <DialogTitle>
-        <Button onClick={props.onClose}>Cancel</Button>
-        <Button onClick={props.onClose}>Cancel</Button>
-        <Button onClick={props.onClose}>Cancel</Button>
-        <Button onClick={props.onClose}>Cancel</Button>
+        <IconButton color="primary" onClick={props.onClose}>
+          <AddPhotoAlternateIcon />
+        </IconButton>
       </DialogTitle>
       <DialogContent>
         <TextField multiline rows={4} fullWidth placeholder="Whats Your Hot Topic?" value={text} onChange={onChange} />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={props.onClose}>Cancel</Button>
-        <Button onClick={onPost}>Post</Button>
+      <DialogActions sx={{ justifyContent: "space-between" }}>
+        <Box sx={{ ml: 2 }}>
+          <LabelProgress
+            variant="determinate"
+            color={isNotPostable ? "error" : "primary"}
+            value={Math.min((text.length / 300) * 100, 100)}
+            label={(300 - text.length).toString()}
+          />
+        </Box>
+        <Box>
+          <Button onClick={props.onClose}>Cancel</Button>
+          <Button onClick={onPost} disabled={isNotPostable}>
+            Post
+          </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   );

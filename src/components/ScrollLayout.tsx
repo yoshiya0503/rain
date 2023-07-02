@@ -1,9 +1,9 @@
 import { ReactNode, UIEvent, useRef, useState } from "react";
 import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import NavigationIcon from "@mui/icons-material/Navigation";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 type Props = {
   children: ReactNode;
@@ -38,12 +38,21 @@ export const ScrollLayout = (props: Props) => {
     <>
       <Fade in={hasScroll}>
         <Stack direction="row" justifyContent="center">
-          <Button size="small" color="secondary" onClick={scrollTop} startIcon={<ArrowDropUpIcon />}>
+          <Fab variant="extended" size="medium" color="primary" onClick={scrollTop} sx={{ mb: -5, opacity: 0.7 }}>
+            <NavigationIcon />
             Top
-          </Button>
+          </Fab>
         </Stack>
       </Fade>
-      <Container sx={{ height: "90vh", overflowY: "scroll" }} onScroll={handleBottomScroll} ref={ref}>
+      <Container
+        sx={{
+          height: "90vh",
+          overflowY: "scroll",
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
+        onScroll={handleBottomScroll}
+        ref={ref}
+      >
         {props.children}
       </Container>
     </>
