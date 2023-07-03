@@ -8,6 +8,7 @@ export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
   getTimeline: () => Promise<void>;
+  getAuthorFeed: (actor: string) => Promise<void>;
   post: (record: AppBskyFeedPost.Record) => Promise<void>;
 }
 
@@ -22,6 +23,15 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
         return true;
       });
       const feed = _.concat(get().feed, computedFeed);
+      set({ feed, cursor: res.data.cursor });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
+    }
+  },
+  getAuthorFeed: async (actor: string) => {
+    try {
+      const res = await agent.getAuthorFeed({ actor, cursor: get().cursor });
+      const feed = _.concat(get().feed, res.data.feed);
       set({ feed, cursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);

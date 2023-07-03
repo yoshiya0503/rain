@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import Container from "@mui/material/Container";
 import { AppBskyFeedPost } from "@atproto/api";
 import CreatePost from "@/components/CreatePost";
@@ -12,13 +12,18 @@ type Props = {
 };
 
 export const Layout = (props: Props) => {
-  const actor = useStore((state) => state.actor);
+  const me = useStore((state) => state.me);
+  const getMe = useStore((state) => state.getMe);
   const [isCreateOpen, openCreateDialog, closeCreateDialog] = useDialog();
+
+  useEffect(() => {
+    getMe();
+  }, [getMe]);
 
   return (
     <Container sx={{ display: "flex", p: 2 }}>
       <SideMenu
-        profile={actor}
+        profile={me}
         onClickNewPost={() => {
           openCreateDialog();
         }}

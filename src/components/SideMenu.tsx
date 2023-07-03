@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
+import Link from "@mui/material/Link";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Button from "@mui/material/Button";
@@ -25,12 +26,12 @@ type Props = {
 
 export const SideMenu = (props: Props) => {
   const menus = [
-    { name: "Home", icon: <Home /> },
-    { name: "Search", icon: <Search /> },
-    { name: "Feeds", icon: <Feed /> },
-    { name: "Notifications", icon: <Notifications /> },
-    { name: "Profile", icon: <AccountCircle /> },
-    { name: "Settings", icon: <Settings /> },
+    { name: "Home", icon: <Home />, href: "/" },
+    { name: "Search", icon: <Search />, href: "/search" },
+    { name: "Feeds", icon: <Feed />, href: "/feeds" },
+    { name: "Notifications", icon: <Notifications />, href: "/notifications" },
+    { name: "Profile", icon: <AccountCircle />, href: `/profile/${props.profile?.handle}` },
+    { name: "Settings", icon: <Settings />, href: "/settings" },
   ];
 
   return (
@@ -44,7 +45,7 @@ export const SideMenu = (props: Props) => {
       </Stack>
       <MenuList>
         {_.map(menus, (menu, key) => (
-          <MenuItem key={key}>
+          <MenuItem key={key} component={Link} href={menu.href}>
             <ListItemIcon>{menu.icon}</ListItemIcon>
             <ListItemText>{menu.name}</ListItemText>
           </MenuItem>

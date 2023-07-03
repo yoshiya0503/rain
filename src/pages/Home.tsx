@@ -7,15 +7,12 @@ import Layout from "@/templates/Layout";
 
 export const Home = () => {
   const feed = useStore((state) => state.feed);
-  const session = useStore((state) => state.session);
-  const getProfile = useStore((state) => state.getProfile);
   const getTimeline = useStore((state) => state.getTimeline);
   const post = useStore((state) => state.post);
 
   useEffect(() => {
-    getProfile(session.did);
     getTimeline();
-  }, [getProfile, getTimeline, session]);
+  }, [getTimeline]);
 
   const onScrollLimit = useCallback(() => {
     getTimeline();
