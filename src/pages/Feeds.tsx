@@ -1,11 +1,5 @@
-import SideMenu from "@/components/SideMenu";
-
 export const Feeds = () => {
-  return (
-    <div>
-      <SideMenu />
-    </div>
-  );
+  return <div>feed</div>;
 };
 
 export default Feeds;

@@ -10,7 +10,7 @@ type Props = {
   onScrollLimit: () => void;
 };
 
-export const ScrollLayout = (props: Props) => {
+export const Scroll = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [hasScroll, setHasScroll] = useState<boolean>(false);
 
@@ -59,4 +59,4 @@ export const ScrollLayout = (props: Props) => {
   );
 };
 
-export default ScrollLayout;
+export default Scroll;

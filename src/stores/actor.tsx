@@ -21,6 +21,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice, [], [], A
   getProfile: async (actor: string) => {
     try {
       const res = await agent.getProfile({ actor });
+      console.log(res.data);
       set({ actor: res.data });
       get().createMessage({ status: "success", title: "success to fetch profile" });
     } catch (e) {

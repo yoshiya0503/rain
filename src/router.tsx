@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import Timeline from "@/pages/Timeline";
+import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import { useStore } from "@/stores";
 
@@ -18,7 +18,7 @@ export const Router = () => {
       <Routes>
         <Route path="/authentication" element={<Login />} />
         <Route element={<Authentication />}>
-          <Route path="/" element={<Timeline />} />
+          <Route path="/" element={<Home />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -31,7 +31,15 @@ export const Login = <T,>(props: Props<T>) => {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button form="login" color="primary" type="submit" variant="outlined" onClick={() => {props.onLogin()}}>
+          <Button
+            form="login"
+            color="primary"
+            type="submit"
+            variant="outlined"
+            onClick={() => {
+              props.onLogin();
+            }}
+          >
             LOGIN
           </Button>
         </CardActions>

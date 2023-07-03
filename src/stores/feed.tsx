@@ -19,7 +19,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       const res = await agent.getTimeline({ cursor: get().cursor });
       const computedFeed = _.filter(res.data.feed, (f) => {
         // TODO filter yui
-        console.log(f);
         return true;
       });
       const feed = _.concat(get().feed, computedFeed);
