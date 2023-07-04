@@ -1,9 +1,8 @@
 import { ReactNode, UIEvent, useRef, useState } from "react";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
+import Box from "@mui/material/Box";
 import NavigationIcon from "@mui/icons-material/Navigation";
-import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
 
 type Props = {
   children: ReactNode;
@@ -37,14 +36,14 @@ export const Scroll = (props: Props) => {
   return (
     <>
       <Fade in={hasScroll}>
-        <Stack direction="row" justifyContent="center">
+        <Box display="flex" justifyContent="center" alignItems="center">
           <Fab variant="extended" size="medium" color="primary" onClick={scrollTop} sx={{ mb: -5, opacity: 0.7 }}>
             <NavigationIcon />
             Top
           </Fab>
-        </Stack>
+        </Box>
       </Fade>
-      <Container
+      <Box
         sx={{
           height: "90vh",
           overflowY: "scroll",
@@ -54,7 +53,7 @@ export const Scroll = (props: Props) => {
         ref={ref}
       >
         {props.children}
-      </Container>
+      </Box>
     </>
   );
 };

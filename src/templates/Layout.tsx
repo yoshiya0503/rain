@@ -1,5 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import { AppBskyFeedPost } from "@atproto/api";
 import CreatePost from "@/components/CreatePost";
 import SideMenu from "@/components/SideMenu";
@@ -28,7 +29,7 @@ export const Layout = (props: Props) => {
           openCreateDialog();
         }}
       />
-      <main>{props.children}</main>
+      <Container component="main">{props.children}</Container>
       <CreatePost title="send post" open={isCreateOpen} onClose={closeCreateDialog} onPost={props.onPost} />
     </Container>
   );

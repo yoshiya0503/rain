@@ -26,8 +26,8 @@ export const ProfilePage = () => {
 
   return (
     <Layout onPost={post}>
-      <Profile actor={actor} />
       <Scroll onScrollLimit={onScrollLimit}>
+        <Profile actor={actor} />
         {_.map(feed, (item, key) => {
           if (item.reply) {
             return <Post key={key} post={item.reply.root} />;
