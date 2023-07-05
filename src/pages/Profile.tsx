@@ -11,6 +11,7 @@ export const ProfilePage = () => {
   const { handle } = useParams<"handle">();
   const feed = useStore((state) => state.feed);
   const actor = useStore((state) => state.actor);
+  const me = useStore((state) => state.me);
   const getProfile = useStore((state) => state.getProfile);
   const getAuthorFeed = useStore((state) => state.getAuthorFeed);
   const post = useStore((state) => state.post);
@@ -27,7 +28,7 @@ export const ProfilePage = () => {
   return (
     <Layout onPost={post}>
       <Scroll onScrollLimit={onScrollLimit}>
-        <Profile actor={actor} />
+        <Profile actor={actor} me={me} />
         {_.map(feed, (item, key) => {
           if (item.reply) {
             return <Post key={key} post={item.reply.root} />;
