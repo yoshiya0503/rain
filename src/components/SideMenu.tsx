@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
-import Link from "@mui/material/Link";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Button from "@mui/material/Button";
@@ -17,6 +16,7 @@ import Notifications from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Settings from "@mui/icons-material/Settings";
 import Create from "@mui/icons-material/Create";
+import { useNavigate } from "react-router-dom";
 import { AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
@@ -25,6 +25,8 @@ type Props = {
 };
 
 export const SideMenu = (props: Props) => {
+  const navigate = useNavigate();
+
   const menus = [
     { name: "Home", icon: <Home />, href: "/" },
     { name: "Search", icon: <Search />, href: "/search" },
@@ -33,6 +35,10 @@ export const SideMenu = (props: Props) => {
     { name: "Profile", icon: <AccountCircle />, href: `/profile/${props.profile?.handle}` },
     { name: "Settings", icon: <Settings />, href: "/settings" },
   ];
+
+  const onClickMenu = (href: string) => () => {
+    navigate(href);
+  };
 
   return (
     <Paper sx={{ width: 240, height: 380, maxWidth: "100%", p: 2, borderRadius: 2 }}>
@@ -45,7 +51,7 @@ export const SideMenu = (props: Props) => {
       </Stack>
       <MenuList>
         {_.map(menus, (menu, key) => (
-          <MenuItem key={key} component={Link} href={menu.href}>
+          <MenuItem key={key} href={menu.href} onClick={onClickMenu(menu.href)}>
             <ListItemIcon>{menu.icon}</ListItemIcon>
             <ListItemText>{menu.name}</ListItemText>
           </MenuItem>

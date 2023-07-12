@@ -10,26 +10,22 @@ import Typography from "@mui/material/Typography";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LoopIcon from "@mui/icons-material/Loop";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
-
-type Post = AppBskyFeedDefs.PostView & {
-  record?: AppBskyFeedPost.Record;
-};
+import { AppBskyNotificationListNotifications } from "@atproto/api";
 
 type Props = {
-  post: Post;
+  notification: AppBskyNotificationListNotifications.Notification;
 };
 
 export const Post = (props: Props) => {
   return (
     <Card sx={{ m: 1, maxWidth: 480 }}>
       <CardHeader
-        avatar={<Avatar src={props.post.author.avatar} />}
-        title={props.post.author.displayName}
-        subheader={props.post.author.handle}
+        avatar={<Avatar src={props.notification.author.avatar} />}
+        title={props.notification.author.displayName}
+        subheader={props.notification.author.handle}
       />
       <CardContent>
-        <Typography variant="body2">{props.post.record.text}</Typography>
+        <Typography variant="body2">{props.notification.record.text}</Typography>
       </CardContent>
       <CardActions>
         <ChatBubbleIcon />
