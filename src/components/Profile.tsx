@@ -109,8 +109,9 @@ export const Profile = (props: Props) => {
                 <MoreIcon />
               </IconButton>
               <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
-                {_.map(actions, (action) => (
+                {_.map(actions, (action, key) => (
                   <MenuItem
+                    key={key}
                     onClick={() => {
                       if (action.action) {
                         action.action();
