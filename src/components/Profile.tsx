@@ -23,11 +23,16 @@ import Linkify from "linkify-react";
 import { AppBskyActorDefs } from "@atproto/api";
 import useMenu from "@/hooks/useMenu";
 
-// TODO actionの実装
 type Props = {
   me?: AppBskyActorDefs.ProfileViewDetailed;
   actor?: AppBskyActorDefs.ProfileViewDetailed;
   action?: (action: string, actor: AppBskyActorDefs.ProfileViewDetailed) => void;
+  onFollow?: () => void;
+  onUnFollow?: () => void;
+  onMute?: () => void;
+  onUnMute?: () => void;
+  onBlock?: () => void;
+  onUnBlock?: () => void;
 };
 
 export const Profile = (props: Props) => {
@@ -39,11 +44,21 @@ export const Profile = (props: Props) => {
         { name: "add_to_list", icon: <AddIcon />, label: "Add To List" },
       ]
     : [
-        { name: "block", icon: <BlockIcon />, label: "Block" },
-        { name: "mute", icon: <MuteIcon />, label: "Mute" },
-        { name: "report", icon: <ReportIcon />, label: "Report" },
-        { name: "share", icon: <ShareIcon />, label: "Share" },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List" },
+        {
+          name: "block",
+          icon: <BlockIcon />,
+          label: props.actor?.viewer?.blocking ? "Unblock" : "Block",
+          action: props.actor?.viewer?.blocking ? props.onUnBlock : props.onBlock,
+        },
+        {
+          name: "mute",
+          icon: <MuteIcon />,
+          label: props.actor?.viewer?.muted ? "Unmute" : "Mute",
+          action: props.actor?.viewer?.muted ? props.onUnMute : props.onMute,
+        },
+        { name: "report", icon: <ReportIcon />, label: "Report", action: props.onMute },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onMute },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onMute },
       ];
 
   return (
@@ -60,6 +75,7 @@ export const Profile = (props: Props) => {
                   startIcon={<CheckIcon />}
                   size="small"
                   variant="contained"
+                  onClick={props.onUnFollow}
                 >
                   following
                 </Button>
@@ -70,6 +86,7 @@ export const Profile = (props: Props) => {
                   startIcon={<AddIcon />}
                   size="small"
                   variant="contained"
+                  onClick={props.onFollow}
                 >
                   follow
                 </Button>
@@ -89,7 +106,12 @@ export const Profile = (props: Props) => {
               </IconButton>
               <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
                 {_.map(actions, (action) => (
-                  <MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      action.action();
+                      closeMenu();
+                    }}
+                  >
                     <Stack direction="row" alignItems="center" spacing={1}>
                       {action.icon}
                       <Typography variant="body2">{action.label}</Typography>
