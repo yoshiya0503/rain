@@ -2,7 +2,6 @@ import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
 import { AtUri } from "@atproto/uri";
-import { AppBskyActorDefs } from "@atproto/api";
 import agent from "@/agent";
 
 export interface SocialGraphSlice {
@@ -21,7 +20,7 @@ export const createSocialGraphSlice: StateCreator<
   [],
   [],
   SocialGraphSlice
-> = (set, get) => ({
+> = (_, get) => ({
   getFollows: async (actor: string) => {
     try {
       await agent.getFollows({ actor });

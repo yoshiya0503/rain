@@ -53,13 +53,22 @@ export const ProfilePage = () => {
 
   const onBlock = useCallback(async () => {
     await block(actor?.did || "");
-    await getProfile(handle || "");
+    _.delay(async () => {
+      await getProfile(handle || "");
+    }, 500);
   }, [actor, handle, block, getProfile]);
 
   const onUnBlock = useCallback(async () => {
     await unblock(actor?.viewer?.blocking || "");
-    await getProfile(handle || "");
+    _.delay(async () => {
+      await getProfile(handle || "");
+    }, 500);
   }, [actor, handle, unblock, getProfile]);
+
+  const onShare = useCallback(() => {
+    const url = `https://bsky.app/profile/${actor?.handle}`;
+    navigator.clipboard.writeText(url);
+  }, [actor]);
 
   return (
     <Layout onPost={post}>
@@ -73,6 +82,7 @@ export const ProfilePage = () => {
           onUnMute={onUnMute}
           onBlock={onBlock}
           onUnBlock={onUnBlock}
+          onShare={onShare}
         />
         {_.map(authorFeed, (item, key) => {
           if (item.reply) {

@@ -23,6 +23,9 @@ import Linkify from "linkify-react";
 import { AppBskyActorDefs } from "@atproto/api";
 import useMenu from "@/hooks/useMenu";
 
+//TODO Add to list
+//TODO moderation report
+
 type Props = {
   me?: AppBskyActorDefs.ProfileViewDetailed;
   actor?: AppBskyActorDefs.ProfileViewDetailed;
@@ -33,6 +36,7 @@ type Props = {
   onUnMute?: () => void;
   onBlock?: () => void;
   onUnBlock?: () => void;
+  onShare?: () => void;
 };
 
 export const Profile = (props: Props) => {
@@ -40,8 +44,8 @@ export const Profile = (props: Props) => {
   const isMe = props.me?.did === props.actor?.did;
   const actions = isMe
     ? [
-        { name: "share", icon: <ShareIcon />, label: "Share" },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List" },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onShare },
       ]
     : [
         {
@@ -57,8 +61,8 @@ export const Profile = (props: Props) => {
           action: props.actor?.viewer?.muted ? props.onUnMute : props.onMute,
         },
         { name: "report", icon: <ReportIcon />, label: "Report", action: props.onMute },
-        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onMute },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onMute },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onShare },
       ];
 
   return (
@@ -108,7 +112,9 @@ export const Profile = (props: Props) => {
                 {_.map(actions, (action) => (
                   <MenuItem
                     onClick={() => {
-                      action.action();
+                      if (action.action) {
+                        action.action();
+                      }
                       closeMenu();
                     }}
                   >
