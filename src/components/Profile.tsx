@@ -11,6 +11,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
+import Skeleton from "@mui/material/Skeleton";
 import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
 import BlockIcon from "@mui/icons-material/Block";
@@ -67,11 +68,19 @@ export const Profile = (props: Props) => {
 
   return (
     <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
-      <CardMedia sx={{ height: 140 }} image={props.actor?.banner} />
+      {props.actor ? (
+        <CardMedia sx={{ height: 140 }} image={props.actor?.banner} />
+      ) : (
+        <Skeleton variant="rectangular" height={140} />
+      )}
       <CardContent>
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
-            <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
+            {props.actor ? (
+              <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
+            ) : (
+              <Skeleton width={64} height={64} variant="circular" />
+            )}
             <Stack sx={{ mt: 4 }} direction="row" alignItems="baseline">
               {props.actor?.viewer?.following && (
                 <Button
@@ -84,7 +93,7 @@ export const Profile = (props: Props) => {
                   following
                 </Button>
               )}
-              {!isMe && !props.actor?.viewer?.following && (
+              {props.actor && !isMe && !props.actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<AddIcon />}
@@ -95,7 +104,7 @@ export const Profile = (props: Props) => {
                   follow
                 </Button>
               )}
-              {isMe && (
+              {props.actor && isMe && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<EditIcon />}
@@ -105,9 +114,11 @@ export const Profile = (props: Props) => {
                   Edit Profile
                 </Button>
               )}
-              <IconButton onClick={openMenu}>
-                <MoreIcon />
-              </IconButton>
+              {props.actor && (
+                <IconButton onClick={openMenu}>
+                  <MoreIcon />
+                </IconButton>
+              )}
               <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
                 {_.map(actions, (action, key) => (
                   <MenuItem
@@ -129,8 +140,16 @@ export const Profile = (props: Props) => {
             </Stack>
           </Stack>
           <Box>
-            <Typography variant="h5">{props.actor?.displayName}</Typography>
-            <Typography variant="caption">@{props.actor?.handle}</Typography>
+            {props.actor ? (
+              <Typography variant="h5">{props.actor?.displayName}</Typography>
+            ) : (
+              <Skeleton width={100} height={30} />
+            )}
+            {props.actor ? (
+              <Typography variant="caption">@{props.actor?.handle}</Typography>
+            ) : (
+              <Skeleton width={100} height={10} />
+            )}
             {props.actor?.viewer?.followedBy && (
               <Chip sx={{ ml: 1 }} label="followed you" size="small" color="primary" variant="outlined" />
             )}
@@ -161,28 +180,32 @@ export const Profile = (props: Props) => {
               <Chip sx={{ ml: 1 }} label="blocked" size="small" color="error" variant="outlined" icon={<BlockIcon />} />
             )}
           </Box>
-          <Stack direction="row" spacing={1}>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.followersCount}
-              </Typography>
-              <Typography variant="caption">followers</Typography>
+          {props.actor ? (
+            <Stack direction="row" spacing={1}>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                  {props.actor?.followersCount}
+                </Typography>
+                <Typography variant="caption">followers</Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                  {props.actor?.followsCount}
+                </Typography>
+                <Typography variant="caption">following</Typography>
+              </Stack>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                  {props.actor?.postsCount}
+                </Typography>
+                <Typography variant="caption">posts</Typography>
+              </Stack>
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.followsCount}
-              </Typography>
-              <Typography variant="caption">following</Typography>
-            </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.postsCount}
-              </Typography>
-              <Typography variant="caption">posts</Typography>
-            </Stack>
-          </Stack>
+          ) : (
+            <Skeleton width={200} height={10} />
+          )}
           <Typography variant="body2">
-            <Linkify>{props.actor?.description}</Linkify>
+            {props.actor ? <Linkify>{props.actor?.description}</Linkify> : <Skeleton width={400} height={100} />}
           </Typography>
         </Stack>
       </CardContent>
