@@ -1,14 +1,16 @@
 import _ from "lodash";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutline";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LoopIcon from "@mui/icons-material/Loop";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
@@ -22,7 +24,7 @@ type Props = {
 
 export const Post = (props: Props) => {
   return (
-    <Card sx={{ m: 1, maxWidth: 480 }}>
+    <Box sx={{ maxWidth: 480 }}>
       <CardHeader
         avatar={<Avatar src={props.post.author.avatar} />}
         title={props.post.author.displayName}
@@ -32,11 +34,14 @@ export const Post = (props: Props) => {
         <Typography variant="body2">{props.post.record.text}</Typography>
       </CardContent>
       <CardActions>
-        <ChatBubbleIcon />
-        <LoopIcon />
-        <FavoriteIcon />
+        <Stack direction="row" spacing={2}>
+          <FavoriteBorderIcon fontSize="small" />
+          <LoopIcon fontSize="small" />
+          <ChatBubbleIconOutline fontSize="small" />
+        </Stack>
       </CardActions>
-    </Card>
+      <Divider />
+    </Box>
   );
 };
 
