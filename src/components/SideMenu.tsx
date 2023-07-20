@@ -9,7 +9,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
-import Skeleton from "@mui/material/Skeleton";
 import Home from "@mui/icons-material/Home";
 import Search from "@mui/icons-material/Search";
 import Feed from "@mui/icons-material/Feed";
@@ -42,24 +41,12 @@ export const SideMenu = (props: Props) => {
   };
 
   return (
-    <Paper sx={{ width: 240, height: 380, maxWidth: "100%", p: 2, borderRadius: 2 }}>
+    <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 2 }}>
       <Stack direction="row" spacing={2} alignItems="center">
-        {props.profile ? (
-          <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={{ width: 64, height: 64 }} />
-        ) : (
-          <Skeleton width={64} height={64} variant="circular" />
-        )}
+        <Avatar alt={props.profile?.displayName} src={props.profile?.avatar} sx={{ width: 64, height: 64 }} />
         <Stack direction="column" spacing={1}>
-          {props.profile ? (
-            <Typography variant="body2">{props.profile?.displayName}</Typography>
-          ) : (
-            <Skeleton width={100} height={10} />
-          )}
-          {props.profile ? (
-            <Typography variant="body2">{props.profile?.handle}</Typography>
-          ) : (
-            <Skeleton width={100} height={10} />
-          )}
+          <Typography variant="body2">{props.profile?.displayName}</Typography>
+          <Typography variant="body2">{props.profile?.handle}</Typography>
         </Stack>
       </Stack>
       <MenuList>

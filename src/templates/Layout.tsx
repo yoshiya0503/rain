@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import { AppBskyFeedPost } from "@atproto/api";
 import CreatePost from "@/components/CreatePost";
 import SideMenu from "@/components/SideMenu";
+import SkeletonUI from "@/components/SkeletonUI";
 import { useStore } from "@/stores";
 import useDialog from "@/hooks/useDialog";
 
@@ -22,12 +23,16 @@ export const Layout = (props: Props) => {
 
   return (
     <Container sx={{ display: "flex", p: 2 }}>
-      <SideMenu
-        profile={me}
-        onClickNewPost={() => {
-          openCreateDialog();
-        }}
-      />
+      {me ? (
+        <SideMenu
+          profile={me}
+          onClickNewPost={() => {
+            openCreateDialog();
+          }}
+        />
+      ) : (
+        <SkeletonUI type="menu" />
+      )}
       <Container component="main">{props.children}</Container>
       <CreatePost title="send post" open={isCreateOpen} onClose={closeCreateDialog} onPost={props.onPost} />
     </Container>

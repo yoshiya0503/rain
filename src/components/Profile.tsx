@@ -11,7 +11,6 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import Skeleton from "@mui/material/Skeleton";
 import CheckIcon from "@mui/icons-material/Check";
 import AddIcon from "@mui/icons-material/Add";
 import BlockIcon from "@mui/icons-material/Block";
@@ -68,19 +67,11 @@ export const Profile = (props: Props) => {
 
   return (
     <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
-      {props.actor ? (
-        <CardMedia sx={{ height: 140 }} image={props.actor?.banner} />
-      ) : (
-        <Skeleton variant="rectangular" height={140} />
-      )}
+      <CardMedia sx={{ height: 140 }} image={props.actor?.banner} />
       <CardContent>
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
-            {props.actor ? (
-              <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
-            ) : (
-              <Skeleton width={64} height={64} variant="circular" />
-            )}
+            <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
             <Stack sx={{ mt: 4 }} direction="row" alignItems="baseline">
               {props.actor?.viewer?.following && (
                 <Button
@@ -140,16 +131,8 @@ export const Profile = (props: Props) => {
             </Stack>
           </Stack>
           <Box>
-            {props.actor ? (
-              <Typography variant="h5">{props.actor?.displayName}</Typography>
-            ) : (
-              <Skeleton width={100} height={30} />
-            )}
-            {props.actor ? (
-              <Typography variant="caption">@{props.actor?.handle}</Typography>
-            ) : (
-              <Skeleton width={100} height={10} />
-            )}
+            <Typography variant="h5">{props.actor?.displayName}</Typography>
+            <Typography variant="caption">@{props.actor?.handle}</Typography>
             {props.actor?.viewer?.followedBy && (
               <Chip sx={{ ml: 1 }} label="followed you" size="small" color="primary" variant="outlined" />
             )}
@@ -180,32 +163,28 @@ export const Profile = (props: Props) => {
               <Chip sx={{ ml: 1 }} label="blocked" size="small" color="error" variant="outlined" icon={<BlockIcon />} />
             )}
           </Box>
-          {props.actor ? (
-            <Stack direction="row" spacing={1}>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                  {props.actor?.followersCount}
-                </Typography>
-                <Typography variant="caption">followers</Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                  {props.actor?.followsCount}
-                </Typography>
-                <Typography variant="caption">following</Typography>
-              </Stack>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                  {props.actor?.postsCount}
-                </Typography>
-                <Typography variant="caption">posts</Typography>
-              </Stack>
+          <Stack direction="row" spacing={1}>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                {props.actor?.followersCount}
+              </Typography>
+              <Typography variant="caption">followers</Typography>
             </Stack>
-          ) : (
-            <Skeleton width={200} height={10} />
-          )}
-          <Typography variant="body2">
-            {props.actor ? <Linkify>{props.actor?.description}</Linkify> : <Skeleton width={400} height={100} />}
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                {props.actor?.followsCount}
+              </Typography>
+              <Typography variant="caption">following</Typography>
+            </Stack>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Typography sx={{ fontWeight: "bold" }} variant="caption">
+                {props.actor?.postsCount}
+              </Typography>
+              <Typography variant="caption">posts</Typography>
+            </Stack>
+          </Stack>
+          <Typography variant="caption">
+            <Linkify>{props.actor?.description}</Linkify>
           </Typography>
         </Stack>
       </CardContent>

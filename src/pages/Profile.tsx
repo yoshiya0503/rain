@@ -6,6 +6,7 @@ import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
 import Scroll from "@/components/Scroll";
 import Profile from "@/components/Profile";
+import SkeletonUI from "@/components/SkeletonUI";
 
 export const ProfilePage = () => {
   const { handle } = useParams<"handle">();
@@ -73,17 +74,21 @@ export const ProfilePage = () => {
   return (
     <Layout onPost={post}>
       <Scroll onScrollLimit={onScrollLimit}>
-        <Profile
-          actor={actor}
-          me={me}
-          onFollow={onFollow}
-          onUnFollow={onUnFollow}
-          onMute={onMute}
-          onUnMute={onUnMute}
-          onBlock={onBlock}
-          onUnBlock={onUnBlock}
-          onShare={onShare}
-        />
+        {me && actor ? (
+          <Profile
+            actor={actor}
+            me={me}
+            onFollow={onFollow}
+            onUnFollow={onUnFollow}
+            onMute={onMute}
+            onUnMute={onUnMute}
+            onBlock={onBlock}
+            onUnBlock={onUnBlock}
+            onShare={onShare}
+          />
+        ) : (
+          <SkeletonUI type="profile" />
+        )}
         {_.map(authorFeed, (item, key) => {
           if (item.reply) {
             return <Post key={key} post={item.reply.root} />;
