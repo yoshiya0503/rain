@@ -23,15 +23,11 @@ const MenuSkeleton = () => {
           <Skeleton width={100} height={10} />
         </Stack>
       </Stack>
-      <MenuList>
+      <Stack sx={{ mt: 2 }} spacing={1} alignItems="center">
         {_.times(6, (index) => (
-          <MenuItem key={index}>
-            <ListItemText>
-              <Skeleton width={150} height={25} />
-            </ListItemText>
-          </MenuItem>
+          <Skeleton key={index} width={150} height={25} />
         ))}
-      </MenuList>
+      </Stack>
     </Paper>
   );
 };

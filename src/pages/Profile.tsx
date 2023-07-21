@@ -25,11 +25,11 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     getProfile(handle || "");
-    getAuthorFeed(handle || "");
+    getAuthorFeed(handle || "", true);
   }, [getProfile, getAuthorFeed, handle]);
 
   const onScrollLimit = useCallback(() => {
-    getAuthorFeed(handle || "");
+    getAuthorFeed(handle || "", false);
   }, [getAuthorFeed, handle]);
 
   const onFollow = useCallback(async () => {
@@ -74,7 +74,7 @@ export const ProfilePage = () => {
   return (
     <Layout onPost={post}>
       <Scroll onScrollLimit={onScrollLimit}>
-        {me && actor ? (
+        {me && actor && actor.handle === handle ? (
           <Profile
             actor={actor}
             me={me}
@@ -89,12 +89,11 @@ export const ProfilePage = () => {
         ) : (
           <SkeletonUI type="profile" />
         )}
-        {_.map(authorFeed, (item, key) => {
-          if (item.reply) {
-            return <Post key={key} post={item.reply.root} />;
-          }
-          return <Post key={key} post={item.post} />;
-        })}
+        {actor &&
+          actor.handle === handle &&
+          _.map(authorFeed, (item, key) => {
+            return <Post key={key} post={item.post} />;
+          })}
       </Scroll>
     </Layout>
   );

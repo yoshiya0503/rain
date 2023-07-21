@@ -5,6 +5,7 @@ import { AtUri } from "@atproto/uri";
 import agent from "@/agent";
 
 export interface SocialGraphSlice {
+  //TODO follows, folowersの実装
   getFollows: (actor: string) => Promise<void>;
   getFollowers: (actor: string) => Promise<void>;
   follow: (actor: string) => Promise<void>;
