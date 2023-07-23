@@ -1,5 +1,4 @@
 import _ from "lodash";
-import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
@@ -44,9 +43,9 @@ export const SideMenu = (props: Props) => {
     <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 2 }}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Avatar alt={props.profile?.displayName} src={props.profile?.avatar} sx={{ width: 64, height: 64 }} />
-        <Stack direction="column" spacing={1}>
+        <Stack direction="column">
           <Typography variant="body2">{props.profile?.displayName}</Typography>
-          <Typography variant="body2">{props.profile?.handle}</Typography>
+          <Typography variant="caption">@{props.profile?.handle}</Typography>
         </Stack>
       </Stack>
       <MenuList>
@@ -56,9 +55,8 @@ export const SideMenu = (props: Props) => {
             <ListItemText>{menu.name}</ListItemText>
           </MenuItem>
         ))}
-        <Divider />
         <Button
-          sx={{ width: "100%", borderRadius: 6 }}
+          sx={{ mt: 1, width: "100%", borderRadius: 6 }}
           variant="contained"
           startIcon={<Create />}
           onClick={props.onClickNewPost}
