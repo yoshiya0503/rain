@@ -1,3 +1,4 @@
+import _ from "lodash";
 import Grow from "@mui/material/Grow";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -10,14 +11,21 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LoopIcon from "@mui/icons-material/Loop";
-import { pink, green, blue } from "@mui/material/colors";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import MuteIcon from "@mui/icons-material/VolumeOff";
+import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import ShareIcon from "@mui/icons-material/Share";
+import { pink, green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import Linkify from "linkify-react";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import useMenu from "@/hooks/useMenu";
 
 type Post = AppBskyFeedDefs.PostView & {
   record?: AppBskyFeedPost.Record;
@@ -25,14 +33,34 @@ type Post = AppBskyFeedDefs.PostView & {
 
 type Props = {
   post: Post;
+  onDeletePost?: (post: Post) => void;
   onLike?: (post: Post) => void;
   onDeleteLike?: (post: Post) => void;
   onRepost?: (post: Post) => void;
   onDeleteRepost?: (post: Post) => void;
+  onShare?: (post: Post) => void;
 };
 
 export const Post = (props: Props) => {
   const navigate = useNavigate();
+  const [anchor, openMenu, closeMenu] = useMenu();
+  const actions = [
+    { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
+    {
+      name: "mute",
+      icon: <MuteIcon />,
+      label: props.post?.viewer?.muted ? "Unmute" : "Mute",
+      action: () => {
+        console.log("mute");
+      },
+    },
+    {
+      name: "delete",
+      icon: <DeleteIcon />,
+      label: "Delete Post",
+      action: props.onDeletePost,
+    },
+  ];
 
   const onRepost = () => {
     if (props.onRepost) {
@@ -68,6 +96,38 @@ export const Post = (props: Props) => {
         avatar={<Avatar src={props.post.author.avatar} />}
         title={props.post.author.displayName}
         subheader={props.post.author.handle}
+        action={
+          <>
+            <IconButton
+              sx={{ fontSize: 16 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                openMenu(e);
+              }}
+            >
+              <MoreIcon fontSize="inherit" />
+            </IconButton>
+            <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
+              {_.map(actions, (action, key) => (
+                <MenuItem
+                  key={key}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (action.action) {
+                      action.action(props.post);
+                    }
+                    closeMenu();
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    {action.icon}
+                    <Typography variant="body2">{action.label}</Typography>
+                  </Stack>
+                </MenuItem>
+              ))}
+            </Menu>
+          </>
+        }
         onClick={onViewProfile(`/profile/${props.post.author.handle}`)}
       />
       <CardContent>

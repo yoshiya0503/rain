@@ -72,7 +72,7 @@ export const Profile = (props: Props) => {
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
             <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
-            <Stack sx={{ mt: 4 }} direction="row" alignItems="baseline">
+            <Stack sx={{ mt: 4 }} direction="row" alignItems="center">
               {props.actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
@@ -106,7 +106,7 @@ export const Profile = (props: Props) => {
                 </Button>
               )}
               {props.actor && (
-                <IconButton onClick={openMenu}>
+                <IconButton onClick={openMenu} size="small">
                   <MoreIcon />
                 </IconButton>
               )}

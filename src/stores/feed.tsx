@@ -68,6 +68,11 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   },
   deletePost: async (post: AppBskyFeedDefs.PostView) => {
     try {
+      // delete Postが遅いので先にUIから削除する
+      const feed = _.reject(get().feed, (f) => {
+        return f.post.uri === post.uri;
+      });
+      set({ feed: feed });
       await agent.deletePost(post.uri);
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
