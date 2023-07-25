@@ -18,6 +18,8 @@ export const Home = () => {
     getTimeline();
   }, [getTimeline]);
 
+  console.log(feed);
+
   return (
     <Layout>
       <Scroll onScrollLimit={onScrollLimit}>

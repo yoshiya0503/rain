@@ -42,8 +42,8 @@ export const SideMenu = () => {
             <ListItemText>{menu.name}</ListItemText>
           </MenuItem>
         ))}
-        <PostButton label="New Post" />
       </MenuList>
+      <PostButton label="New Post" />
     </Paper>
   );
 };

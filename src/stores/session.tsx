@@ -7,6 +7,7 @@ export interface SessionSlice {
   session: AtpSessionData;
   createAccount: () => Promise<void>;
   login: (identifier: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [], SessionSlice> = (set, get) => ({
@@ -31,6 +32,25 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       set({ session: res.data });
     } catch (e) {
       get().createMessage({ status: "error", title: "invalid identifier" });
+    }
+  },
+  logout: async () => {
+    try {
+      localStorage.removeItem("X-SKYLINE-REFRESHJWT");
+      localStorage.removeItem("X-SKYLINE-ACCESSJWT");
+      localStorage.removeItem("X-SKYLINE-DID");
+      localStorage.removeItem("X-SKYLINE-EMAIL");
+      localStorage.removeItem("X-SKYLINE-HANDLE");
+      const session = {
+        refreshJwt: "",
+        accessJwt: "",
+        did: "",
+        email: "",
+        handle: "",
+      };
+      set({ session });
+    } catch (e) {
+      get().createMessage({ status: "error", title: "logout error" });
     }
   },
 });

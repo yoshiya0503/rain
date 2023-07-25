@@ -4,10 +4,10 @@ import Profile from "@/pages/Profile";
 import Notification from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
-import { useStore } from "@/stores";
+import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
-  const session = useStore((state) => state.session);
+  const { session } = useAuthentication();
 
   if (!session.accessJwt || !session.refreshJwt) {
     return <Navigate to={{ pathname: "/authentication" }} />;

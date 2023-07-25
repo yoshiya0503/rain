@@ -38,14 +38,22 @@ export const PostDialog = (props: Props) => {
   const isNotPostable = MAX_TEXT_LENGTH < text.length;
 
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm">
+    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
       <DialogTitle>
         <IconButton color="primary" onClick={props.onClose}>
           <AddPhotoAlternateIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <TextField multiline rows={4} fullWidth placeholder="Whats Your Hot Topic?" value={text} onChange={onChange} />
+        <TextField
+          multiline
+          rows={4}
+          fullWidth
+          placeholder="Whats Your Hot Topic?"
+          autoFocus
+          value={text}
+          onChange={onChange}
+        />
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>

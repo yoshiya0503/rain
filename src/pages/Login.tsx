@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -9,30 +9,17 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { useStore } from "@/stores";
+import useAuthentication from "@/hooks/useAuthentication";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const login = useStore((state) => state.login);
-  const session = useStore((state) => state.session);
-  const [form, setForm] = useState<{ identifier: string; password: string }>({ identifier: "", password: "" });
+  const { session, onLogin, onChange } = useAuthentication();
 
   useEffect(() => {
     if (session?.accessJwt && session?.refreshJwt) {
       navigate("/");
     }
   }, [session, navigate]);
-
-  const onLogin = useCallback(() => {
-    login(form?.identifier, form?.password);
-  }, [login, form]);
-
-  const onChange = useCallback(
-    (name: "identifier" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((state) => ({ ...state, [name]: e.target.value }));
-    },
-    [setForm]
-  );
 
   return (
     <Container maxWidth="sm" sx={{ mt: "10%" }}>
