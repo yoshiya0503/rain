@@ -1,29 +1,22 @@
 import _ from "lodash";
-import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 import Home from "@mui/icons-material/Home";
 import Search from "@mui/icons-material/Search";
 import Feed from "@mui/icons-material/Feed";
 import Notifications from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Settings from "@mui/icons-material/Settings";
-import Create from "@mui/icons-material/Create";
-import { useNavigate } from "react-router-dom";
-import { AppBskyActorDefs } from "@atproto/api";
+import ProfileInline from "@/components/ProfileInline";
+import PostButton from "@/components/PostButton";
+import useMe from "@/hooks/useMe";
 
-type Props = {
-  profile?: AppBskyActorDefs.ProfileViewDetailed;
-  onClickNewPost: () => void;
-};
-
-export const SideMenu = (props: Props) => {
+export const SideMenu = () => {
+  const me = useMe();
   const navigate = useNavigate();
 
   const menus = [
@@ -31,7 +24,7 @@ export const SideMenu = (props: Props) => {
     { name: "Search", icon: <Search />, href: "/search" },
     { name: "Feeds", icon: <Feed />, href: "/feeds" },
     { name: "Notifications", icon: <Notifications />, href: "/notifications" },
-    { name: "Profile", icon: <AccountCircle />, href: `/profile/${props.profile?.handle}` },
+    { name: "Profile", icon: <AccountCircle />, href: `/profile/${me.handle}` },
     { name: "Settings", icon: <Settings />, href: "/settings" },
   ];
 
@@ -41,28 +34,15 @@ export const SideMenu = (props: Props) => {
 
   return (
     <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 2 }}>
-      <Stack direction="row" spacing={2} alignItems="center">
-        <Avatar alt={props.profile?.displayName} src={props.profile?.avatar} sx={{ width: 64, height: 64 }} />
-        <Stack direction="column">
-          <Typography variant="body2">{props.profile?.displayName}</Typography>
-          <Typography variant="caption">@{props.profile?.handle}</Typography>
-        </Stack>
-      </Stack>
+      <ProfileInline profile={me} />
       <MenuList>
         {_.map(menus, (menu, key) => (
-          <MenuItem key={key} href={menu.href} onClick={onClickMenu(menu.href)}>
+          <MenuItem key={key} onClick={onClickMenu(menu.href)}>
             <ListItemIcon>{menu.icon}</ListItemIcon>
             <ListItemText>{menu.name}</ListItemText>
           </MenuItem>
         ))}
-        <Button
-          sx={{ mt: 1, width: "100%", borderRadius: 6 }}
-          variant="contained"
-          startIcon={<Create />}
-          onClick={props.onClickNewPost}
-        >
-          New Post
-        </Button>
+        <PostButton label="New Post" />
       </MenuList>
     </Paper>
   );

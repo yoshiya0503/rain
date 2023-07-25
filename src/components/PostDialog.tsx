@@ -9,28 +9,33 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import LabelProgress from "@/components/LabelProgress";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { AppBskyFeedPost } from "@atproto/api";
+import usePost from "@/hooks/usePost";
 
 type Props = {
   title: string;
   open: boolean;
   onClose: () => void;
-  onPost: (record: AppBskyFeedPost.Record) => void;
+  onSend?: () => void;
 };
 
-export const CreatePost = (props: Props) => {
+export const PostDialog = (props: Props) => {
+  const { onPost } = usePost();
   const [text, setText] = useState<string>("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value);
   };
 
-  const onPost = () => {
-    props.onPost({ text, createdAt: Date().toString() });
+  const onSend = () => {
+    onPost({ text, createdAt: Date().toString() });
+    if (props.onSend) {
+      props.onSend();
+    }
     props.onClose();
   };
 
-  const isNotPostable = 300 < text.length;
+  const MAX_TEXT_LENGTH = 300;
+  const isNotPostable = MAX_TEXT_LENGTH < text.length;
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm">
@@ -47,13 +52,13 @@ export const CreatePost = (props: Props) => {
           <LabelProgress
             variant="determinate"
             color={isNotPostable ? "error" : "primary"}
-            value={Math.min((text.length / 300) * 100, 100)}
-            label={(300 - text.length).toString()}
+            value={Math.min((text.length / MAX_TEXT_LENGTH) * 100, 100)}
+            label={(MAX_TEXT_LENGTH - text.length).toString()}
           />
         </Box>
         <Box>
           <Button onClick={props.onClose}>Cancel</Button>
-          <Button onClick={onPost} disabled={isNotPostable}>
+          <Button onClick={onSend} disabled={isNotPostable}>
             Post
           </Button>
         </Box>
@@ -62,4 +67,4 @@ export const CreatePost = (props: Props) => {
   );
 };
 
-export default CreatePost;
+export default PostDialog;

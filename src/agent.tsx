@@ -1,6 +1,6 @@
 import { BskyAgent } from "@atproto/api";
 
-// TODO 画面のチラつきが起きる
+// TODO
 // セッションの管理の仕方が微妙
 export const agent = new BskyAgent({
   service: "https://bsky.social",

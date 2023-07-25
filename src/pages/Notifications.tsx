@@ -9,7 +9,6 @@ import Scroll from "@/components/Scroll";
 export const Notifications = () => {
   const notifications = useStore((state) => state.notifications);
   const listNotifications = useStore((state) => state.listNotifications);
-  const post = useStore((state) => state.post);
 
   useEffect(() => {
     listNotifications();
@@ -20,7 +19,7 @@ export const Notifications = () => {
   }, [listNotifications]);
 
   return (
-    <Layout onPost={post}>
+    <Layout>
       <Scroll onScrollLimit={onScrollLimit}>
         {_.map(notifications, (item, key) => {
           return <Notification key={key} notification={item} />;

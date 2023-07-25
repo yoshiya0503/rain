@@ -2,8 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import Home from "@/pages/Home";
 import Profile from "@/pages/Profile";
 import Notification from "@/pages/Notifications";
+import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
-import Test from "@/pages/Test";
 import { useStore } from "@/stores";
 
 const Authentication = () => {
@@ -22,9 +22,9 @@ export const Router = () => {
         <Route path="/authentication" element={<Login />} />
         <Route element={<Authentication />}>
           <Route path="/" element={<Home />} />
-          <Route path="/test/:handle" element={<Test />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile/:handle" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

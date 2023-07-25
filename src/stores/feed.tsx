@@ -4,6 +4,11 @@ import { MessageSlice } from "@/stores/message";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 import agent from "@/agent";
 
+export type PostView = AppBskyFeedDefs.PostView & {
+  // record?: AppBskyFeedPost.Record | object;
+  record: any;
+};
+
 export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
@@ -13,11 +18,11 @@ export interface FeedSlice {
   getInitialTimeline: () => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   post: (record: AppBskyFeedPost.Record) => Promise<void>;
-  deletePost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  repost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  deleteRepost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  like: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  deleteLike: (record: AppBskyFeedDefs.PostView) => Promise<void>;
+  deletePost: (record: PostView) => Promise<void>;
+  repost: (record: PostView) => Promise<void>;
+  deleteRepost: (record: PostView) => Promise<void>;
+  like: (record: PostView) => Promise<void>;
+  deleteLike: (record: PostView) => Promise<void>;
 }
 
 export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], FeedSlice> = (set, get) => ({
@@ -66,7 +71,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
     }
   },
-  deletePost: async (post: AppBskyFeedDefs.PostView) => {
+  deletePost: async (post: PostView) => {
     try {
       // delete Postが遅いので先にUIから削除する
       const feed = _.reject(get().feed, (f) => {
@@ -78,7 +83,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
     }
   },
-  repost: async (post: AppBskyFeedDefs.PostView) => {
+  repost: async (post: PostView) => {
     try {
       const res = await agent.repost(post.uri, post.cid);
       const feed = _.map(get().feed, (f) => {
@@ -93,7 +98,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
   },
-  deleteRepost: async (post: AppBskyFeedDefs.PostView) => {
+  deleteRepost: async (post: PostView) => {
     try {
       await agent.deleteRepost(post.viewer?.repost || "");
       const feed = _.map(get().feed, (f) => {
@@ -108,7 +113,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
   },
-  like: async (post: AppBskyFeedDefs.PostView) => {
+  like: async (post: PostView) => {
     try {
       const res = await agent.like(post.uri, post.cid);
       const feed = _.map(get().feed, (f) => {
@@ -123,7 +128,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
   },
-  deleteLike: async (post: AppBskyFeedDefs.PostView) => {
+  deleteLike: async (post: PostView) => {
     try {
       await agent.deleteLike(post.viewer?.like || "");
       const feed = _.map(get().feed, (f) => {

@@ -1,4 +1,3 @@
-import _ from "lodash";
 import Grow from "@mui/material/Grow";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
@@ -11,79 +10,64 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LoopIcon from "@mui/icons-material/Loop";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import { pink, green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import Linkify from "linkify-react";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
-import useMenu from "@/hooks/useMenu";
-
-type Post = AppBskyFeedDefs.PostView & {
-  record?: AppBskyFeedPost.Record;
-};
+import DropDownMenu from "@/components/DropDownMenu";
+import usePost from "@/hooks/usePost";
+import { PostView } from "@/stores/feed";
 
 type Props = {
-  post: Post;
-  onDeletePost?: (post: Post) => void;
-  onLike?: (post: Post) => void;
-  onDeleteLike?: (post: Post) => void;
-  onRepost?: (post: Post) => void;
-  onDeleteRepost?: (post: Post) => void;
-  onShare?: (post: Post) => void;
+  post: PostView;
 };
 
 export const Post = (props: Props) => {
   const navigate = useNavigate();
-  const [anchor, openMenu, closeMenu] = useMenu();
-  const actions = [
-    { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
+  const { onDeletePost, onLike, onDeleteLike, onRepost, onDeleteRepost, onShare } = usePost();
+  const menuItems = [
+    {
+      name: "share",
+      label: "Share",
+      icon: <ShareIcon />,
+      action: () => {
+        onShare(props.post);
+      },
+    },
     {
       name: "mute",
-      icon: <MuteIcon />,
       label: props.post?.viewer?.muted ? "Unmute" : "Mute",
+      icon: <MuteIcon />,
       action: () => {
         console.log("mute");
       },
     },
     {
       name: "delete",
-      icon: <DeleteIcon />,
       label: "Delete Post",
-      action: props.onDeletePost,
+      icon: <DeleteIcon />,
+      action: () => {
+        onDeletePost(props.post);
+      },
     },
   ];
 
-  const onRepost = () => {
-    if (props.onRepost) {
-      props.onRepost(props.post);
-    }
+  const onToggleLike = () => {
+    return props.post.viewer?.like ? onDeleteLike(props.post) : onLike(props.post);
   };
 
-  const onDeleteRepost = () => {
-    if (props.onDeleteRepost) {
-      props.onDeleteRepost(props.post);
-    }
+  const onToggleRePost = () => {
+    return props.post.viewer?.repost ? onDeleteRepost(props.post) : onRepost(props.post);
   };
 
-  const onLike = () => {
-    if (props.onLike) {
-      props.onLike(props.post);
-    }
-  };
-
-  const onDeleteLike = () => {
-    if (props.onDeleteLike) {
-      props.onDeleteLike(props.post);
-    }
+  const onReply = () => {
+    console.log("reply");
   };
 
   const onViewProfile = (href: string) => () => {
@@ -96,38 +80,7 @@ export const Post = (props: Props) => {
         avatar={<Avatar src={props.post.author.avatar} />}
         title={props.post.author.displayName}
         subheader={props.post.author.handle}
-        action={
-          <>
-            <IconButton
-              sx={{ fontSize: 16 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                openMenu(e);
-              }}
-            >
-              <MoreIcon fontSize="inherit" />
-            </IconButton>
-            <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
-              {_.map(actions, (action, key) => (
-                <MenuItem
-                  key={key}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (action.action) {
-                      action.action(props.post);
-                    }
-                    closeMenu();
-                  }}
-                >
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                    {action.icon}
-                    <Typography variant="body2">{action.label}</Typography>
-                  </Stack>
-                </MenuItem>
-              ))}
-            </Menu>
-          </>
-        }
+        action={<DropDownMenu items={menuItems} />}
         onClick={onViewProfile(`/profile/${props.post.author.handle}`)}
       />
       <CardContent>
@@ -137,7 +90,7 @@ export const Post = (props: Props) => {
       </CardContent>
       <CardActions>
         <Stack direction="row" spacing={2}>
-          <IconButton onClick={props.post.viewer?.like ? onDeleteLike : onLike}>
+          <IconButton onClick={onToggleLike}>
             {props.post.viewer?.like ? (
               <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 1000 } : {})}>
                 <FavoriteIcon sx={{ color: pink[400] }} fontSize="small" />
@@ -146,7 +99,7 @@ export const Post = (props: Props) => {
               <FavoriteBorderIcon fontSize="small" />
             )}
           </IconButton>
-          <IconButton onClick={props.post.viewer?.repost ? onDeleteRepost : onRepost}>
+          <IconButton onClick={onToggleRePost}>
             {props.post.viewer?.repost ? (
               <Grow in={!!props.post.viewer?.repost} {...(props.post.viewer?.repost ? { timeout: 1000 } : {})}>
                 <LoopIcon fontSize="small" sx={{ color: green[400] }} />
@@ -155,7 +108,7 @@ export const Post = (props: Props) => {
               <LoopIcon fontSize="small" />
             )}
           </IconButton>
-          <IconButton onClick={props.post.viewer?.like ? onDeleteLike : onLike}>
+          <IconButton onClick={onReply}>
             <ChatBubbleIconOutline fontSize="small" />
           </IconButton>
         </Stack>

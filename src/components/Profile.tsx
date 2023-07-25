@@ -1,10 +1,6 @@
-import _ from "lodash";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -17,85 +13,79 @@ import BlockIcon from "@mui/icons-material/Block";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ReportIcon from "@mui/icons-material/Report";
 import ShareIcon from "@mui/icons-material/Share";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
 import EditIcon from "@mui/icons-material/Edit";
 import Linkify from "linkify-react";
-import { AppBskyActorDefs } from "@atproto/api";
-import useMenu from "@/hooks/useMenu";
+import DropDownMenu from "@/components/DropDownMenu";
+import useSocial from "@/hooks/useSocial";
+import useMe from "@/hooks/useMe";
+import useActor from "@/hooks/useActor";
 
 //TODO Add to list
 //TODO moderation report
-
 type Props = {
-  me?: AppBskyActorDefs.ProfileViewDetailed;
-  actor?: AppBskyActorDefs.ProfileViewDetailed;
-  action?: (action: string, actor: AppBskyActorDefs.ProfileViewDetailed) => void;
-  onFollow?: () => void;
-  onUnFollow?: () => void;
-  onMute?: () => void;
-  onUnMute?: () => void;
-  onBlock?: () => void;
-  onUnBlock?: () => void;
-  onShare?: () => void;
+  handle: string;
 };
 
 export const Profile = (props: Props) => {
-  const [anchor, openMenu, closeMenu] = useMenu();
-  const isMe = props.me?.did === props.actor?.did;
-  const actions = isMe
+  const me = useMe();
+  const actor = useActor(props.handle);
+  const { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare } = useSocial(props.handle);
+
+  const isMe = me.did === actor.did;
+  const menuItems = isMe
     ? [
-        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onShare },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: onShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onShare },
       ]
     : [
         {
           name: "block",
           icon: <BlockIcon />,
-          label: props.actor?.viewer?.blocking ? "Unblock" : "Block",
-          action: props.actor?.viewer?.blocking ? props.onUnBlock : props.onBlock,
+          label: actor.viewer?.blocking ? "Unblock" : "Block",
+          action: actor.viewer?.blocking ? onUnBlock : onBlock,
         },
         {
           name: "mute",
           icon: <MuteIcon />,
-          label: props.actor?.viewer?.muted ? "Unmute" : "Mute",
-          action: props.actor?.viewer?.muted ? props.onUnMute : props.onMute,
+          label: actor?.viewer?.muted ? "Unmute" : "Mute",
+          action: actor?.viewer?.muted ? onUnMute : onMute,
         },
-        { name: "report", icon: <ReportIcon />, label: "Report", action: props.onMute },
-        { name: "share", icon: <ShareIcon />, label: "Share", action: props.onShare },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: props.onShare },
+        { name: "report", icon: <ReportIcon />, label: "Report", action: onMute },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: onShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onShare },
       ];
 
   return (
     <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
-      <CardMedia sx={{ height: 140 }} image={props.actor?.banner} />
+      <CardMedia sx={{ height: 140 }} image={actor.banner} />
       <CardContent>
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
-            <Avatar sx={{ width: 64, height: 64 }} src={props.actor?.avatar} />
+            <Avatar sx={{ width: 64, height: 64 }} src={actor.avatar} />
             <Stack sx={{ mt: 4 }} direction="row" alignItems="center">
-              {props.actor?.viewer?.following && (
+              {actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<CheckIcon />}
                   size="small"
                   variant="contained"
-                  onClick={props.onUnFollow}
+                  onClick={onUnFollow}
                 >
                   following
                 </Button>
               )}
-              {props.actor && !isMe && !props.actor?.viewer?.following && (
+              {!isMe && !actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<AddIcon />}
                   size="small"
                   variant="contained"
-                  onClick={props.onFollow}
+                  onClick={onFollow}
                 >
                   follow
                 </Button>
               )}
-              {props.actor && isMe && (
+              {isMe && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<EditIcon />}
@@ -105,41 +95,19 @@ export const Profile = (props: Props) => {
                   Edit Profile
                 </Button>
               )}
-              {props.actor && (
-                <IconButton onClick={openMenu} size="small">
-                  <MoreIcon />
-                </IconButton>
-              )}
-              <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
-                {_.map(actions, (action, key) => (
-                  <MenuItem
-                    key={key}
-                    onClick={() => {
-                      if (action.action) {
-                        action.action();
-                      }
-                      closeMenu();
-                    }}
-                  >
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      {action.icon}
-                      <Typography variant="body2">{action.label}</Typography>
-                    </Stack>
-                  </MenuItem>
-                ))}
-              </Menu>
+              <DropDownMenu items={menuItems} />
             </Stack>
           </Stack>
           <Box>
-            <Typography variant="h5">{props.actor?.displayName}</Typography>
-            <Typography variant="caption">@{props.actor?.handle}</Typography>
-            {props.actor?.viewer?.followedBy && (
+            <Typography variant="h5">{actor.displayName}</Typography>
+            <Typography variant="caption">@{actor.handle}</Typography>
+            {actor.viewer?.followedBy && (
               <Chip sx={{ ml: 1 }} label="followed you" size="small" color="primary" variant="outlined" />
             )}
-            {props.actor?.viewer?.muted && (
+            {actor.viewer?.muted && (
               <Chip sx={{ ml: 1 }} label="mute" size="small" color="info" variant="outlined" icon={<MuteIcon />} />
             )}
-            {props.actor?.viewer?.mutedByList && (
+            {actor.viewer?.mutedByList && (
               <Chip
                 sx={{ ml: 1 }}
                 label="muted by"
@@ -149,7 +117,7 @@ export const Profile = (props: Props) => {
                 icon={<MuteIcon />}
               />
             )}
-            {props.actor?.viewer?.blocking && (
+            {actor.viewer?.blocking && (
               <Chip
                 sx={{ ml: 1 }}
                 label="blocking"
@@ -159,32 +127,32 @@ export const Profile = (props: Props) => {
                 icon={<BlockIcon />}
               />
             )}
-            {props.actor?.viewer?.blockedBy && (
+            {actor.viewer?.blockedBy && (
               <Chip sx={{ ml: 1 }} label="blocked" size="small" color="error" variant="outlined" icon={<BlockIcon />} />
             )}
           </Box>
           <Stack direction="row" spacing={1}>
             <Stack direction="row" alignItems="center" spacing={0.5}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.followersCount}
+                {actor.followersCount}
               </Typography>
               <Typography variant="caption">followers</Typography>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={0.5}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.followsCount}
+                {actor.followsCount}
               </Typography>
               <Typography variant="caption">following</Typography>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={0.5}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {props.actor?.postsCount}
+                {actor.postsCount}
               </Typography>
               <Typography variant="caption">posts</Typography>
             </Stack>
           </Stack>
           <Typography variant="caption">
-            <Linkify>{props.actor?.description}</Linkify>
+            <Linkify>{actor.description}</Linkify>
           </Typography>
         </Stack>
       </CardContent>
