@@ -1,8 +1,7 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
-import { AppBskyFeedPost } from "@atproto/api";
-import { PostView } from "@/stores/feed";
+import { PostView, Record } from "@/stores/feed";
 
 export const usePost = () => {
   const post = useStore((state) => state.post);
@@ -13,7 +12,7 @@ export const usePost = () => {
   const deleteLike = useStore((state) => state.deleteLike);
 
   const onPost = useCallback(
-    (record: AppBskyFeedPost.Record) => {
+    (record: Record) => {
       post(record);
     },
     [post]

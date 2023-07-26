@@ -9,6 +9,8 @@ export type PostView = AppBskyFeedDefs.PostView & {
   record: any;
 };
 
+export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
+
 export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
@@ -17,7 +19,7 @@ export interface FeedSlice {
   getTimeline: () => Promise<void>;
   getInitialTimeline: () => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
-  post: (record: AppBskyFeedPost.Record) => Promise<void>;
+  post: (record: Record) => Promise<void>;
   deletePost: (record: PostView) => Promise<void>;
   repost: (record: PostView) => Promise<void>;
   deleteRepost: (record: PostView) => Promise<void>;
@@ -64,9 +66,9 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
     }
   },
-  post: async (record: AppBskyFeedPost.Record) => {
+  post: async (record: Record) => {
     try {
-      await agent.post({ text: record.text });
+      await agent.post(record);
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
     }

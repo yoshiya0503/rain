@@ -12,13 +12,15 @@ import Typography from "@mui/material/Typography";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LabelProgress from "@/components/LabelProgress";
 import ProfileInline from "@/components/ProfileInline";
-import PostArticle from "@/components/PostArticle";
-import PostImages from "@/components/PostImages";
-import PostQuote from "@/components/PostQuote";
 import { PostView } from "@/stores/feed";
 import usePost from "@/hooks/usePost";
 import Linkify from "linkify-react";
+/*
+import PostArticle from "@/components/PostArticle";
+import PostImages from "@/components/PostImages";
+import PostQuote from "@/components/PostQuote";
 import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
+*/
 
 type Props = {
   title: string;
@@ -28,6 +30,7 @@ type Props = {
   onSend?: () => void;
 };
 
+// TODO すべてのpostのdomに入ってしまっている気がする
 export const PostDialog = (props: Props) => {
   const { onPost } = usePost();
   const [text, setText] = useState<string>("");
@@ -37,7 +40,10 @@ export const PostDialog = (props: Props) => {
   };
 
   const onSend = () => {
-    onPost({ text, createdAt: Date().toString() });
+    const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+    const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+    const reply = props.post && { root, parent };
+    onPost({ text, reply });
     if (props.onSend) {
       props.onSend();
     }
@@ -46,11 +52,10 @@ export const PostDialog = (props: Props) => {
 
   const MAX_TEXT_LENGTH = 300;
   const isNotPostable = MAX_TEXT_LENGTH < text.length;
+  /* TODO 入れるか入れないかは一考
   const images = props.post?.embed?.images as AppBskyEmbedImages.ViewImage[];
   const article = props.post?.embed?.external as AppBskyEmbedExternal.ViewExternal;
   const record = props.post?.embed?.record as AppBskyEmbedRecord.ViewRecord;
-  /*
-   * TODO 入れるか入れないかは一考
             {images ? <PostImages images={images} /> : null}
             {article ? <PostArticle article={article} /> : null}
             {record ? <PostQuote record={record} /> : null}
@@ -67,7 +72,7 @@ export const PostDialog = (props: Props) => {
         {props.post && (
           <DialogContentText sx={{ mt: 1, mb: 1 }}>
             <ProfileInline profile={props.post.author} size="small" />
-            <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
+            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
               <Linkify>{props.post.record.text}</Linkify>
             </Typography>
           </DialogContentText>
