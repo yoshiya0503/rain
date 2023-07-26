@@ -8,11 +8,17 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LabelProgress from "@/components/LabelProgress";
 import ProfileInline from "@/components/ProfileInline";
+import PostArticle from "@/components/PostArticle";
+import PostImages from "@/components/PostImages";
+import PostQuote from "@/components/PostQuote";
 import { PostView } from "@/stores/feed";
 import usePost from "@/hooks/usePost";
+import Linkify from "linkify-react";
+import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
 
 type Props = {
   title: string;
@@ -40,6 +46,15 @@ export const PostDialog = (props: Props) => {
 
   const MAX_TEXT_LENGTH = 300;
   const isNotPostable = MAX_TEXT_LENGTH < text.length;
+  const images = props.post?.embed?.images as AppBskyEmbedImages.ViewImage[];
+  const article = props.post?.embed?.external as AppBskyEmbedExternal.ViewExternal;
+  const record = props.post?.embed?.record as AppBskyEmbedRecord.ViewRecord;
+  /*
+   * TODO 入れるか入れないかは一考
+            {images ? <PostImages images={images} /> : null}
+            {article ? <PostArticle article={article} /> : null}
+            {record ? <PostQuote record={record} /> : null}
+  */
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
@@ -51,7 +66,10 @@ export const PostDialog = (props: Props) => {
       <DialogContent>
         {props.post && (
           <DialogContentText sx={{ mt: 1, mb: 1 }}>
-            <ProfileInline profile={props.post.author} />
+            <ProfileInline profile={props.post.author} size="small" />
+            <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
+              <Linkify>{props.post.record.text}</Linkify>
+            </Typography>
           </DialogContentText>
         )}
         <TextField

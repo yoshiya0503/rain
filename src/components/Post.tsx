@@ -15,9 +15,16 @@ import SocialActions from "@/components/SocialActions";
 import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostQuote from "@/components/PostQuote";
+import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
 import { PostView } from "@/stores/feed";
-import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
+import {
+  AppBskyEmbedImages,
+  AppBskyEmbedExternal,
+  AppBskyEmbedRecord,
+  AppBskyEmbedRecordWithMedia,
+  AppBskyFeedGenerator,
+} from "@atproto/api";
 
 type Props = {
   post: PostView;
@@ -56,6 +63,8 @@ export const Post = (props: Props) => {
   const images = props.post.embed?.images as AppBskyEmbedImages.ViewImage[];
   const article = props.post.embed?.external as AppBskyEmbedExternal.ViewExternal;
   const record = props.post.embed?.record as AppBskyEmbedRecord.ViewRecord;
+  const feedRecord = props.post.embed?.record as AppBskyFeedGenerator.Record;
+  const media = props.post.embed?.media as AppBskyEmbedRecordWithMedia.Main;
 
   return (
     <Box sx={{ p: 1, maxWidth: 480 }}>
@@ -72,9 +81,13 @@ export const Post = (props: Props) => {
         <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body2">
           <Linkify>{props.post.record.text}</Linkify>
         </Typography>
-        {props.post.embed?.images ? <PostImages images={images} /> : null}
-        {props.post.embed?.external ? <PostArticle article={article} /> : null}
-        {props.post.embed?.record ? <PostQuote record={record} /> : null}
+        {!media && images ? <PostImages images={images} /> : null}
+        {!media && article ? <PostArticle article={article} /> : null}
+        {!media && record?.author ? <PostQuote record={record} /> : null}
+        {!media && record?.creator ? <PostFeed record={feedRecord} /> : null}
+        {media?.images ? <PostImages images={media.images as AppBskyEmbedImages.ViewImage[]} /> : null}
+        {media?.external ? <PostArticle article={media.external as AppBskyEmbedExternal.ViewExternal} /> : null}
+        {media ? <PostQuote record={record.record as AppBskyEmbedRecord.ViewRecord} /> : null}
         <SocialActions post={props.post} />
       </Stack>
       <Divider />

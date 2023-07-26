@@ -18,7 +18,9 @@ export const PostArticle = (props: Props) => {
   return (
     <Card variant="outlined">
       <CardActionArea onClick={onLink}>
-        <CardMedia sx={{ height: 200 }} component="img" image={props.article.thumb} alt="" />
+        {props.article.thumb ? (
+          <CardMedia sx={{ height: 200 }} component="img" image={props.article.thumb} alt="" />
+        ) : null}
         <CardContent>
           <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body1">
             <Linkify>{props.article.title}</Linkify>

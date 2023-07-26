@@ -7,9 +7,7 @@ import { AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
   profile: AppBskyActorDefs.ProfileViewDetailed;
-  onClick?: () => void;
-  size?: "small" | "medium" | "large";
-};
+  onClick?: () => void; size?: "small" | "medium" | "large"; };
 
 export const ProfileInline = (props: Props) => {
   const navigate = useNavigate();
@@ -22,7 +20,7 @@ export const ProfileInline = (props: Props) => {
     sx = { width: 64, height: 64 };
   }
 
-  const onViewProfile = () => () => () => {
+  const onViewProfile = () => () => {
     const uri = `/profile/${props.profile.handle}`;
     navigate(uri);
   };
