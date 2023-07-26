@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.4",
+    "date-fns": "^2.30.0",
     "linkify-react": "^4.1.1",
     "linkifyjs": "^4.1.1",
     "localforage": "^1.10.0",

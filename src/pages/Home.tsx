@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
-import { Post } from "@/components/Post";
+import Post from "@/components/Post";
 import Scroll from "@/components/Scroll";
 import Layout from "@/templates/Layout";
 
@@ -17,8 +17,6 @@ export const Home = () => {
   const onScrollLimit = useCallback(() => {
     getTimeline();
   }, [getTimeline]);
-
-  console.log(feed);
 
   return (
     <Layout>

@@ -10,6 +10,8 @@ type Props = {
 };
 
 export const Scroll = (props: Props) => {
+  const showScrollThreashold = 3000;
+
   const ref = useRef<HTMLDivElement>(null);
   const [hasScroll, setHasScroll] = useState<boolean>(false);
 
@@ -18,10 +20,10 @@ export const Scroll = (props: Props) => {
     if (nearBottom < 100) {
       props.onScrollLimit();
     }
-    if (5000 < e.currentTarget.scrollTop) {
+    if (showScrollThreashold < e.currentTarget.scrollTop) {
       setHasScroll(true);
     }
-    if (e.currentTarget.scrollTop < 3000) {
+    if (e.currentTarget.scrollTop < showScrollThreashold) {
       setHasScroll(false);
     }
   };

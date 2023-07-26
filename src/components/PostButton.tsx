@@ -20,7 +20,7 @@ export const PostButton = (props: Props) => {
       >
         {props.label}
       </Button>
-      <PostDialog title="send post" open={isOpen} onClose={closePostDialog} />
+      <PostDialog title="Post" open={isOpen} onClose={closePostDialog} />
     </>
   );
 };

@@ -34,7 +34,7 @@ export const SideMenu = () => {
 
   return (
     <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 2 }}>
-      <ProfileInline profile={me} />
+      <ProfileInline profile={me} size="large" />
       <MenuList>
         {_.map(menus, (menu, key) => (
           <MenuItem key={key} onClick={onClickMenu(menu.href)}>

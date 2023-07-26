@@ -1,8 +1,9 @@
 import _ from "lodash";
 import CardMedia from "@mui/material/CardMedia";
+import { AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
-  images: object;
+  images: AppBskyEmbedImages.ViewImage[];
 };
 
 export const PostImages = (props: Props) => {

@@ -6,6 +6,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LoopIcon from "@mui/icons-material/Loop";
 import { pink, green } from "@mui/material/colors";
+import PostDialog from "@/components/PostDialog";
+import useDialog from "@/hooks/useDialog";
 import usePost from "@/hooks/usePost";
 import { PostView } from "@/stores/feed";
 
@@ -14,10 +16,11 @@ type Props = {
 };
 
 export const SocialActions = (props: Props) => {
+  const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();
 
   const onReply = () => {
-    console.log("reply");
+    openPostDialog();
   };
 
   const onToggleLike = () => {
@@ -51,6 +54,7 @@ export const SocialActions = (props: Props) => {
       <IconButton onClick={onReply}>
         <ChatBubbleIconOutline fontSize="small" />
       </IconButton>
+      <PostDialog title="Reply" post={props.post} open={isOpen} onClose={closePostDialog} />
     </Stack>
   );
 };

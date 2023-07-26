@@ -15,6 +15,7 @@ type Props = {
     icon: ReactNode;
     action: () => void;
   }[];
+  size?: "tiny";
 };
 
 export const DropDownMenu = (props: Props) => {
@@ -28,7 +29,7 @@ export const DropDownMenu = (props: Props) => {
         }}
         size="small"
       >
-        <MoreIcon />
+        {props.size ? <MoreIcon sx={{ fontSize: 18 }} /> : <MoreIcon />}
       </IconButton>
       <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
         {_.map(props.items, (action, key) => (

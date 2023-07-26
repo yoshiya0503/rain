@@ -5,14 +5,18 @@ import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import LabelProgress from "@/components/LabelProgress";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import LabelProgress from "@/components/LabelProgress";
+import ProfileInline from "@/components/ProfileInline";
+import { PostView } from "@/stores/feed";
 import usePost from "@/hooks/usePost";
 
 type Props = {
   title: string;
+  post?: PostView;
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -45,6 +49,11 @@ export const PostDialog = (props: Props) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
+        {props.post && (
+          <DialogContentText sx={{ mt: 1, mb: 1 }}>
+            <ProfileInline profile={props.post.author} />
+          </DialogContentText>
+        )}
         <TextField
           multiline
           rows={4}
@@ -67,7 +76,7 @@ export const PostDialog = (props: Props) => {
         <Box>
           <Button onClick={props.onClose}>Cancel</Button>
           <Button onClick={onSend} disabled={isNotPostable}>
-            Post
+            {props.title}
           </Button>
         </Box>
       </DialogActions>
