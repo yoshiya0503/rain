@@ -53,7 +53,7 @@ export const PostQuote = (props: Props) => {
                 {dateLabel}
               </Typography>
             </Stack>
-            <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
+            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
               <Linkify>{_.get(props.record.value, "text")}</Linkify>
             </Typography>
             {media ? <PostImages images={mediaImages} /> : null}

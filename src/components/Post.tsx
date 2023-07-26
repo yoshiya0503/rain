@@ -78,7 +78,7 @@ export const Post = (props: Props) => {
         </Box>
       </Stack>
       <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
-        <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body2">
+        <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="body2">
           <Linkify>{props.post.record.text}</Linkify>
         </Typography>
         {!media && images ? <PostImages images={images} /> : null}
