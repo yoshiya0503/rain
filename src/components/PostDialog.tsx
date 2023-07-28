@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import CancelIcon from "@mui/icons-material/Cancel";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -13,21 +14,21 @@ import Avatar from "@mui/material/Avatar";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { grey } from "@mui/material/colors";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import ImageListItemBar from "@mui/material/ImageListItemBar";
+import CardMedia from "@mui/material/CardMedia";
 import LabelProgress from "@/components/LabelProgress";
 import ProfileInline from "@/components/ProfileInline";
 import PostArticle from "@/components/PostArticle";
 import { PostView } from "@/stores/feed";
+import useMe from "@/hooks/useMe";
 import usePost from "@/hooks/usePost";
 import useOGP from "@/hooks/useOGP";
-import useMe from "@/hooks/useMe";
+import useImage from "@/hooks/useImage";
 import Linkify from "linkify-react";
-/*
-import PostArticle from "@/components/PostArticle";
-import PostImages from "@/components/PostImages";
-import PostQuote from "@/components/PostQuote";
-import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
-*/
 
 type Props = {
   title: string;
@@ -43,7 +44,8 @@ type Props = {
 export const PostDialog = (props: Props) => {
   const me = useMe();
   const { onPost } = usePost();
-  const { article, fetchOGP, fetchEmbed } = useOGP();
+  const { article, fetchOGP, fetchEmbedExternal } = useOGP();
+  const { images, onUpload, onRemove, fetchEmbedImages } = useImage();
   const [text, setText] = useState<string>("");
 
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,52 +58,45 @@ export const PostDialog = (props: Props) => {
     }
   };
 
-  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const result = await e.target.files[0].text();
-      // onUploadBlob(result);
-    }
-  };
-
   const onSend = async () => {
     const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
     const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
     const reply = props.post && { root, parent };
-    const embed = await fetchEmbed();
-    onPost({ text, reply, embed });
-    if (props.onSend) {
-      props.onSend();
+    if (article) {
+      props.onClose();
+      const embed = await fetchEmbedExternal();
+      return onPost({ text, reply, embed });
     }
+    if (!_.isEmpty(images)) {
+      props.onClose();
+      const embed = await fetchEmbedImages();
+      return onPost({ text, reply, embed });
+    }
+    onPost({ text, reply });
     props.onClose();
   };
 
   const MAX_TEXT_LENGTH = 300;
   const isNotPostable = MAX_TEXT_LENGTH < text.length;
-  /* TODO 入れるか入れないかは一考
-  const images = props.post?.embed?.images as AppBskyEmbedImages.ViewImage[];
-  const article = props.post?.embed?.external as AppBskyEmbedExternal.ViewExternal;
-  const record = props.post?.embed?.record as AppBskyEmbedRecord.ViewRecord;
-            {images ? <PostImages images={images} /> : null}
-            {article ? <PostArticle article={article} /> : null}
-            {record ? <PostQuote record={record} /> : null}
-  */
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
       <DialogTitle>
         <IconButton color="primary" component="label">
           <AddPhotoAlternateIcon />
-          <input type="file" accept="image/*" hidden onChange={onUpload} />
+          <input type="file" accept="image/*" multiple hidden onChange={onUpload} />
         </IconButton>
       </DialogTitle>
       <DialogContent>
         {props.post && (
-          <DialogContentText sx={{ mt: 1, mb: 1 }}>
-            <ProfileInline profile={props.post.author} size="small" />
-            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
-              <Linkify>{props.post.record.text}</Linkify>
-            </Typography>
-          </DialogContentText>
+          <Box sx={{ p: 2, mt: 1, mb: 2, border: 1, borderRadius: 2, borderColor: grey[700] }}>
+            <DialogContentText sx={{ mt: 1, mb: 1 }}>
+              <ProfileInline profile={props.post.author} size="small" />
+              <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
+                <Linkify>{props.post.record.text}</Linkify>
+              </Typography>
+            </DialogContentText>
+          </Box>
         )}
         <Box sx={{ mt: 1, mb: 1 }}>
           <TextField
@@ -124,6 +119,33 @@ export const PostDialog = (props: Props) => {
             }}
           />
         </Box>
+        {!_.isEmpty(images) && (
+          <ImageList sx={{ overflowX: "scroll" }} cols={4}>
+            {_.map(images, (image, key) => (
+              <ImageListItem key={key}>
+                <CardMedia
+                  sx={{ borderRadius: 3, width: 128, height: 128 }}
+                  component="img"
+                  image={URL.createObjectURL(image)}
+                  alt={image.name}
+                />
+                <ImageListItemBar
+                  sx={{ background: "rgba(0, 0, 0, 0)" }}
+                  position="top"
+                  actionIcon={
+                    <CancelIcon
+                      sx={{ m: 1 }}
+                      onClick={() => {
+                        onRemove(key);
+                      }}
+                    />
+                  }
+                  actionPosition="right"
+                />
+              </ImageListItem>
+            ))}
+          </ImageList>
+        )}
         {article && <PostArticle article={article} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>

@@ -27,7 +27,7 @@ export const useOGP = () => {
     [setArticle]
   );
 
-  const fetchEmbed = async () => {
+  const fetchEmbedExternal = async () => {
     if (!article) {
       return;
     }
@@ -42,7 +42,7 @@ export const useOGP = () => {
     return { external: { ...convertArticle }, $type: "app.bsky.embed.external" };
   };
 
-  return { article, fetchOGP, fetchEmbed };
+  return { article, fetchOGP, fetchEmbedExternal };
 };
 
 export default useOGP;
