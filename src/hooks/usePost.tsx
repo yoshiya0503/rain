@@ -1,15 +1,23 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
-import { PostView, Record } from "@/stores/feed";
+import { PostView, Record, BlobRequest } from "@/stores/feed";
 
 export const usePost = () => {
   const post = useStore((state) => state.post);
+  const uploadBlob = useStore((state) => state.uploadBlob);
   const deletePost = useStore((state) => state.deletePost);
   const repost = useStore((state) => state.repost);
   const deleteRepost = useStore((state) => state.deleteRepost);
   const like = useStore((state) => state.like);
   const deleteLike = useStore((state) => state.deleteLike);
+
+  const onUploadBlob = useCallback(
+    (data: BlobRequest) => {
+      return uploadBlob(data);
+    },
+    [uploadBlob]
+  );
 
   const onPost = useCallback(
     (record: Record) => {
@@ -59,7 +67,7 @@ export const usePost = () => {
     navigator.clipboard.writeText(url);
   }, []);
 
-  return { onPost, onDeletePost, onRepost, onDeleteRepost, onLike, onDeleteLike, onShare };
+  return { onUploadBlob, onPost, onDeletePost, onRepost, onDeleteRepost, onLike, onDeleteLike, onShare };
 };
 
 export default usePost;

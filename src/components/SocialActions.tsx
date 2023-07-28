@@ -5,7 +5,7 @@ import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LoopIcon from "@mui/icons-material/Loop";
-import { pink, green } from "@mui/material/colors";
+import { pink, green, blue } from "@mui/material/colors";
 import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
 import usePost from "@/hooks/usePost";
@@ -33,7 +33,7 @@ export const SocialActions = (props: Props) => {
 
   return (
     <Stack direction="row" spacing={2}>
-      <IconButton onClick={onToggleLike}>
+      <IconButton sx={{ "&:hover": { color: pink[400] } }} onClick={onToggleLike}>
         {props.post.viewer?.like ? (
           <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 1000 } : {})}>
             <FavoriteIcon sx={{ color: pink[400] }} fontSize="small" />
@@ -42,7 +42,7 @@ export const SocialActions = (props: Props) => {
           <FavoriteBorderIcon fontSize="small" />
         )}
       </IconButton>
-      <IconButton onClick={onToggleRePost}>
+      <IconButton sx={{ "&:hover": { color: green[400] } }} onClick={onToggleRePost}>
         {props.post.viewer?.repost ? (
           <Grow in={!!props.post.viewer?.repost} {...(props.post.viewer?.repost ? { timeout: 1000 } : {})}>
             <LoopIcon fontSize="small" sx={{ color: green[400] }} />
@@ -51,7 +51,7 @@ export const SocialActions = (props: Props) => {
           <LoopIcon fontSize="small" />
         )}
       </IconButton>
-      <IconButton onClick={onReply}>
+      <IconButton sx={{ "&:hover": { color: blue[400] } }} onClick={onReply}>
         <ChatBubbleIconOutline fontSize="small" />
       </IconButton>
       <PostDialog title="Reply" post={props.post} open={isOpen} onClose={closePostDialog} />

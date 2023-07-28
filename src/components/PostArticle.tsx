@@ -23,7 +23,7 @@ export const PostArticle = (props: Props) => {
         ) : null}
         <CardContent>
           <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body1">
-            <Linkify>{props.article.title}</Linkify>
+            {props.article.title}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body2">
             <Linkify>{props.article.uri}</Linkify>

@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import _ from "lodash";
 import { MessageSlice } from "@/stores/message";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
 import agent from "@/agent";
 
 export type PostView = AppBskyFeedDefs.PostView & {
@@ -10,6 +10,9 @@ export type PostView = AppBskyFeedDefs.PostView & {
 };
 
 export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
+
+export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
+export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
 export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
@@ -20,6 +23,7 @@ export interface FeedSlice {
   getInitialTimeline: () => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   post: (record: Record) => Promise<void>;
+  uploadBlob: (data: BlobRequest) => Promise<BlobResponse | undefined>;
   deletePost: (record: PostView) => Promise<void>;
   repost: (record: PostView) => Promise<void>;
   deleteRepost: (record: PostView) => Promise<void>;
@@ -71,6 +75,14 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       await agent.post(record);
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
+    }
+  },
+  uploadBlob: async (data: BlobRequest) => {
+    try {
+      const res = await agent.uploadBlob(data, { encoding: "image/png" });
+      return res.data;
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed to upload blob" }, e);
     }
   },
   deletePost: async (post: PostView) => {

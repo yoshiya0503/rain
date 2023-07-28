@@ -1,5 +1,4 @@
 import { StateCreator } from "zustand";
-import _ from "lodash";
 import { MessageSlice } from "@/stores/message";
 import { AppBskyNotificationListNotifications } from "@atproto/api";
 import agent from "@/agent";

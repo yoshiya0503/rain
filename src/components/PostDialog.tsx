@@ -1,5 +1,7 @@
+import _ from "lodash";
 import { useState } from "react";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
@@ -7,13 +9,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Avatar from "@mui/material/Avatar";
+import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import LabelProgress from "@/components/LabelProgress";
 import ProfileInline from "@/components/ProfileInline";
+import PostArticle from "@/components/PostArticle";
 import { PostView } from "@/stores/feed";
 import usePost from "@/hooks/usePost";
+import useOGP from "@/hooks/useOGP";
+import useMe from "@/hooks/useMe";
 import Linkify from "linkify-react";
 /*
 import PostArticle from "@/components/PostArticle";
@@ -30,20 +37,38 @@ type Props = {
   onSend?: () => void;
 };
 
-// TODO すべてのpostのdomに入ってしまっている気がする
+// TODO
+// すべてのpostのdomに入ってしまっている気がするが
+// 実際は一回しか描画はされていない。計算はされている
 export const PostDialog = (props: Props) => {
+  const me = useMe();
   const { onPost } = usePost();
+  const { article, fetchOGP, fetchEmbed } = useOGP();
   const [text, setText] = useState<string>("");
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value);
   };
 
-  const onSend = () => {
+  const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      fetchOGP(text);
+    }
+  };
+
+  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const result = await e.target.files[0].text();
+      // onUploadBlob(result);
+    }
+  };
+
+  const onSend = async () => {
     const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
     const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
     const reply = props.post && { root, parent };
-    onPost({ text, reply });
+    const embed = await fetchEmbed();
+    onPost({ text, reply, embed });
     if (props.onSend) {
       props.onSend();
     }
@@ -64,8 +89,9 @@ export const PostDialog = (props: Props) => {
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
       <DialogTitle>
-        <IconButton color="primary" onClick={props.onClose}>
+        <IconButton color="primary" component="label">
           <AddPhotoAlternateIcon />
+          <input type="file" accept="image/*" hidden onChange={onUpload} />
         </IconButton>
       </DialogTitle>
       <DialogContent>
@@ -77,15 +103,28 @@ export const PostDialog = (props: Props) => {
             </Typography>
           </DialogContentText>
         )}
-        <TextField
-          multiline
-          rows={4}
-          fullWidth
-          placeholder="Whats Your Hot Topic?"
-          autoFocus
-          value={text}
-          onChange={onChange}
-        />
+        <Box sx={{ mt: 1, mb: 1 }}>
+          <TextField
+            multiline
+            rows={4}
+            fullWidth
+            label="Whats Your Hot Topic?"
+            autoFocus
+            value={text}
+            onChange={onChange}
+            onKeyUp={onKeyboard}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Stack alignSelf="flex-end">
+                    <Avatar sx={{ width: 48, height: 48 }} src={me.avatar} />
+                  </Stack>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        {article && <PostArticle article={article} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>
