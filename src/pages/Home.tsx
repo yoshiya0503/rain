@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
-import LinearProgress from "@mui/material/LinearProgress";
 import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
 import ScrollView from "@/templates/ScrollView";
@@ -30,7 +29,6 @@ export const Home = () => {
               <Post key={key} post={item.post} />
             </PostContainer>
           ))}
-          <LinearProgress />
         </FeedContainer>
       </ScrollView>
     </Layout>

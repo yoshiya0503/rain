@@ -56,7 +56,7 @@ export const Profile = (props: Props) => {
       ];
 
   return (
-    <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
+    <Card>
       <CardMedia sx={{ height: 140 }} image={actor.banner} />
       <CardContent>
         <Stack>

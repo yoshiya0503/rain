@@ -2,10 +2,13 @@ import _ from "lodash";
 import { useEffect, useCallback, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
+import Profile from "@/components/Profile";
 import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
-import Profile from "@/components/Profile";
 import ScrollView from "@/templates/ScrollView";
+import ProfileContainer from "@/templates/ProfileContainer";
+import FeedContainer from "@/templates/FeedContainer";
+import PostContainer from "@/templates/PostContainer";
 import ProfileSkeleton from "@/templates/ProfileSkeleton";
 
 export const ProfilePage = () => {
@@ -28,13 +31,19 @@ export const ProfilePage = () => {
     <Layout>
       <ScrollView onScrollLimit={onScrollLimit}>
         <Suspense fallback={<ProfileSkeleton />}>
-          <Profile handle={handle || ""} />
+          <ProfileContainer>
+            <Profile handle={handle || ""} />
+          </ProfileContainer>
         </Suspense>
-        {actor &&
-          actor.handle === handle &&
-          _.map(authorFeed, (item, key) => {
-            return <Post key={key} post={item.post} />;
-          })}
+        {actor && actor.handle === handle && (
+          <FeedContainer>
+            {_.map(authorFeed, (item, key) => (
+              <PostContainer>
+                <Post key={key} post={item.post} />
+              </PostContainer>
+            ))}
+          </FeedContainer>
+        )}
       </ScrollView>
     </Layout>
   );
