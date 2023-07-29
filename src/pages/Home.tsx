@@ -1,9 +1,10 @@
 import _ from "lodash";
 import { useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
+import LinearProgress from "@mui/material/LinearProgress";
 import Post from "@/components/Post";
-import Scroll from "@/components/Scroll";
 import Layout from "@/templates/Layout";
+import ScrollView from "@/templates/ScrollView";
 
 export const Home = () => {
   const feed = useStore((state) => state.feed);
@@ -20,11 +21,11 @@ export const Home = () => {
 
   return (
     <Layout>
-      <Scroll onScrollLimit={onScrollLimit}>
+      <ScrollView onScrollLimit={onScrollLimit}>
         {_.map(feed, (item, key) => {
           return <Post key={key} post={item.post} />;
         })}
-      </Scroll>
+      </ScrollView>
     </Layout>
   );
 };

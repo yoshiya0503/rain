@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -11,13 +12,16 @@ import Feed from "@mui/icons-material/Feed";
 import Notifications from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Settings from "@mui/icons-material/Settings";
+import Create from "@mui/icons-material/Create";
 import ProfileInline from "@/components/ProfileInline";
-import PostButton from "@/components/PostButton";
+import PostDialog from "@/components/PostDialog";
 import useMe from "@/hooks/useMe";
+import useDialog from "@/hooks/useDialog";
 
 export const SideMenu = () => {
   const me = useMe();
   const navigate = useNavigate();
+  const [isOpen, openPostDialog, closePostDialog] = useDialog();
 
   const menus = [
     { name: "Home", icon: <Home />, href: "/" },
@@ -43,7 +47,15 @@ export const SideMenu = () => {
           </MenuItem>
         ))}
       </MenuList>
-      <PostButton label="New Post" />
+      <Button
+        sx={{ mt: 1, width: "100%", borderRadius: 6 }}
+        variant="contained"
+        startIcon={<Create />}
+        onClick={openPostDialog}
+      >
+        New Post
+      </Button>
+      <PostDialog title="Post" open={isOpen} onClose={closePostDialog} />
     </Paper>
   );
 };

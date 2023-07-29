@@ -9,7 +9,7 @@ type Props = {
   onScrollLimit: () => void;
 };
 
-export const Scroll = (props: Props) => {
+export const ScrollView = (props: Props) => {
   const showScrollThreashold = 3000;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -60,4 +60,4 @@ export const Scroll = (props: Props) => {
   );
 };
 
-export default Scroll;
+export default ScrollView;

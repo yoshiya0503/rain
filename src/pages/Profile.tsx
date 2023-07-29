@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
 import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
-import Scroll from "@/components/Scroll";
 import Profile from "@/components/Profile";
+import ScrollView from "@/templates/ScrollView";
 import ProfileSkeleton from "@/templates/ProfileSkeleton";
 
 export const ProfilePage = () => {
@@ -26,7 +26,7 @@ export const ProfilePage = () => {
 
   return (
     <Layout>
-      <Scroll onScrollLimit={onScrollLimit}>
+      <ScrollView onScrollLimit={onScrollLimit}>
         <Suspense fallback={<ProfileSkeleton />}>
           <Profile handle={handle || ""} />
         </Suspense>
@@ -35,7 +35,7 @@ export const ProfilePage = () => {
           _.map(authorFeed, (item, key) => {
             return <Post key={key} post={item.post} />;
           })}
-      </Scroll>
+      </ScrollView>
     </Layout>
   );
 };
