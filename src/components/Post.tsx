@@ -1,6 +1,5 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
-import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -67,7 +66,7 @@ export const Post = (props: Props) => {
   const media = props.post.embed?.media as AppBskyEmbedRecordWithMedia.Main;
 
   return (
-    <Box sx={{ p: 1, maxWidth: 480 }}>
+    <>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
         <ProfileInline profile={props.post.author} />
         <Box>
@@ -90,8 +89,7 @@ export const Post = (props: Props) => {
         {media ? <PostQuote record={record.record as AppBskyEmbedRecord.ViewRecord} /> : null}
         <SocialActions post={props.post} />
       </Stack>
-      <Divider />
-    </Box>
+    </>
   );
 };
 

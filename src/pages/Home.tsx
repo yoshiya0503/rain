@@ -5,6 +5,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
 import ScrollView from "@/templates/ScrollView";
+import FeedContainer from "@/templates/FeedContainer";
+import PostContainer from "@/templates/PostContainer";
 
 export const Home = () => {
   const feed = useStore((state) => state.feed);
@@ -22,9 +24,14 @@ export const Home = () => {
   return (
     <Layout>
       <ScrollView onScrollLimit={onScrollLimit}>
-        {_.map(feed, (item, key) => {
-          return <Post key={key} post={item.post} />;
-        })}
+        <FeedContainer>
+          {_.map(feed, (item, key) => (
+            <PostContainer>
+              <Post key={key} post={item.post} />
+            </PostContainer>
+          ))}
+          <LinearProgress />
+        </FeedContainer>
       </ScrollView>
     </Layout>
   );
