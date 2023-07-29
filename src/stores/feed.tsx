@@ -38,7 +38,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   getTimeline: async () => {
     try {
       const res = await agent.getTimeline({ cursor: get().cursor });
-      console.log(res.data.cursor);
       if (get().cursor === res.data.cursor) return; // react 18
       const computedFeed = _.filter(res.data.feed, (f) => {
         if (f.post.author?.did === "did:plc:4hqjfn7m6n5hno3doamuhgef") return false;
