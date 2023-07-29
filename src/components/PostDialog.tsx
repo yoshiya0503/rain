@@ -5,6 +5,8 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "@mui/icons-material/Cancel";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -28,6 +30,7 @@ import useMe from "@/hooks/useMe";
 import usePost from "@/hooks/usePost";
 import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
+import useBackdrop from "@/hooks/useBackdrop";
 import Linkify from "linkify-react";
 
 type Props = {
@@ -38,15 +41,25 @@ type Props = {
   onSend?: () => void;
 };
 
+const MAX_TEXT_LENGTH = 300;
+
 // TODO
 // すべてのpostのdomに入ってしまっている気がするが
 // 実際は一回しか描画はされていない。計算はされている
 export const PostDialog = (props: Props) => {
   const me = useMe();
   const { onPost } = usePost();
-  const { article, fetchOGP, fetchEmbedExternal } = useOGP();
-  const { images, onUpload, onRemove, fetchEmbedImages } = useImage();
+  const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
+  const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
+  const { open, withBackdrop } = useBackdrop();
   const [text, setText] = useState<string>("");
+
+  const onClean = () => {
+    onClearImages();
+    onClearArticle();
+    setText("");
+    props.onClose();
+  };
 
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.currentTarget.value);
@@ -59,28 +72,29 @@ export const PostDialog = (props: Props) => {
   };
 
   const onSend = async () => {
-    const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
-    const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
-    const reply = props.post && { root, parent };
-    if (article) {
-      props.onClose();
-      const embed = await fetchEmbedExternal();
-      return onPost({ text, reply, embed });
-    }
-    if (!_.isEmpty(images)) {
-      props.onClose();
-      const embed = await fetchEmbedImages();
-      return onPost({ text, reply, embed });
-    }
-    onPost({ text, reply });
-    props.onClose();
+    withBackdrop(async () => {
+      const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+      const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+      const reply = props.post && { root, parent };
+      let embed = undefined;
+      if (article) {
+        embed = await fetchEmbedExternal();
+      }
+      if (!_.isEmpty(images)) {
+        embed = await fetchEmbedImages();
+      }
+      onPost({ text, reply, embed });
+      onClean();
+    });
   };
 
-  const MAX_TEXT_LENGTH = 300;
-  const isNotPostable = MAX_TEXT_LENGTH < text.length;
+  const isNotPostable = MAX_TEXT_LENGTH < text.length || !text.length;
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
+      <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+        <CircularProgress color="primary" />
+      </Backdrop>
       <DialogTitle>
         <IconButton color="primary" component="label">
           <AddPhotoAlternateIcon />
@@ -158,7 +172,7 @@ export const PostDialog = (props: Props) => {
           />
         </Box>
         <Box>
-          <Button onClick={props.onClose}>Cancel</Button>
+          <Button onClick={onClean}>Cancel</Button>
           <Button onClick={onSend} disabled={isNotPostable}>
             {props.title}
           </Button>

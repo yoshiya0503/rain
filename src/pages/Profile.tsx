@@ -38,7 +38,7 @@ export const ProfilePage = () => {
         {actor && actor.handle === handle && (
           <FeedContainer>
             {_.map(authorFeed, (item, key) => (
-              <PostContainer>
+              <PostContainer key={key}>
                 <Post key={key} post={item.post} />
               </PostContainer>
             ))}

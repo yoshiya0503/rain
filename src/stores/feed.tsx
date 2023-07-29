@@ -10,7 +10,6 @@ export type PostView = AppBskyFeedDefs.PostView & {
 };
 
 export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
-
 export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
 export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
@@ -39,6 +38,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   getTimeline: async () => {
     try {
       const res = await agent.getTimeline({ cursor: get().cursor });
+      console.log(res.data.cursor);
       if (get().cursor === res.data.cursor) return; // react 18
       const computedFeed = _.filter(res.data.feed, (f) => {
         if (f.post.author?.did === "did:plc:4hqjfn7m6n5hno3doamuhgef") return false;
@@ -72,7 +72,11 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   },
   post: async (record: Record) => {
     try {
-      await agent.post(record);
+      const postResponse = await agent.post(record);
+      const res = await agent.getPosts({ uris: [postResponse.uri] });
+      const newPost = [{ post: res.data.posts[0] }];
+      const feed = _.concat(newPost, get().feed);
+      set({ feed });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
     }

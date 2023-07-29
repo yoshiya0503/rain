@@ -5,7 +5,7 @@ import agent from "@/agent";
 
 export interface NotificationSlice {
   notifications: AppBskyNotificationListNotifications.Notification[];
-  cursor: string;
+  notificationCursor: string;
   listNotifications: () => Promise<void>;
 }
 
@@ -13,12 +13,12 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
   set,
   get
 ) => ({
-  cursor: "",
+  notificationCursor: "",
   notifications: [],
   listNotifications: async () => {
     try {
       const res = await agent.listNotifications();
-      set({ notifications: res.data.notifications, cursor: res.data.cursor });
+      set({ notifications: res.data.notifications, notificationCursor: res.data.cursor });
     } catch (e) {
       console.log(e);
       get().createFailedMessage({ status: "error", title: "failed fetch notifications" }, e);

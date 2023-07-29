@@ -7,11 +7,22 @@ export const useOGP = () => {
   const onUploadBlob = useStore((state) => state.uploadBlob);
   const [article, setArticle] = useState<AppBskyEmbedExternal.ViewExternal>();
 
+  const isInvalidURL = useCallback((url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }, []);
+
   const fetchOGP = useCallback(
     async (text: string) => {
       const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
-      const urls = text.match(regexp_url);
-      const url = new URL(_.first(urls) || "");
+      const url = _.first(text.match(regexp_url)) || "";
+      if (!isInvalidURL(url)) {
+        return;
+      }
       const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${url.toString()}`);
       const result = await res.json();
       if (!result.error) {
@@ -24,7 +35,7 @@ export const useOGP = () => {
         setArticle(article);
       }
     },
-    [setArticle]
+    [setArticle, isInvalidURL]
   );
 
   const fetchEmbedExternal = async () => {
@@ -42,7 +53,11 @@ export const useOGP = () => {
     return { external: { ...convertArticle }, $type: "app.bsky.embed.external" };
   };
 
-  return { article, fetchOGP, fetchEmbedExternal };
+  const onClearArticle = useCallback(() => {
+    setArticle(undefined);
+  }, [setArticle]);
+
+  return { article, fetchOGP, fetchEmbedExternal, onClearArticle };
 };
 
 export default useOGP;

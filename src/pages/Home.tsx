@@ -6,6 +6,9 @@ import Layout from "@/templates/Layout";
 import ScrollView from "@/templates/ScrollView";
 import FeedContainer from "@/templates/FeedContainer";
 import PostContainer from "@/templates/PostContainer";
+import Collapse from "@mui/material/Collapse";
+import { TransitionGroup } from "react-transition-group";
+// TODO TransitionGroupが動いていない
 
 export const Home = () => {
   const feed = useStore((state) => state.feed);
@@ -14,7 +17,14 @@ export const Home = () => {
 
   useEffect(() => {
     getInitialTimeline();
-  }, [getInitialTimeline]);
+
+    /*
+    const id = setInterval(() => {
+      getTimeline();
+    }, 5000);
+    return () => clearInterval(id);
+      */
+  }, [getInitialTimeline, getTimeline]);
 
   const onScrollLimit = useCallback(() => {
     getTimeline();
@@ -24,11 +34,15 @@ export const Home = () => {
     <Layout>
       <ScrollView onScrollLimit={onScrollLimit}>
         <FeedContainer>
-          {_.map(feed, (item, key) => (
-            <PostContainer>
-              <Post key={key} post={item.post} />
-            </PostContainer>
-          ))}
+          <TransitionGroup>
+            {_.map(feed, (item, key) => (
+              <Collapse key={key}>
+                <PostContainer>
+                  <Post post={item.post} />
+                </PostContainer>
+              </Collapse>
+            ))}
+          </TransitionGroup>
         </FeedContainer>
       </ScrollView>
     </Layout>

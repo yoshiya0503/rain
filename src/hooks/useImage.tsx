@@ -24,6 +24,10 @@ export const useImage = () => {
     [images, setImages]
   );
 
+  const onClearImages = useCallback(() => {
+    setImages([]);
+  }, [setImages]);
+
   const fetchEmbedImages = async () => {
     if (_.isEmpty(images)) {
       return;
@@ -38,7 +42,7 @@ export const useImage = () => {
     return { images: uploadImages, $type: "app.bsky.embed.images" };
   };
 
-  return { images, onUpload, onRemove, fetchEmbedImages };
+  return { images, onUpload, onRemove, fetchEmbedImages, onClearImages };
 };
 
 export default useImage;
