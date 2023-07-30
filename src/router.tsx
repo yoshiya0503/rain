@@ -7,11 +7,15 @@ import Login from "@/pages/Login";
 import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
-  const { session } = useAuthentication();
+  const { session, resume } = useAuthentication();
 
-  if (!session.accessJwt || !session.refreshJwt) {
+  if (session === undefined) {
+    throw resume();
+  }
+  if (session === null) {
     return <Navigate to={{ pathname: "/authentication" }} />;
   }
+
   return <Outlet />;
 };
 

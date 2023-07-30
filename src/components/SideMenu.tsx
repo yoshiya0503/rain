@@ -37,7 +37,7 @@ export const SideMenu = () => {
   };
 
   return (
-    <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 2 }}>
+    <Paper component="nav" sx={{ width: 240, height: 380, p: 2, borderRadius: 3 }}>
       <ProfileInline profile={me} size="large" />
       <MenuList>
         {_.map(menus, (menu, key) => (

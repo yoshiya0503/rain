@@ -4,20 +4,15 @@ import { AtpSessionData } from "@atproto/api";
 import agent from "@/agent";
 
 export interface SessionSlice {
-  session: AtpSessionData;
+  session?: AtpSessionData | null;
   createAccount: () => Promise<void>;
   login: (identifier: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  resume: () => Promise<void>;
 }
 
 export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [], SessionSlice> = (set, get) => ({
-  session: {
-    refreshJwt: localStorage.getItem("X-SKYLINE-REFRESHJWT") || "",
-    accessJwt: localStorage.getItem("X-SKYLINE-ACCESSJWT") || "",
-    did: localStorage.getItem("X-SKYLINE-DID") || "",
-    email: localStorage.getItem("X-SKYLINE-EMAIL") || "",
-    handle: localStorage.getItem("X-SKYLINE-HANDLE") || "",
-  },
+  session: undefined,
   createAccount: async () => {
     return;
   },
@@ -41,16 +36,31 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       localStorage.removeItem("X-SKYLINE-DID");
       localStorage.removeItem("X-SKYLINE-EMAIL");
       localStorage.removeItem("X-SKYLINE-HANDLE");
+      set({ session: undefined });
+    } catch (e) {
+      get().createMessage({ status: "error", title: "logout error" });
+    }
+  },
+  resume: async () => {
+    try {
+      const res = await agent.resumeSession({
+        refreshJwt: localStorage.getItem("X-SKYLINE-REFRESHJWT") || "",
+        accessJwt: localStorage.getItem("X-SKYLINE-ACCESSJWT") || "",
+        did: localStorage.getItem("X-SKYLINE-DID") || "",
+        email: localStorage.getItem("X-SKYLINE-EMAIL") || "",
+        handle: localStorage.getItem("X-SKYLINE-HANDLE") || "",
+      });
       const session = {
-        refreshJwt: "",
-        accessJwt: "",
-        did: "",
-        email: "",
-        handle: "",
+        refreshJwt: localStorage.getItem("X-SKYLINE-REFRESHJWT") || "",
+        accessJwt: localStorage.getItem("X-SKYLINE-ACCESSJWT") || "",
+        did: res.data.did,
+        handle: res.data.handle,
+        email: res.data.email,
       };
       set({ session });
     } catch (e) {
-      get().createMessage({ status: "error", title: "logout error" });
+      get().createMessage({ status: "error", title: "token expired" });
+      set({ session: null });
     }
   },
 });

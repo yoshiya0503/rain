@@ -4,6 +4,7 @@ import { useStore } from "@/stores";
 export const useAuthentication = () => {
   const [form, setForm] = useState<{ identifier: string; password: string }>({ identifier: "", password: "" });
   const session = useStore((state) => state.session);
+  const resume = useStore((state) => state.resume);
   const login = useStore((state) => state.login);
   const logout = useStore((state) => state.logout);
 
@@ -22,7 +23,7 @@ export const useAuthentication = () => {
     [setForm]
   );
 
-  return { session, onChange, onLogin, onLogout };
+  return { session, resume, onChange, onLogin, onLogout };
 };
 
 export default useAuthentication;
