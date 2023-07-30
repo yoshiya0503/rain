@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
+import LoopIcon from "@mui/icons-material/Loop";
 import { grey } from "@mui/material/colors";
 import Linkify from "linkify-react";
 import ProfileInline from "@/components/ProfileInline";
@@ -16,17 +17,19 @@ import PostImages from "@/components/PostImages";
 import PostQuote from "@/components/PostQuote";
 import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
-import { PostView } from "@/stores/feed";
+import { PostView, ReasonView } from "@/stores/feed";
 import {
   AppBskyEmbedImages,
   AppBskyEmbedExternal,
   AppBskyEmbedRecord,
   AppBskyEmbedRecordWithMedia,
   AppBskyFeedGenerator,
+  AppBskyActorDefs,
 } from "@atproto/api";
 
 type Props = {
   post: PostView;
+  reason?: ReasonView;
 };
 
 export const Post = (props: Props) => {
@@ -64,9 +67,16 @@ export const Post = (props: Props) => {
   const record = props.post.embed?.record as AppBskyEmbedRecord.ViewRecord;
   const feedRecord = props.post.embed?.record as AppBskyFeedGenerator.Record;
   const media = props.post.embed?.media as AppBskyEmbedRecordWithMedia.Main;
+  const repostedBy = props.reason?.by as AppBskyActorDefs.ProfileView;
 
   return (
     <>
+      {props.reason && (
+        <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
+          <LoopIcon sx={{ fontSize: 12 }} />
+          <Typography variant="caption">Reposted by {repostedBy.displayName}</Typography>
+        </Stack>
+      )}
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
         <ProfileInline profile={props.post.author} />
         <Box>

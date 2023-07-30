@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
+import Thread from "@/components/Thread";
 import Post from "@/components/Post";
 import Layout from "@/templates/Layout";
 import ScrollView from "@/templates/ScrollView";
@@ -30,6 +31,9 @@ export const Home = () => {
     getTimeline();
   }, [getTimeline]);
 
+  //<Thread post={item.post} reason={item.reason} />
+  //<Thread post={item.post} reply={item.post} reason={item.reason} />
+
   return (
     <Layout>
       <ScrollView onScrollLimit={onScrollLimit}>
@@ -38,7 +42,7 @@ export const Home = () => {
             {_.map(feed, (item, key) => (
               <Collapse key={key}>
                 <PostContainer>
-                  <Post post={item.post} />
+                  <Post post={item.post} reason={item.reason} />
                 </PostContainer>
               </Collapse>
             ))}

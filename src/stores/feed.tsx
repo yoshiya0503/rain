@@ -9,6 +9,8 @@ export type PostView = AppBskyFeedDefs.PostView & {
   record: any;
 };
 
+export type ReasonView = AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
+
 export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
 export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
 export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;

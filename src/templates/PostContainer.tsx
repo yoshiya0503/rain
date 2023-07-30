@@ -8,7 +8,7 @@ type Props = {
 
 export const PostContainer = (props: Props) => {
   return (
-    <Box sx={{ mt: 2, mb: 2 }}>
+    <Box sx={{ mt: 1, mb: 1 }}>
       {props.children}
       <Divider />
     </Box>
