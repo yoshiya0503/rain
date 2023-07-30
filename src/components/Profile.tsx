@@ -7,13 +7,13 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import CheckIcon from "@mui/icons-material/Check";
-import AddIcon from "@mui/icons-material/Add";
-import BlockIcon from "@mui/icons-material/Block";
-import MuteIcon from "@mui/icons-material/VolumeOff";
-import ReportIcon from "@mui/icons-material/Report";
-import ShareIcon from "@mui/icons-material/Share";
-import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/CheckRounded";
+import AddIcon from "@mui/icons-material/AddRounded";
+import BlockIcon from "@mui/icons-material/BlockRounded";
+import MuteIcon from "@mui/icons-material/VolumeOffRounded";
+import ReportIcon from "@mui/icons-material/ReportRounded";
+import ShareIcon from "@mui/icons-material/ShareRounded";
+import EditIcon from "@mui/icons-material/EditRounded";
 import Linkify from "linkify-react";
 import DropDownMenu from "@/components/DropDownMenu";
 import useSocial from "@/hooks/useSocial";
@@ -132,19 +132,19 @@ export const Profile = (props: Props) => {
             )}
           </Box>
           <Stack direction="row" spacing={1}>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
                 {actor.followersCount}
               </Typography>
               <Typography variant="caption">followers</Typography>
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
                 {actor.followsCount}
               </Typography>
               <Typography variant="caption">following</Typography>
             </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
                 {actor.postsCount}
               </Typography>

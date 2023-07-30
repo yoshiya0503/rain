@@ -17,7 +17,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";

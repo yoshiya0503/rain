@@ -7,7 +7,9 @@ import { AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
   profile: AppBskyActorDefs.ProfileViewDetailed;
-  onClick?: () => void; size?: "small" | "medium" | "large"; };
+  onClick?: () => void;
+  size?: "small" | "medium" | "large";
+};
 
 export const ProfileInline = (props: Props) => {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ export const ProfileInline = (props: Props) => {
   };
 
   return (
-    <Stack direction="row" spacing={2} alignItems="center" onClick={onViewProfile()}>
+    <Stack direction="row" spacing={1} alignItems="center" onClick={onViewProfile()}>
       <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={sx} />
       <Stack direction="column">
         {props.size === "small" ? (

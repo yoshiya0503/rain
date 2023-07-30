@@ -1,10 +1,10 @@
 import Grow from "@mui/material/Grow";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
-import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import LoopIcon from "@mui/icons-material/Loop";
+import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutlineRounded";
+import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorderRounded";
+import LoopIcon from "@mui/icons-material/LoopRounded";
 import { pink, green, blue } from "@mui/material/colors";
 import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
@@ -32,7 +32,7 @@ export const SocialActions = (props: Props) => {
   };
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={1}>
       <IconButton sx={{ "&:hover": { color: pink[400] } }} onClick={onToggleLike}>
         {props.post.viewer?.like ? (
           <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 1000 } : {})}>

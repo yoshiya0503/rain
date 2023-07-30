@@ -5,7 +5,7 @@ import Stack from "@mui/material/Stack";
 import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { grey, pink } from "@mui/material/colors";
 import Linkify from "linkify-react";
 import { AppBskyFeedGenerator } from "@atproto/api";
