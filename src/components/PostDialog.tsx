@@ -46,6 +46,8 @@ const MAX_TEXT_LENGTH = 300;
 // TODO
 // すべてのpostのdomに入ってしまっている気がするが
 // 実際は一回しか描画はされていない。計算はされている
+// TODO
+// リプライ先のroot, parentが同じになっている
 export const PostDialog = (props: Props) => {
   const me = useMe();
   const { onPost } = usePost();

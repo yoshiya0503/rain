@@ -4,10 +4,14 @@ import { MessageSlice } from "@/stores/message";
 import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
 import agent from "@/agent";
 
-export type PostView = AppBskyFeedDefs.PostView & {
-  // record?: AppBskyFeedPost.Record | object;
-  record: any;
-};
+export type PostView =
+  | (AppBskyFeedDefs.PostView & {
+      // record?: AppBskyFeedPost.Record | object;
+      record: any;
+    })
+  | AppBskyFeedDefs.BlockedPost
+  | AppBskyFeedDefs.NotFoundPost
+  | { [k: string]: unknown; $type: string };
 
 export type ReasonView = AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
 
@@ -39,11 +43,21 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   authorFeed: [],
   getTimeline: async () => {
     try {
-      const res = await agent.getTimeline({ cursor: get().cursor });
+      const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
       if (get().cursor === res.data.cursor) return; // react 18
+      const filterList: string[] = [];
       const computedFeed = _.filter(res.data.feed, (f) => {
         if (f.post.author?.did === "did:plc:4hqjfn7m6n5hno3doamuhgef") return false;
-        return !f.reply;
+        if (_.includes(filterList, f.post.cid)) {
+          return false;
+        }
+        if (f.reply) {
+          const root = f.reply?.root as AppBskyFeedDefs.PostView;
+          const reply = f.reply?.parent as AppBskyFeedDefs.PostView;
+          filterList.push(root.cid);
+          filterList.push(reply.cid);
+        }
+        return true;
       });
       const feed = _.concat(get().feed, computedFeed);
       set({ feed, cursor: res.data.cursor });

@@ -15,6 +15,7 @@ type Props = {
   post: PostView;
 };
 
+// TODO root, parentがあるときに親にイイネ出来てない
 export const SocialActions = (props: Props) => {
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();

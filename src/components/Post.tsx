@@ -2,14 +2,15 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import MuteIcon from "@mui/icons-material/VolumeOffRounded";
-import DeleteIcon from "@mui/icons-material/DeleteOutlineRounded";
-import ShareIcon from "@mui/icons-material/ShareRounded";
-import LoopIcon from "@mui/icons-material/LoopRounded";
+import MuteIcon from "@mui/icons-material/VolumeOff";
+import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import ShareIcon from "@mui/icons-material/Share";
+import LoopIcon from "@mui/icons-material/Loop";
 import { grey } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import ProfileInline from "@/components/ProfileInline";
+import Avatar from "@mui/material/Avatar";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
 import PostArticle from "@/components/PostArticle";
@@ -27,9 +28,11 @@ import {
   AppBskyActorDefs,
 } from "@atproto/api";
 
+// TODO 型調整
 type Props = {
   post: PostView;
   reason?: ReasonView;
+  hasReply?: boolean;
 };
 
 export const Post = (props: Props) => {
@@ -71,33 +74,52 @@ export const Post = (props: Props) => {
 
   return (
     <>
-      {props.reason && (
-        <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
-          <LoopIcon sx={{ fontSize: 12 }} />
-          <Typography variant="caption">Reposted by {repostedBy.displayName}</Typography>
-        </Stack>
-      )}
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-        <ProfileInline profile={props.post.author} />
+      <Stack direction="row" spacing={1}>
         <Box>
-          <Typography color={grey[500]} variant="caption">
-            {dateLabel}
-          </Typography>
-          <DropDownMenu items={menuItems} size="tiny" />
+          <Stack sx={{ height: "100%" }} alignItems="center">
+            <Avatar sx={{ width: 42, height: 42 }} alt={props.post.author.displayName} src={props.post.author.avatar} />
+            {props.hasReply && (
+              <Box sx={{ flexGrow: 1, pb: 2 }}>
+                <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>
+              </Box>
+            )}
+          </Stack>
         </Box>
-      </Stack>
-      <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
-        <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="body2">
-          <Linkify>{props.post.record.text}</Linkify>
-        </Typography>
-        {!media && images ? <PostImages images={images} /> : null}
-        {!media && article ? <PostArticle article={article} /> : null}
-        {!media && record?.author ? <PostQuote record={record} /> : null}
-        {!media && record?.creator ? <PostFeed record={feedRecord} /> : null}
-        {media?.images ? <PostImages images={media.images as AppBskyEmbedImages.ViewImage[]} /> : null}
-        {media?.external ? <PostArticle article={media.external as AppBskyEmbedExternal.ViewExternal} /> : null}
-        {media ? <PostQuote record={record.record as AppBskyEmbedRecord.ViewRecord} /> : null}
-        <SocialActions post={props.post} />
+        <Box sx={{ width: "100%" }}>
+          {props.reason && (
+            <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
+              <LoopIcon sx={{ fontSize: 12 }} />
+              <Typography variant="caption">Reposted by {repostedBy.displayName}</Typography>
+            </Stack>
+          )}
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+            <Stack direction="column">
+              <Typography variant="body2">{props.post.author.displayName}</Typography>
+              <Typography color={grey[500]} variant="caption">
+                @{props.post.author.handle}
+              </Typography>
+            </Stack>
+            <Box>
+              <Typography color={grey[500]} variant="caption">
+                {dateLabel}
+              </Typography>
+              <DropDownMenu items={menuItems} size="tiny" />
+            </Box>
+          </Stack>
+          <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
+            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="body2">
+              <Linkify>{props.post.record.text}</Linkify>
+            </Typography>
+            {!media && images ? <PostImages images={images} /> : null}
+            {!media && article ? <PostArticle article={article} /> : null}
+            {!media && record?.author ? <PostQuote record={record} /> : null}
+            {!media && record?.creator ? <PostFeed record={feedRecord} /> : null}
+            {media?.images ? <PostImages images={media.images as AppBskyEmbedImages.ViewImage[]} /> : null}
+            {media?.external ? <PostArticle article={media.external as AppBskyEmbedExternal.ViewExternal} /> : null}
+            {media ? <PostQuote record={record.record as AppBskyEmbedRecord.ViewRecord} /> : null}
+            <SocialActions post={props.post} />
+          </Stack>
+        </Box>
       </Stack>
     </>
   );
