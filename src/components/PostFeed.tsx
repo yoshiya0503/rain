@@ -23,8 +23,8 @@ export const PostFeed = (props: Props) => {
     <Card variant="outlined">
       <CardActionArea onClick={onLink}>
         <CardContent>
-          <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
-            <Stack direction="row" spacing={2} alignItems="center">
+          <Stack sx={{ mt: 1, mb: 1 }}>
+            <Stack direction="row" spacing={1} alignItems="center">
               <Avatar
                 sx={{ width: 32, height: 32 }}
                 alt={props.record.avatar}
@@ -40,7 +40,7 @@ export const PostFeed = (props: Props) => {
               <FavoriteIcon sx={{ color: pink[400] }} />
               <Typography variant="body1">{props.record.likeCount} Likes</Typography>
             </Stack>
-            <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
+            <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
               <Linkify>{props.record.description}</Linkify>
             </Typography>
           </Stack>

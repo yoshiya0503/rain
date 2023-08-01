@@ -35,14 +35,14 @@ export const PostQuote = (props: Props) => {
     <Card variant="outlined">
       <CardActionArea onClick={onLink}>
         <CardContent>
-          <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
+          <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
               <ProfileInline profile={props.record.author} size="small" />
               <Typography color={grey[500]} variant="caption">
                 {dateLabel}
               </Typography>
             </Stack>
-            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
+            <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
               <Linkify>{_.get(props.record.value, "text")}</Linkify>
             </Typography>
             {_.map(props.record.embeds, (embed, key) => {

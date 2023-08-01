@@ -112,8 +112,14 @@ export const Post = (props: Props) => {
               <DropDownMenu items={menuItems} size="tiny" />
             </Box>
           </Stack>
-          <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
-            <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="body2">
+          <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
+            <Typography
+              sx={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+              variant="body2"
+            >
               <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
             </Typography>
             {AppBskyEmbedImages.isView(props.post.embed) && <PostImages images={props.post.embed.images} />}
