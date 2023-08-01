@@ -13,11 +13,11 @@ import PostImages from "@/components/PostImages";
 import PostFeed from "@/components/PostFeed";
 import Linkify from "linkify-react";
 import {
+  AppBskyFeedDefs,
   AppBskyEmbedImages,
   AppBskyEmbedExternal,
   AppBskyEmbedRecord,
   AppBskyEmbedRecordWithMedia,
-  AppBskyFeedGenerator,
 } from "@atproto/api";
 
 type Props = {
@@ -28,17 +28,6 @@ export const PostQuote = (props: Props) => {
   const onLink = () => {
     console.log("実装中");
   };
-
-  const embedImage = _.find(props.record.embeds, (item) => item.$type === "app.bsky.embed.images#view");
-  const embedArticle = _.find(props.record.embeds, (item) => item.$type === "app.bsky.embed.external#view");
-  const embedMedia = _.find(props.record.embeds, (item) => item.$type === "app.bsky.embed.recordWithMedia#view");
-  const embedRecord = _.find(props.record.embeds, (item) => item.$type === "app.bsky.embed.record#view");
-  const images = embedImage?.images as AppBskyEmbedImages.ViewImage[];
-  const article = embedArticle?.external as AppBskyEmbedExternal.ViewExternal;
-  const media = embedMedia?.media as AppBskyEmbedRecordWithMedia.Main;
-  const mediaImages = media?.images as AppBskyEmbedImages.ViewImage[];
-  const record = embedRecord?.record as AppBskyEmbedRecord.ViewRecord;
-  const feedRecord = embedRecord?.record as AppBskyFeedGenerator.Record;
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.record.indexedAt), { locale: ja });
 
@@ -56,11 +45,30 @@ export const PostQuote = (props: Props) => {
             <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
               <Linkify>{_.get(props.record.value, "text")}</Linkify>
             </Typography>
-            {media ? <PostImages images={mediaImages} /> : null}
-            {images ? <PostImages images={images} /> : null}
-            {article ? <PostArticle article={article} /> : null}
-            {record?.author ? <PostQuote record={record} /> : null}
-            {feedRecord?.creator ? <PostFeed record={feedRecord} /> : null}
+            {_.map(props.record.embeds, (embed, key) => {
+              if (AppBskyEmbedImages.isView(embed)) {
+                return <PostImages key={key} images={embed.images} />;
+              }
+              if (AppBskyEmbedExternal.isView(embed)) {
+                return <PostArticle key={key} article={embed.external} />;
+              }
+              if (AppBskyEmbedRecordWithMedia.isView(embed)) {
+                if (AppBskyEmbedImages.isView(embed.media)) {
+                  return <PostImages key={key} images={embed.media.images} />;
+                }
+                if (AppBskyEmbedExternal.isView(embed.media)) {
+                  return <PostArticle key={key} article={embed.media.external} />;
+                }
+              }
+              if (AppBskyEmbedRecord.isView(embed)) {
+                if (AppBskyEmbedRecord.isViewRecord(embed.record)) {
+                  return <PostQuote key={key} record={embed.record} />;
+                }
+                if (AppBskyFeedDefs.isGeneratorView(embed.record)) {
+                  return <PostFeed key={key} record={embed.record} />;
+                }
+              }
+            })}
           </Stack>
         </CardContent>
       </CardActionArea>

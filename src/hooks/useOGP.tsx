@@ -20,7 +20,7 @@ export const useOGP = () => {
     async (text: string) => {
       const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
       const url = _.first(text.match(regexp_url)) || "";
-      if (!isInvalidURL(url)) {
+      if (!isInvalidURL(url) || article) {
         return;
       }
       const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${url.toString()}`);
@@ -35,7 +35,7 @@ export const useOGP = () => {
         setArticle(article);
       }
     },
-    [setArticle, isInvalidURL]
+    [article, setArticle, isInvalidURL]
   );
 
   const fetchEmbedExternal = async () => {

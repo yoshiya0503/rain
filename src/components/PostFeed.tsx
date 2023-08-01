@@ -8,10 +8,10 @@ import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { grey, pink } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import { AppBskyFeedGenerator } from "@atproto/api";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
-  record: AppBskyFeedGenerator.Record;
+  record: AppBskyFeedDefs.GeneratorView;
 };
 
 export const PostFeed = (props: Props) => {
@@ -19,17 +19,18 @@ export const PostFeed = (props: Props) => {
     console.log("実装中");
   };
 
-  // avatarの型が変な気がする
-  const avatar = _.toString(props.record.avatar);
-  const likeCount = _.toNumber(props.record.likeCount);
-
   return (
     <Card variant="outlined">
       <CardActionArea onClick={onLink}>
         <CardContent>
           <Stack sx={{ mt: 1, mb: 1 }} spacing={2}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ width: 32, height: 32 }} alt={avatar} src={avatar} variant="rounded" />
+              <Avatar
+                sx={{ width: 32, height: 32 }}
+                alt={props.record.avatar}
+                src={props.record.avatar}
+                variant="rounded"
+              />
               <Stack direction="column">
                 <Typography variant="caption">{props.record.displayName}</Typography>
                 <Typography color={grey[500]} variant="caption">
@@ -37,7 +38,7 @@ export const PostFeed = (props: Props) => {
                 </Typography>
               </Stack>
               <FavoriteIcon sx={{ color: pink[400] }} />
-              <Typography variant="body1">{likeCount} Likes</Typography>
+              <Typography variant="body1">{props.record.likeCount} Likes</Typography>
             </Stack>
             <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
               <Linkify>{props.record.description}</Linkify>

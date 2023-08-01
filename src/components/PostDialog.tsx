@@ -79,6 +79,7 @@ export const PostDialog = (props: Props) => {
       const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
       const reply = props.post && { root, parent };
       let embed = undefined;
+      // TODO 引用ポストはinternalなembed.record
       if (article) {
         embed = await fetchEmbedExternal();
       }
