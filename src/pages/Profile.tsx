@@ -9,6 +9,8 @@ import ScrollView from "@/templates/ScrollView";
 import ProfileContainer from "@/templates/ProfileContainer";
 import FeedContainer from "@/templates/FeedContainer";
 import PostContainer from "@/templates/PostContainer";
+import Collapse from "@mui/material/Collapse";
+import { TransitionGroup } from "react-transition-group";
 import ProfileSkeleton from "@/templates/ProfileSkeleton";
 
 export const ProfilePage = () => {
@@ -37,11 +39,19 @@ export const ProfilePage = () => {
         </Suspense>
         {actor && actor.handle === handle && (
           <FeedContainer>
-            {_.map(authorFeed, (item, key) => (
-              <PostContainer key={key}>
-                <Post key={key} post={item.post} />
-              </PostContainer>
-            ))}
+            <TransitionGroup>
+              {_.map(authorFeed, (item) => (
+                <Collapse key={item.post.cid}>
+                  <PostContainer>
+                    {item.reply?.root && <Post post={item.reply.root} reason={item.reason} hasReply />}
+                    {item.reply?.parent && item.reply?.parent.cid !== item.reply?.root.cid && (
+                      <Post post={item.reply.parent} reason={item.reason} hasReply />
+                    )}
+                    <Post post={item.post} reason={item.reason} />
+                  </PostContainer>
+                </Collapse>
+              ))}
+            </TransitionGroup>
           </FeedContainer>
         )}
       </ScrollView>

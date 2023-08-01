@@ -32,6 +32,9 @@ export const SocialActions = (props: Props) => {
     return props.post.viewer?.repost ? onDeleteRepost(props.post) : onRepost(props.post);
   };
 
+  // TODO
+  // hookが無限に呼ばれている気がする
+  //<PostDialog title="Reply" post={props.post} open={isOpen} onClose={closePostDialog} />
   return (
     <Stack direction="row" spacing={1}>
       <IconButton sx={{ "&:hover": { color: pink[400] } }} onClick={onToggleLike}>
@@ -55,7 +58,6 @@ export const SocialActions = (props: Props) => {
       <IconButton sx={{ "&:hover": { color: blue[400] } }} onClick={onReply}>
         <ChatBubbleIconOutline fontSize="small" />
       </IconButton>
-      <PostDialog title="Reply" post={props.post} open={isOpen} onClose={closePostDialog} />
     </Stack>
   );
 };

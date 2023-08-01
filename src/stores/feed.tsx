@@ -5,7 +5,6 @@ import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atp
 import agent from "@/agent";
 
 export type PostView = AppBskyFeedDefs.PostView;
-export type ReasonRepost = AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
 
 export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
 export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
@@ -26,6 +25,12 @@ export interface FeedSlice {
   deleteRepost: (record: PostView) => Promise<void>;
   like: (record: PostView) => Promise<void>;
   deleteLike: (record: PostView) => Promise<void>;
+  updateFeedViewer: (
+    post: PostView,
+    resourceURI: string | null,
+    feed: "feed" | "authorFeed",
+    action: "like" | "repost"
+  ) => void;
 }
 
 export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], FeedSlice> = (set, get) => ({
@@ -115,14 +120,8 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   repost: async (post: PostView) => {
     try {
       const res = await agent.repost(post.uri, post.cid);
-      const feed = _.map(get().feed, (f) => {
-        if (f.post.uri === post.uri) {
-          f.post.viewer = { ...f.post.viewer, repost: res.uri };
-          return f;
-        }
-        return f;
-      });
-      set({ feed: feed });
+      get().updateFeedViewer(post, res.uri, "feed", "repost");
+      get().updateFeedViewer(post, res.uri, "authorFeed", "repost");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
@@ -130,14 +129,8 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   deleteRepost: async (post: PostView) => {
     try {
       await agent.deleteRepost(post.viewer?.repost || "");
-      const feed = _.map(get().feed, (f) => {
-        if (f.post.uri === post.uri) {
-          f.post.viewer = _.omit(f.post.viewer, "repost");
-          return f;
-        }
-        return f;
-      });
-      set({ feed: feed });
+      get().updateFeedViewer(post, null, "feed", "repost");
+      get().updateFeedViewer(post, null, "authorFeed", "repost");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
@@ -145,14 +138,8 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   like: async (post: PostView) => {
     try {
       const res = await agent.like(post.uri, post.cid);
-      const feed = _.map(get().feed, (f) => {
-        if (f.post.uri === post.uri) {
-          f.post.viewer = { ...f.post.viewer, like: res.uri };
-          return f;
-        }
-        return f;
-      });
-      set({ feed: feed });
+      get().updateFeedViewer(post, res.uri, "feed", "like");
+      get().updateFeedViewer(post, res.uri, "authorFeed", "like");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
@@ -160,16 +147,53 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   deleteLike: async (post: PostView) => {
     try {
       await agent.deleteLike(post.viewer?.like || "");
-      const feed = _.map(get().feed, (f) => {
-        if (f.post.uri === post.uri) {
-          f.post.viewer = _.omit(f.post.viewer, "like");
-          return f;
-        }
-        return f;
-      });
-      set({ feed: feed });
+      get().updateFeedViewer(post, null, "feed", "like");
+      get().updateFeedViewer(post, null, "authorFeed", "like");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
+  },
+  updateFeedViewer: (
+    post: PostView,
+    resourceURI: string | null,
+    feed: "feed" | "authorFeed",
+    action: "like" | "repost"
+  ) => {
+    // TODO まだバグっている
+    const targetFeed = feed === "feed" ? get().feed : get().authorFeed;
+    const update = _.map(targetFeed, (f) => {
+      if (AppBskyFeedDefs.isReplyRef(f.reply)) {
+        if (AppBskyFeedDefs.isPostView(f.reply.root)) {
+          if (f.reply.root.uri === post.uri) {
+            if (_.has(f.post.viewer, action)) {
+              f.reply.root.viewer = _.omit(f.reply.root.viewer, action);
+            } else {
+              f.reply.root.viewer = { ...f.reply.root.viewer, [action]: resourceURI };
+            }
+            return f;
+          }
+        }
+        if (AppBskyFeedDefs.isPostView(f.reply.parent)) {
+          if (f.reply.parent.uri === post.uri) {
+            if (_.has(f.post.viewer, action)) {
+              f.reply.parent.viewer = _.omit(f.reply.parent.viewer, action);
+            } else {
+              f.reply.parent.viewer = { ...f.reply.parent.viewer, [action]: resourceURI };
+            }
+            return f;
+          }
+        }
+      }
+      if (f.post.uri === post.uri) {
+        if (_.has(f.post.viewer, action)) {
+          f.post.viewer = _.omit(f.post.viewer, action);
+        } else {
+          f.post.viewer = { ...f.post.viewer, [action]: resourceURI };
+        }
+        return f;
+      }
+      return f;
+    });
+    set({ [feed]: update });
   },
 });

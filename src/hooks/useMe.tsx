@@ -5,6 +5,8 @@ export const useMe = () => {
   const getMe = useStore((state) => state.getMe);
 
   if (!me) {
+    // TODO
+    console.log("呼ばれすぎ");
     throw getMe();
   }
 

@@ -20,7 +20,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
   getMe: async () => {
     try {
       const session = get().session;
-      const res = await agent.getProfile({ actor: session.did });
+      const res = await agent.getProfile({ actor: session?.did || "" });
       set({ me: res.data });
       get().createMessage({ status: "success", title: "success to fetch profile" });
     } catch (e) {

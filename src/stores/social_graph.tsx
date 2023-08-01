@@ -66,7 +66,7 @@ export const createSocialGraphSlice: StateCreator<
   },
   block: async (actor: string) => {
     try {
-      const did = get().session.did;
+      const did = get().session?.did;
       agent.api.app.bsky.graph.block.create(
         { repo: did },
         {
