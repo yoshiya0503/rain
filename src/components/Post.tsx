@@ -29,7 +29,6 @@ import {
   AppBskyEmbedRecordWithMedia,
 } from "@atproto/api";
 
-// TODO 型調整
 type Props = {
   post: PostView;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };

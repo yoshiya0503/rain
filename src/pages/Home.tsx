@@ -8,7 +8,6 @@ import FeedContainer from "@/templates/FeedContainer";
 import PostContainer from "@/templates/PostContainer";
 import Collapse from "@mui/material/Collapse";
 import { TransitionGroup } from "react-transition-group";
-// TODO TransitionGroupが動いていない
 // TODO ポストが重複して出るバグが有る
 
 export const Home = () => {
@@ -36,14 +35,14 @@ export const Home = () => {
       <ScrollView onScrollLimit={onScrollLimit}>
         <FeedContainer>
           <TransitionGroup>
-            {_.map(feed, (item, key) => (
-              <Collapse key={key}>
+            {_.map(feed, (item) => (
+              <Collapse key={item.post.cid}>
                 <PostContainer>
                   {item.reply?.root && <Post post={item.reply.root} reason={item.reason} hasReply />}
                   {item.reply?.parent && item.reply?.parent.cid !== item.reply?.root.cid && (
                     <Post post={item.reply.parent} reason={item.reason} hasReply />
                   )}
-                  {item.post && <Post post={item.post} reason={item.reason} />}
+                  <Post post={item.post} reason={item.reason} />
                 </PostContainer>
               </Collapse>
             ))}

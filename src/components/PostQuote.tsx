@@ -33,7 +33,7 @@ export const PostQuote = (props: Props) => {
 
   return (
     <Card variant="outlined">
-      <CardActionArea onClick={onLink}>
+      <CardActionArea component="div" onClick={onLink}>
         <CardContent>
           <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
