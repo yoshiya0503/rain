@@ -5,8 +5,8 @@ import Skeleton from "@mui/material/Skeleton";
 
 export const MenuTemplate = () => {
   return (
-    <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 3 }}>
-      <Stack direction="row" spacing={2} alignItems="center">
+    <Paper component="nav" sx={{ maxWidth: 240, height: 380, p: 2, borderRadius: 3 }}>
+      <Stack direction="row" spacing={1} alignItems="center">
         <Skeleton width={64} height={64} variant="circular" />
         <Stack direction="column" spacing={1}>
           <Skeleton width={100} height={10} />

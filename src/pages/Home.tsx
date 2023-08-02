@@ -1,13 +1,13 @@
 import Layout from "@/templates/Layout";
 import { Suspense } from "react";
-import LinearProgress from "@mui/material/LinearProgress";
 import FeedContainer from "@/containers/FeedContainer";
+import FeedTemplate from "@/templates/FeedTemplate";
 // TODO ポストが重複して出るバグが有る
 
 export const Home = () => {
   return (
     <Layout>
-      <Suspense fallback={<LinearProgress />}>
+      <Suspense fallback={<FeedTemplate />}>
         <FeedContainer />
       </Suspense>
     </Layout>
