@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
 
-export const ProfileSkeleton = () => {
+export const ProfileTemplate = () => {
   return (
     <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
       <Skeleton variant="rectangular" height={140} />
@@ -25,4 +25,4 @@ export const ProfileSkeleton = () => {
   );
 };
 
-export default ProfileSkeleton;
+export default ProfileTemplate;

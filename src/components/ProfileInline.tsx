@@ -7,7 +7,6 @@ import { AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
   profile: AppBskyActorDefs.ProfileViewDetailed;
-  onClick?: () => void;
   size?: "small" | "medium" | "large";
 };
 

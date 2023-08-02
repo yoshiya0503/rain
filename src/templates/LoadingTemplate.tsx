@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
-export const Loading = () => {
+export const LoadingTemplate = () => {
   return (
     <Box
       component="main"
@@ -23,4 +23,4 @@ export const Loading = () => {
   );
 };
 
-export default Loading;
+export default LoadingTemplate;

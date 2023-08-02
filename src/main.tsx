@@ -3,14 +3,14 @@ import ReactDOM from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Router from "@/router";
-import Loading from "@/templates/Loading";
+import LoadingTemplate from "@/templates/LoadingTemplate";
 import theme from "@/theme";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<LoadingTemplate />}>
         <Router />
       </Suspense>
     </ThemeProvider>

@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
 
-export const MenuSkeleton = () => {
+export const MenuTemplate = () => {
   return (
     <Paper sx={{ width: 240, height: 380, p: 2, borderRadius: 3 }}>
       <Stack direction="row" spacing={2} alignItems="center">
@@ -22,4 +22,4 @@ export const MenuSkeleton = () => {
   );
 };
 
-export default MenuSkeleton;
+export default MenuTemplate;

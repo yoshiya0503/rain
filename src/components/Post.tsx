@@ -73,79 +73,75 @@ export const Post = (props: Props) => {
   };
 
   return (
-    <>
-      <Stack direction="row" spacing={1}>
-        <Box>
-          <Stack sx={{ height: "100%" }} alignItems="center">
-            <Avatar
-              sx={{ width: 42, height: 42 }}
-              alt={props.post.author.displayName}
-              src={props.post.author.avatar}
-              onClick={onViewProfile}
-            />
-            {props.hasReply && (
-              <Box sx={{ flexGrow: 1, pb: 2 }}>
-                <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>
-              </Box>
-            )}
-          </Stack>
-        </Box>
-        <Box sx={{ width: "100%" }}>
-          {AppBskyFeedDefs.isReasonRepost(props.reason) && (
-            <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
-              <LoopIcon sx={{ fontSize: 12 }} />
-              <Typography variant="caption">Reposted by {props.reason.by.displayName}</Typography>
-            </Stack>
-          )}
-          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" onClick={onViewProfile}>
-            <Stack direction="column">
-              <Typography variant="body2">{props.post.author.displayName}</Typography>
-              <Typography color={grey[500]} variant="caption">
-                @{props.post.author.handle}
-              </Typography>
-            </Stack>
-            <Box>
-              <Typography color={grey[500]} variant="caption">
-                {dateLabel}
-              </Typography>
-              <DropDownMenu items={menuItems} size="tiny" />
+    <Stack direction="row" spacing={1}>
+      <Box>
+        <Stack sx={{ height: "100%" }} alignItems="center">
+          <Avatar
+            sx={{ width: 42, height: 42 }}
+            alt={props.post.author.displayName}
+            src={props.post.author.avatar}
+            onClick={onViewProfile}
+          />
+          {props.hasReply && (
+            <Box sx={{ flexGrow: 1, pb: 2 }}>
+              <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>
             </Box>
+          )}
+        </Stack>
+      </Box>
+      <Box sx={{ width: "100%" }}>
+        {AppBskyFeedDefs.isReasonRepost(props.reason) && (
+          <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
+            <LoopIcon sx={{ fontSize: 12 }} />
+            <Typography variant="caption">Reposted by {props.reason.by.displayName}</Typography>
           </Stack>
-          <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
-            <Typography
-              sx={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              }}
-              variant="body2"
-            >
-              <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
+        )}
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" onClick={onViewProfile}>
+          <Stack direction="column">
+            <Typography variant="body2">{props.post.author.displayName}</Typography>
+            <Typography color={grey[500]} variant="caption">
+              @{props.post.author.handle}
             </Typography>
-            {AppBskyEmbedImages.isView(props.post.embed) && <PostImages images={props.post.embed.images} />}
-            {AppBskyEmbedExternal.isView(props.post.embed) && <PostArticle article={props.post.embed.external} />}
-            {AppBskyEmbedRecord.isView(props.post.embed) &&
-              AppBskyEmbedRecord.isViewRecord(props.post.embed.record) && (
-                <PostQuote record={props.post.embed.record} />
-              )}
-            {AppBskyEmbedRecord.isView(props.post.embed) &&
-              AppBskyFeedDefs.isGeneratorView(props.post.embed.record) && <PostFeed record={props.post.embed.record} />}
-            {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-              AppBskyEmbedImages.isView(props.post.embed.media) && (
-                <PostImages images={props.post.embed.media.images} />
-              )}
-            {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-              AppBskyEmbedExternal.isView(props.post.embed.media) && (
-                <PostArticle article={props.post.embed.media.external} />
-              )}
-            {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-              AppBskyEmbedRecord.isViewRecord(props.post.embed.record.record) && (
-                <PostQuote record={props.post.embed.record.record} />
-              )}
-            <SocialActions post={props.post} />
           </Stack>
-        </Box>
-      </Stack>
-    </>
+          <Box>
+            <Typography color={grey[500]} variant="caption">
+              {dateLabel}
+            </Typography>
+            <DropDownMenu items={menuItems} size="tiny" />
+          </Box>
+        </Stack>
+        <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
+          <Typography
+            sx={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+            variant="body2"
+          >
+            <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
+          </Typography>
+          {AppBskyEmbedImages.isView(props.post.embed) && <PostImages images={props.post.embed.images} />}
+          {AppBskyEmbedExternal.isView(props.post.embed) && <PostArticle article={props.post.embed.external} />}
+          {AppBskyEmbedRecord.isView(props.post.embed) && AppBskyEmbedRecord.isViewRecord(props.post.embed.record) && (
+            <PostQuote record={props.post.embed.record} />
+          )}
+          {AppBskyEmbedRecord.isView(props.post.embed) && AppBskyFeedDefs.isGeneratorView(props.post.embed.record) && (
+            <PostFeed record={props.post.embed.record} />
+          )}
+          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
+            AppBskyEmbedImages.isView(props.post.embed.media) && <PostImages images={props.post.embed.media.images} />}
+          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
+            AppBskyEmbedExternal.isView(props.post.embed.media) && (
+              <PostArticle article={props.post.embed.media.external} />
+            )}
+          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
+            AppBskyEmbedRecord.isViewRecord(props.post.embed.record.record) && (
+              <PostQuote record={props.post.embed.record.record} />
+            )}
+          <SocialActions post={props.post} />
+        </Stack>
+      </Box>
+    </Stack>
   );
 };
 

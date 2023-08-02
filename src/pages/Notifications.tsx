@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
 import Notification from "@/components/Notification";
 import Layout from "@/templates/Layout";
-import ScrollView from "@/templates/ScrollView";
+import ScrollLayout from "@/templates/ScrollLayout";
 
 export const Notifications = () => {
   const notifications = useStore((state) => state.notifications);
@@ -20,11 +20,11 @@ export const Notifications = () => {
 
   return (
     <Layout>
-      <ScrollView onScrollLimit={onScrollLimit}>
+      <ScrollLayout onScrollLimit={onScrollLimit}>
         {_.map(notifications, (item, key) => {
           return <Notification key={key} notification={item} />;
         })}
-      </ScrollView>
+      </ScrollLayout>
     </Layout>
   );
 };

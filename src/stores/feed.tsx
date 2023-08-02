@@ -41,7 +41,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
   getTimeline: async () => {
     try {
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
-      if (get().cursor === res.data.cursor) return; // react 18
       const filterList: string[] = [];
       const computedFeed = _.filter(res.data.feed, (f) => {
         // TODO isThreadViewPostとかの挙動をチェック
@@ -75,7 +74,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
     try {
       const cursor = isReset ? "" : get().authorCursor;
       const res = await agent.getAuthorFeed({ actor, cursor });
-      if (get().authorCursor === res.data.cursor) return; // react 18
       if (isReset) {
         set({ authorFeed: res.data.feed, authorCursor: res.data.cursor });
       } else {
@@ -159,28 +157,23 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
     feed: "feed" | "authorFeed",
     action: "like" | "repost"
   ) => {
-    // TODO まだバグっている
     const targetFeed = feed === "feed" ? get().feed : get().authorFeed;
     const update = _.map(targetFeed, (f) => {
-      if (AppBskyFeedDefs.isReplyRef(f.reply)) {
-        if (AppBskyFeedDefs.isPostView(f.reply.root)) {
-          if (f.reply.root.uri === post.uri) {
-            if (_.has(f.post.viewer, action)) {
-              f.reply.root.viewer = _.omit(f.reply.root.viewer, action);
-            } else {
-              f.reply.root.viewer = { ...f.reply.root.viewer, [action]: resourceURI };
-            }
-            return f;
+      if (AppBskyFeedDefs.isPostView(f.reply?.root)) {
+        if (f.reply?.root.uri === post.uri) {
+          if (_.has(f.reply?.root?.viewer, action)) {
+            f.reply.root.viewer = _.omit(f.reply.root.viewer, action);
+          } else {
+            f.reply.root.viewer = { ...f.reply.root.viewer, [action]: resourceURI };
           }
         }
-        if (AppBskyFeedDefs.isPostView(f.reply.parent)) {
-          if (f.reply.parent.uri === post.uri) {
-            if (_.has(f.post.viewer, action)) {
-              f.reply.parent.viewer = _.omit(f.reply.parent.viewer, action);
-            } else {
-              f.reply.parent.viewer = { ...f.reply.parent.viewer, [action]: resourceURI };
-            }
-            return f;
+      }
+      if (AppBskyFeedDefs.isPostView(f.reply?.parent)) {
+        if (f.reply?.parent.uri === post.uri) {
+          if (_.has(f.reply?.parent?.viewer, action)) {
+            f.reply.parent.viewer = _.omit(f.reply.parent.viewer, action);
+          } else {
+            f.reply.parent.viewer = { ...f.reply.parent.viewer, [action]: resourceURI };
           }
         }
       }
@@ -190,7 +183,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
         } else {
           f.post.viewer = { ...f.post.viewer, [action]: resourceURI };
         }
-        return f;
       }
       return f;
     });

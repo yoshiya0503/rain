@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { ReactNode, UIEvent, useRef, useState } from "react";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
@@ -17,7 +18,8 @@ export const ScrollView = (props: Props) => {
 
   const handleBottomScroll = (e: UIEvent<HTMLDivElement>) => {
     const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
-    if (nearBottom < 100) {
+    if (_.floor(nearBottom) <= 0) {
+      // TODO スムーズにしたい
       props.onScrollLimit();
     }
     if (showScrollThreashold < e.currentTarget.scrollTop) {

@@ -13,7 +13,7 @@ export const useSocial = (handle: string) => {
   const unmute = useStore((state) => state.unmute);
 
   if (!actor) {
-    throw getProfile;
+    throw getProfile(handle);
   }
 
   const onFollow = useCallback(async () => {
