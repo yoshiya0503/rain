@@ -19,7 +19,6 @@ import PostImages from "@/components/PostImages";
 import PostQuote from "@/components/PostQuote";
 import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
-import { PostView } from "@/stores/feed";
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
@@ -30,7 +29,8 @@ import {
 } from "@atproto/api";
 
 type Props = {
-  post: PostView;
+  post: AppBskyFeedDefs.PostView;
+  onReply?: (post: AppBskyFeedDefs.PostView) => void;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
 };
@@ -138,7 +138,7 @@ export const Post = (props: Props) => {
             AppBskyEmbedRecord.isViewRecord(props.post.embed.record.record) && (
               <PostQuote record={props.post.embed.record.record} />
             )}
-          <SocialActions post={props.post} />
+          <SocialActions post={props.post} onReply={props.onReply} />
         </Stack>
       </Box>
     </Stack>

@@ -22,13 +22,13 @@ export const PostArticle = (props: Props) => {
           <CardMedia sx={{ height: 200 }} component="img" image={props.article.thumb} alt="" />
         ) : null}
         <CardContent>
-          <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body1">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body1">
             {props.article.title}
           </Typography>
-          <Typography sx={{ whiteSpace: "pre-wrap" }} variant="body2">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
             <Linkify>{props.article.uri}</Linkify>
           </Typography>
-          <Typography sx={{ whiteSpace: "pre-wrap" }} variant="caption">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Linkify>{props.article.description}</Linkify>
           </Typography>
         </CardContent>

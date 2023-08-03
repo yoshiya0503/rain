@@ -25,17 +25,20 @@ import CardMedia from "@mui/material/CardMedia";
 import LabelProgress from "@/components/LabelProgress";
 import ProfileInline from "@/components/ProfileInline";
 import PostArticle from "@/components/PostArticle";
-import { PostView } from "@/stores/feed";
+import PostQuote from "@/components/PostQuote";
 import useMe from "@/hooks/useMe";
 import usePost from "@/hooks/usePost";
+import useQuote from "@/hooks/useQuote";
 import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
 import useBackdrop from "@/hooks/useBackdrop";
 import Linkify from "linkify-react";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
   title: string;
-  post?: PostView;
+  post?: AppBskyFeedDefs.PostView;
+  thread?: AppBskyFeedDefs.FeedViewPost;
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -43,16 +46,12 @@ type Props = {
 
 const MAX_TEXT_LENGTH = 300;
 
-// TODO
-// すべてのpostのdomに入ってしまっている気がするが
-// 実際は一回しか描画はされていない。計算はされている
-// TODO
-// リプライ先のroot, parentが同じになっている
 export const PostDialog = (props: Props) => {
   const me = useMe();
   const { onPost } = usePost();
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
   const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
+  const { quote, fetchQuote, fetchEmbedQuote } = useQuote();
   const { open, withBackdrop } = useBackdrop();
   const [text, setText] = useState<string>("");
 
@@ -69,22 +68,29 @@ export const PostDialog = (props: Props) => {
 
   const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === " ") {
+      // TODO ユーザー自体もQuoteできるとイケメン
       fetchOGP(text);
+      fetchQuote(text);
     }
   };
 
   const onSend = async () => {
     withBackdrop(async () => {
-      const root = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
       const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+      const root = {
+        cid: (AppBskyFeedDefs.isPostView(props.thread?.reply?.root) && props.thread?.reply?.root?.cid) || parent.cid,
+        uri: (AppBskyFeedDefs.isPostView(props.thread?.reply?.root) && props.thread?.reply?.root?.uri) || parent.uri,
+      };
       const reply = props.post && { root, parent };
       let embed = undefined;
-      // TODO 引用ポストはinternalなembed.record
       if (article) {
         embed = await fetchEmbedExternal();
       }
       if (!_.isEmpty(images)) {
         embed = await fetchEmbedImages();
+      }
+      if (quote) {
+        embed = fetchEmbedQuote();
       }
       onPost({ text, reply, embed });
       onClean();
@@ -107,7 +113,7 @@ export const PostDialog = (props: Props) => {
       <DialogContent>
         {props.post && (
           <Box sx={{ p: 2, mt: 1, mb: 2, border: 1, borderRadius: 2, borderColor: grey[700] }}>
-            <DialogContentText sx={{ mt: 1, mb: 1 }}>
+            <DialogContentText component="div" sx={{ mt: 1, mb: 1 }}>
               <ProfileInline profile={props.post.author} size="small" />
               <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
                 <Linkify>{props.post.record.text}</Linkify>
@@ -164,6 +170,7 @@ export const PostDialog = (props: Props) => {
           </ImageList>
         )}
         {article && <PostArticle article={article} />}
+        {quote && <PostQuote record={quote} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>

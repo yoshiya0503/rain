@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import Grow from "@mui/material/Grow";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -6,35 +7,31 @@ import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorderRounded";
 import LoopIcon from "@mui/icons-material/LoopRounded";
 import { pink, green, blue } from "@mui/material/colors";
-import PostDialog from "@/components/PostDialog";
-import useDialog from "@/hooks/useDialog";
 import usePost from "@/hooks/usePost";
-import { PostView } from "@/stores/feed";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
-  post: PostView;
+  post: AppBskyFeedDefs.PostView;
+  onReply?: (post: AppBskyFeedDefs.PostView) => void;
 };
 
-// TODO root, parentがあるときに親にイイネ出来てない
 export const SocialActions = (props: Props) => {
-  const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();
 
-  const onReply = () => {
-    openPostDialog();
-  };
+  const onReply = useCallback(() => {
+    if (props.onReply) {
+      props.onReply(props.post);
+    }
+  }, [props]);
 
-  const onToggleLike = () => {
+  const onToggleLike = useCallback(() => {
     return props.post.viewer?.like ? onDeleteLike(props.post) : onLike(props.post);
-  };
+  }, [props.post, onDeleteLike, onLike]);
 
-  const onToggleRePost = () => {
+  const onToggleRePost = useCallback(() => {
     return props.post.viewer?.repost ? onDeleteRepost(props.post) : onRepost(props.post);
-  };
+  }, [props.post, onDeleteRepost, onRepost]);
 
-  // TODO
-  // hookが無限に呼ばれている気がする
-  //<PostDialog title="Reply" post={props.post} open={isOpen} onClose={closePostDialog} />
   return (
     <Stack direction="row" spacing={1}>
       <IconButton sx={{ "&:hover": { color: pink[400] } }} onClick={onToggleLike}>

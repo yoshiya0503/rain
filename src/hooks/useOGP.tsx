@@ -23,6 +23,10 @@ export const useOGP = () => {
       if (!isInvalidURL(url) || article) {
         return;
       }
+      if (_.includes(url, "https://bsky.app/profile/")) {
+        // bsky内部は引用として扱う
+        return;
+      }
       const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${url.toString()}`);
       const result = await res.json();
       if (!result.error) {

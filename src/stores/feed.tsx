@@ -19,6 +19,8 @@ export interface FeedSlice {
   getInitialTimeline: () => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   post: (record: Record) => Promise<void>;
+  getPosts: (uris: string[]) => Promise<unknown>;
+  getPostThread: (uri: string) => Promise<unknown>;
   uploadBlob: (data: BlobRequest) => Promise<BlobResponse | undefined>;
   deletePost: (record: PostView) => Promise<void>;
   repost: (record: PostView) => Promise<void>;
@@ -84,9 +86,26 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
     }
   },
+  getPosts: async (uris: string[]) => {
+    try {
+      const res = await agent.getPosts({ uris });
+      return res.data.posts;
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed to fetch posts" }, e);
+    }
+  },
+  getPostThread: async (uri: string) => {
+    try {
+      const res = await agent.getPostThread({ uri });
+      return res.data.thread;
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed to fetch post thread" }, e);
+    }
+  },
   post: async (record: Record) => {
     try {
       const postResponse = await agent.post(record);
+      // TODO 新しく作られたpostにはthreads情報が入っていない
       const res = await agent.getPosts({ uris: [postResponse.uri] });
       const newPost = [{ post: res.data.posts[0] }];
       const feed = _.concat(newPost, get().feed);

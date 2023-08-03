@@ -5,10 +5,12 @@ import Skeleton from "@mui/material/Skeleton";
 export const FeedTemplate = () => {
   return (
     <>
-      {_.times(10, () => (
-        <Stack sx={{ p: 1, maxWidth: 480, maxHeight: 120 }}>
-          <Stack sx={{ p: 1, mt: 1, mb: 1 }} direction="row" spacing={1}>
-            <Skeleton width={42} height={42} variant="circular" />
+      {_.times(10, (index) => (
+        <Stack key={index} sx={{ maxWidth: 480, maxHeight: 120 }}>
+          <Stack sx={{ pt: 1, pb: 1 }} direction="row" spacing={1}>
+            <Stack>
+              <Skeleton width={42} height={42} variant="circular" />
+            </Stack>
             <Stack sx={{ width: "100%" }}>
               <Skeleton width="50%" height={40} />
               <Skeleton width="80%" height={20} />
