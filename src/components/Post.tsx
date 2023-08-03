@@ -96,19 +96,19 @@ export const Post = (props: Props) => {
             <Typography variant="caption">Reposted by {props.reason.by.displayName}</Typography>
           </Stack>
         )}
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" onClick={onViewProfile}>
-          <Stack direction="column">
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Stack direction="column" onClick={onViewProfile}>
             <Typography variant="body2">{props.post.author.displayName}</Typography>
             <Typography color={grey[500]} variant="caption">
               @{props.post.author.handle}
             </Typography>
           </Stack>
-          <Box>
-            <Typography color={grey[500]} variant="caption">
+          <Stack direction="row" alignItems="center">
+            <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
             <DropDownMenu items={menuItems} size="tiny" />
-          </Box>
+          </Stack>
         </Stack>
         <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
           <Typography
