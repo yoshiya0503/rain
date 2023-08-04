@@ -26,7 +26,7 @@ type Props = {
 
 export const PostQuote = (props: Props) => {
   const onLink = () => {
-    console.log("実装中");
+    console.log("TODO実装中");
   };
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.record.indexedAt), { locale: ja });

@@ -1,11 +1,13 @@
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
+import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import MenuList from "@mui/material/MenuList";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemText from "@mui/material/ListItemText";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
 import Home from "@mui/icons-material/HomeRounded";
 import Search from "@mui/icons-material/SearchRounded";
 import Feed from "@mui/icons-material/FeedRounded";
@@ -37,26 +39,30 @@ export const SideMenu = () => {
   };
 
   return (
-    <Paper component="nav" sx={{ maxWidth: 240, height: 380, p: 2, borderRadius: 3 }}>
-      <ProfileInline profile={me} size="large" />
-      <MenuList>
-        {_.map(menus, (menu, key) => (
-          <MenuItem key={key} onClick={onClickMenu(menu.href)}>
+    <List>
+      <ListItem>
+        <ProfileInline profile={me} size="large" />
+      </ListItem>
+      {_.map(menus, (menu, key) => (
+        <ListItem key={key} onClick={onClickMenu(menu.href)} disablePadding>
+          <ListItemButton sx={{ borderRadius: 6 }}>
             <ListItemIcon>{menu.icon}</ListItemIcon>
-            <ListItemText>{menu.name}</ListItemText>
-          </MenuItem>
-        ))}
-      </MenuList>
-      <Button
-        sx={{ mt: 1, width: "100%", borderRadius: 6 }}
-        variant="contained"
-        startIcon={<Create />}
-        onClick={openPostDialog}
-      >
-        New Post
-      </Button>
-      <PostDialog title="Post" open={isOpen} onClose={closePostDialog} />
-    </Paper>
+            <ListItemText primary={menu.name} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+      <ListItem>
+        <Button
+          sx={{ mt: 1, width: "100%", borderRadius: 6 }}
+          variant="contained"
+          startIcon={<Create />}
+          onClick={openPostDialog}
+        >
+          New Post
+        </Button>
+        <PostDialog title="Post" open={isOpen} onClose={closePostDialog} />
+      </ListItem>
+    </List>
   );
 };
 

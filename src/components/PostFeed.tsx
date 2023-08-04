@@ -16,7 +16,7 @@ type Props = {
 
 export const PostFeed = (props: Props) => {
   const onLink = () => {
-    console.log("実装中");
+    console.log("TODO実装中");
   };
 
   return (
