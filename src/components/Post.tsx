@@ -9,7 +9,7 @@ import MuteIcon from "@mui/icons-material/VolumeOff";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import LoopIcon from "@mui/icons-material/Loop";
-import { grey } from "@mui/material/colors";
+import { grey, green } from "@mui/material/colors";
 import Linkify from "linkify-react";
 import Avatar from "@mui/material/Avatar";
 import DropDownMenu from "@/components/DropDownMenu";
@@ -92,7 +92,7 @@ export const Post = (props: Props) => {
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
           <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
-            <LoopIcon sx={{ fontSize: 12 }} />
+            <LoopIcon sx={{ fontSize: 16, color: green[400] }} />
             <Typography variant="caption">Reposted by {props.reason.by.displayName}</Typography>
           </Stack>
         )}
@@ -110,7 +110,7 @@ export const Post = (props: Props) => {
             <DropDownMenu items={menuItems} size="tiny" />
           </Stack>
         </Stack>
-        <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
+        <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
           <Typography
             sx={{
               whiteSpace: "pre-wrap",
@@ -138,8 +138,10 @@ export const Post = (props: Props) => {
             AppBskyEmbedRecord.isViewRecord(props.post.embed.record.record) && (
               <PostQuote record={props.post.embed.record.record} />
             )}
-          <SocialActions post={props.post} onReply={props.onReply} />
         </Stack>
+        <Box sx={{ ml: -1, mb: 1 }}>
+          <SocialActions post={props.post} onReply={props.onReply} />
+        </Box>
       </Box>
     </Stack>
   );

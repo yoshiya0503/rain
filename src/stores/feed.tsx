@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import _ from "lodash";
 import { MessageSlice } from "@/stores/message";
+import { SessionSlice } from "@/stores/session";
 import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
 import agent from "@/agent";
 
@@ -35,7 +36,10 @@ export interface FeedSlice {
   ) => void;
 }
 
-export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], FeedSlice> = (set, get) => ({
+export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSlice, [], [], FeedSlice> = (
+  set,
+  get
+) => ({
   cursor: "",
   authorCursor: "",
   feed: [],
@@ -47,6 +51,10 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice, [], [], Fee
       const computedFeed = _.filter(res.data.feed, (f) => {
         // TODO isThreadViewPostとかの挙動をチェック
         if (f.post.author?.did === "did:plc:4hqjfn7m6n5hno3doamuhgef") return false;
+        if (AppBskyFeedDefs.isReasonRepost(f.reason)) {
+          const session = get().session;
+          if (f.reason.by.did === session?.did) return false;
+        }
         if (_.includes(filterList, f.post.cid)) {
           return false;
         }

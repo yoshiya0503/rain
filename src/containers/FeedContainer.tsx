@@ -43,8 +43,6 @@ export const FeedContainer = () => {
     [openPostDialog, setReplyThread, feed]
   );
 
-  console.log(feed);
-
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <Box sx={{ maxWidth: 480 }}>
