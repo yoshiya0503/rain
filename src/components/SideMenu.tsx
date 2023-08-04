@@ -1,7 +1,5 @@
 import _ from "lodash";
 import { useNavigate } from "react-router-dom";
-import Paper from "@mui/material/Paper";
-import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
