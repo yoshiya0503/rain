@@ -1,5 +1,5 @@
-import { StateCreator } from "zustand";
 import _ from "lodash";
+import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
 import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
@@ -16,7 +16,7 @@ export interface FeedSlice {
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
   authorCursor: string;
-  getTimeline: () => Promise<void>;
+  getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   post: (record: Record) => Promise<void>;
@@ -46,7 +46,9 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   authorFeed: [],
   getTimeline: async () => {
     try {
+      // TODO feedがbotで埋め尽くされたときにもう一回リロードしないとい
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
+      if (!res.data.cursor) return true;
       const filterList: string[] = [];
       const computedFeed = _.filter(res.data.feed, (f) => {
         // TODO isThreadViewPostとかの挙動をチェック
@@ -76,8 +78,9 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
     }
   },
   getInitialTimeline: async () => {
-    while (_.size(get().feed) < 10) {
-      await get().getTimeline();
+    let isLastOrder;
+    while (_.size(get().feed) < 10 && !isLastOrder) {
+      isLastOrder = await get().getTimeline();
     }
   },
   getAuthorFeed: async (actor: string, isReset: boolean) => {

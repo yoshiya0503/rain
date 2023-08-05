@@ -12,6 +12,7 @@ import LoopIcon from "@mui/icons-material/Loop";
 import { grey, green } from "@mui/material/colors";
 import Linkify from "linkify-react";
 import Avatar from "@mui/material/Avatar";
+import AvatarBadge from "@/components/AvatarBadge";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
 import PostArticle from "@/components/PostArticle";
@@ -28,10 +29,11 @@ import {
   AppBskyEmbedRecordWithMedia,
 } from "@atproto/api";
 
+// TODO ここには通知を入れないようにする
 type Props = {
   post: AppBskyFeedDefs.PostView;
   onReply?: (post: AppBskyFeedDefs.PostView) => void;
-  reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
+  reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string } | string;
   hasReply?: boolean;
 };
 
@@ -55,6 +57,7 @@ export const Post = (props: Props) => {
         console.log("mute");
       },
     },
+    // TODO 自分の投稿と挙動が違う
     {
       name: "delete",
       label: "Delete Post",
@@ -76,12 +79,23 @@ export const Post = (props: Props) => {
     <Stack direction="row" spacing={1}>
       <Box>
         <Stack sx={{ height: "100%" }} alignItems="center">
-          <Avatar
-            sx={{ width: 42, height: 42 }}
-            alt={props.post.author.displayName}
-            src={props.post.author.avatar}
-            onClick={onViewProfile}
-          />
+          {props.reason === "reply" ? (
+            <AvatarBadge type="reply">
+              <Avatar
+                sx={{ width: 42, height: 42 }}
+                alt={props.post.author.displayName}
+                src={props.post.author.avatar}
+                onClick={onViewProfile}
+              />
+            </AvatarBadge>
+          ) : (
+            <Avatar
+              sx={{ width: 42, height: 42 }}
+              alt={props.post.author.displayName}
+              src={props.post.author.avatar}
+              onClick={onViewProfile}
+            />
+          )}
           {props.hasReply && (
             <Box sx={{ flexGrow: 1, pb: 2 }}>
               <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>

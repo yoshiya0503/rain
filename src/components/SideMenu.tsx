@@ -51,7 +51,7 @@ export const SideMenu = () => {
       ))}
       <ListItem>
         <Button
-          sx={{ mt: 1, width: "100%", borderRadius: 6 }}
+          sx={{ width: "100%", borderRadius: 6 }}
           variant="contained"
           startIcon={<Create />}
           onClick={openPostDialog}

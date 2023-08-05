@@ -1,32 +1,16 @@
-import _ from "lodash";
-import { useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import { useStore } from "@/stores";
-import Notification from "@/components/Notification";
 import Layout from "@/templates/Layout";
-import ScrollLayout from "@/templates/ScrollLayout";
+import { Suspense } from "react";
+import NotificationContainer from "@/containers/NotificationContainer";
+import FeedTemplate from "@/templates/FeedTemplate";
 
-export const Notifications = () => {
-  const notifications = useStore((state) => state.notifications);
-  const listNotifications = useStore((state) => state.listNotifications);
-
-  useEffect(() => {
-    listNotifications();
-  }, [listNotifications]);
-
-  const onScrollLimit = useCallback(() => {
-    listNotifications();
-  }, [listNotifications]);
-
+export const Home = () => {
   return (
     <Layout>
-      <ScrollLayout onScrollLimit={onScrollLimit}>
-        {_.map(notifications, (item, key) => {
-          return <Notification key={key} notification={item} />;
-        })}
-      </ScrollLayout>
+      <Suspense fallback={<FeedTemplate />}>
+        <NotificationContainer />
+      </Suspense>
     </Layout>
   );
 };
 
-export default Notifications;
+export default Home;
