@@ -5,35 +5,25 @@ import { SessionSlice } from "@/stores/session";
 import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
 import agent from "@/agent";
 
-export type PostView = AppBskyFeedDefs.PostView;
-
 export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, "createdAt">;
 export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
 export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
 export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
-  authorFeed: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
-  authorCursor: string;
   getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
-  getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
-  post: (record: Record) => Promise<void>;
   getPosts: (uris: string[]) => Promise<unknown>;
   getPostThread: (uri: string) => Promise<unknown>;
   uploadBlob: (data: BlobRequest) => Promise<BlobResponse | undefined>;
-  deletePost: (record: PostView) => Promise<void>;
-  repost: (record: PostView) => Promise<void>;
-  deleteRepost: (record: PostView) => Promise<void>;
-  like: (record: PostView) => Promise<void>;
-  deleteLike: (record: PostView) => Promise<void>;
-  updateFeedViewer: (
-    post: PostView,
-    resourceURI: string | null,
-    feed: "feed" | "authorFeed",
-    action: "like" | "repost"
-  ) => void;
+  post: (record: Record) => Promise<void>;
+  deletePost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
+  repost: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
+  deleteRepost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
+  like: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
+  deleteLike: (record: AppBskyFeedDefs.PostView) => Promise<void>;
+  updateFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
 export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSlice, [], [], FeedSlice> = (
@@ -83,20 +73,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       isLastOrder = await get().getTimeline();
     }
   },
-  getAuthorFeed: async (actor: string, isReset: boolean) => {
-    try {
-      const cursor = isReset ? "" : get().authorCursor;
-      const res = await agent.getAuthorFeed({ actor, cursor });
-      if (isReset) {
-        set({ authorFeed: res.data.feed, authorCursor: res.data.cursor });
-      } else {
-        const authorFeed = _.concat(get().authorFeed, res.data.feed);
-        set({ authorFeed, authorCursor: res.data.cursor });
-      }
-    } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
-    }
-  },
   getPosts: async (uris: string[]) => {
     try {
       const res = await agent.getPosts({ uris });
@@ -133,7 +109,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       get().createFailedMessage({ status: "error", title: "failed to upload blob" }, e);
     }
   },
-  deletePost: async (post: PostView) => {
+  deletePost: async (post: AppBskyFeedDefs.PostView) => {
     try {
       // delete Postが遅いので先にUIから削除する
       const feed = _.reject(get().feed, (f) => {
@@ -145,50 +121,36 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       get().createFailedMessage({ status: "error", title: "failed to post" }, e);
     }
   },
-  repost: async (post: PostView) => {
+  repost: async (post: AppBskyFeedDefs.PostView) => {
     try {
-      const res = await agent.repost(post.uri, post.cid);
-      get().updateFeedViewer(post, res.uri, "feed", "repost");
-      get().updateFeedViewer(post, res.uri, "authorFeed", "repost");
+      return await agent.repost(post.uri, post.cid);
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
   },
-  deleteRepost: async (post: PostView) => {
+  deleteRepost: async (post: AppBskyFeedDefs.PostView) => {
     try {
       await agent.deleteRepost(post.viewer?.repost || "");
-      get().updateFeedViewer(post, null, "feed", "repost");
-      get().updateFeedViewer(post, null, "authorFeed", "repost");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
     }
   },
-  like: async (post: PostView) => {
+  like: async (post: AppBskyFeedDefs.PostView) => {
     try {
-      const res = await agent.like(post.uri, post.cid);
-      get().updateFeedViewer(post, res.uri, "feed", "like");
-      get().updateFeedViewer(post, res.uri, "authorFeed", "like");
+      return await agent.like(post.uri, post.cid);
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
   },
-  deleteLike: async (post: PostView) => {
+  deleteLike: async (post: AppBskyFeedDefs.PostView) => {
     try {
       await agent.deleteLike(post.viewer?.like || "");
-      get().updateFeedViewer(post, null, "feed", "like");
-      get().updateFeedViewer(post, null, "authorFeed", "like");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
   },
-  updateFeedViewer: (
-    post: PostView,
-    resourceURI: string | null,
-    feed: "feed" | "authorFeed",
-    action: "like" | "repost"
-  ) => {
-    const targetFeed = feed === "feed" ? get().feed : get().authorFeed;
-    const update = _.map(targetFeed, (f) => {
+  updateFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
+    const feed = _.map(get().feed, (f) => {
       if (AppBskyFeedDefs.isPostView(f.reply?.root)) {
         if (f.reply?.root.uri === post.uri) {
           if (_.has(f.reply?.root?.viewer, action)) {
@@ -216,6 +178,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       }
       return f;
     });
-    set({ [feed]: update });
+    set({ feed });
   },
 });
