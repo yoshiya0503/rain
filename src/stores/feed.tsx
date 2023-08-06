@@ -12,6 +12,7 @@ export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
+  posts: AppBskyFeedDefs.PostView[];
   getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
   getPosts: (uris: string[]) => Promise<unknown>;
@@ -34,6 +35,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   authorCursor: "",
   feed: [],
   authorFeed: [],
+  posts: [],
   getTimeline: async () => {
     try {
       // TODO feedがbotで埋め尽くされたときにもう一回リロードしないとい
@@ -76,6 +78,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   getPosts: async (uris: string[]) => {
     try {
       const res = await agent.getPosts({ uris });
+      set({ posts: res.data.posts });
       return res.data.posts;
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to fetch posts" }, e);

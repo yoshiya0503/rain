@@ -7,20 +7,22 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
-import LoopIcon from "@mui/icons-material/Loop";
-import { grey, green } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import Linkify from "linkify-react";
+import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
 import AvatarBadge from "@/components/AvatarBadge";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
 import usePost from "@/hooks/usePost";
-import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
+import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
 
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
-  onReply?: (post: AppBskyFeedDefs.PostView) => void;
+  otherAuthors: AppBskyActorDefs.ProfileView[];
   reason: "repost" | "like" | "follow" | "reply" | "quote";
+  onReply?: (post: AppBskyFeedDefs.PostView) => void;
+  reasonSubject?: AppBskyFeedDefs.PostView;
 };
 
 export const Post = (props: Props) => {
@@ -34,11 +36,14 @@ export const Post = (props: Props) => {
     navigate(uri);
   };
 
+  const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
+  const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.reason}しました`;
+
   return (
     <Stack direction="row" spacing={1}>
       <Box sx={{ width: "100%" }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" alignItems="center" spacing={1}>
             <AvatarBadge type={props.reason}>
               <Avatar
                 sx={{ width: 42, height: 42 }}
@@ -47,28 +52,52 @@ export const Post = (props: Props) => {
                 onClick={onViewProfile}
               />
             </AvatarBadge>
-            <Stack direction="column" onClick={onViewProfile}>
-              <Typography variant="body2">{props.notification.author.displayName}</Typography>
-              <Typography color={grey[500]} variant="caption">
-                @{props.notification.author.handle}
-              </Typography>
+            <Stack alignSelf="flex-end">
+              <AvatarGroup max={5}>
+                {_.map(props.otherAuthors, (author, key) => (
+                  <Avatar key={key} alt={author.displayName} src={author.avatar} sx={{ width: 24, height: 24 }} />
+                ))}
+              </AvatarGroup>
             </Stack>
+            {AppBskyFeedPost.isRecord(props.notification.record) && (
+              <Stack direction="column" onClick={onViewProfile}>
+                <Typography variant="body2">{props.notification.author.displayName}</Typography>
+                <Typography color={grey[500]} variant="caption">
+                  @{props.notification.author.handle}
+                </Typography>
+              </Stack>
+            )}
           </Stack>
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
-            <DropDownMenu items={[]} size="tiny" />
+            {(props.reason === "reply" || props.reason === "quote") && <DropDownMenu items={[]} size="tiny" />}
           </Stack>
         </Stack>
-        <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
+        <Stack>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-            <Linkify>{AppBskyFeedPost.isRecord(props.notification.record) && props.notification.record.text}</Linkify>
+            {message}
           </Typography>
         </Stack>
-        <Box sx={{ mb: 1 }}>
-          <SocialActions post={props.notification} onReply={props.onReply} />
-        </Box>
+        <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
+          {AppBskyFeedPost.isRecord(props.notification.record) ? (
+            <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
+              <Linkify>{AppBskyFeedPost.isRecord(props.notification.record) && props.notification.record.text}</Linkify>
+            </Typography>
+          ) : (
+            <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption" color={grey[400]}>
+              <Linkify>
+                {AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}
+              </Linkify>
+            </Typography>
+          )}
+        </Stack>
+        {(props.reason === "reply" || props.reason === "quote") && (
+          <Box sx={{ mb: 1 }}>
+            <SocialActions post={props.notification} onReply={props.onReply} />
+          </Box>
+        )}
       </Box>
     </Stack>
   );

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { useStore } from "@/stores";
 import { TransitionGroup } from "react-transition-group";
 import Box from "@mui/material/Box";
@@ -8,13 +8,13 @@ import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
 import ScrollLayout from "@/templates/ScrollLayout";
 import Notification from "@/components/Notification";
-import { AppBskyFeedDefs, AppBskyNotificationListNotifications } from "@atproto/api";
 
 export const NotificationContainer = () => {
-  const notifications = useStore((state) => state.notifications);
+  const reducedNotifications = useStore((state) => state.reducedNotifications);
+  const reasonSubjects = useStore((state) => state.reasonSubjects);
   const listNotifications = useStore((state) => state.listNotifications);
 
-  if (_.isEmpty(notifications)) {
+  if (_.isEmpty(reducedNotifications)) {
     throw listNotifications();
   }
 
@@ -26,15 +26,22 @@ export const NotificationContainer = () => {
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <Box sx={{ maxWidth: 480 }}>
         <TransitionGroup>
-          {_.map(notifications, (item, key) => {
-            // reasonSubjectのidを用いて、対象のpostListを取得する
-            // notificationsはまとめられてこないので、こちらでまとめる必要がある
-            // updateSeenで既読にする
-            const reason = item.reason as "repost" | "like" | "follow" | "reply" | "quote";
+          {_.map(reducedNotifications, (item) => {
+            // TODO updateSeenで既読にする
+            // TODO replyとlike,repostが同じsubjectで同時に起きることがある
+            // like, repost dislike のupdateが必要
+            const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote";
+            const otherAuthors = _.chain(item).map("author").slice(1).value();
+            const reasonSubject = _.find(reasonSubjects, (subject) => subject.uri === item[0].reasonSubject);
             return (
-              <Collapse key={item.cid}>
+              <Collapse key={item[0].cid}>
                 <Box sx={{ mt: 1, mb: 1 }}>
-                  <Notification notification={item} reason={reason} />
+                  <Notification
+                    notification={item[0]}
+                    reason={reason}
+                    otherAuthors={otherAuthors}
+                    reasonSubject={reasonSubject}
+                  />
                   <Divider />
                 </Box>
               </Collapse>
