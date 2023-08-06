@@ -38,7 +38,7 @@ import { AppBskyFeedDefs } from "@atproto/api";
 type Props = {
   title: string;
   post?: AppBskyFeedDefs.PostView;
-  thread?: AppBskyFeedDefs.FeedViewPost;
+  root?: { cid: string; uri: string };
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -77,10 +77,7 @@ export const PostDialog = (props: Props) => {
   const onSend = async () => {
     withBackdrop(async () => {
       const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
-      const root = {
-        cid: (AppBskyFeedDefs.isPostView(props.thread?.reply?.root) && props.thread?.reply?.root?.cid) || parent.cid,
-        uri: (AppBskyFeedDefs.isPostView(props.thread?.reply?.root) && props.thread?.reply?.root?.uri) || parent.uri,
-      };
+      const root = { cid: props.root?.cid || parent.cid, uri: props.root?.uri || parent.uri };
       const reply = props.post && { root, parent };
       let embed = undefined;
       if (article) {

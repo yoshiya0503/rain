@@ -12,6 +12,7 @@ export interface ActorSlice {
   authorCursor: string;
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
+  getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 

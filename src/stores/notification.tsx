@@ -9,11 +9,14 @@ export interface NotificationSlice {
   reducedNotifications: AppBskyNotificationListNotifications.Notification[][];
   notificationCursor: string;
   reasonSubjects: AppBskyFeedDefs.PostView[];
+  reasonReplies: AppBskyFeedDefs.PostView[];
   listNotifications: () => Promise<void>;
   reduceNotifications: (
     notifications: AppBskyNotificationListNotifications.Notification[]
   ) => AppBskyNotificationListNotifications.Notification[][];
-  reasonSubjectURIs: (notifications: AppBskyNotificationListNotifications.Notification[]) => string[];
+  fetchReasonSubjects: (notifications: AppBskyNotificationListNotifications.Notification[]) => Promise<void>;
+  fetchReasonReplies: (notifications: AppBskyNotificationListNotifications.Notification[]) => Promise<void>;
+  updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
 export const createNotificationSlice: StateCreator<
@@ -25,16 +28,15 @@ export const createNotificationSlice: StateCreator<
   notificationCursor: "",
   reducedNotifications: [],
   reasonSubjects: [],
+  reasonReplies: [],
   listNotifications: async () => {
     try {
       const res = await agent.listNotifications({ cursor: get().notificationCursor, limit: 25 });
       if (!res.data.cursor) return;
+      await get().fetchReasonSubjects(res.data.notifications);
+      await get().fetchReasonReplies(res.data.notifications);
       const reduced = get().reduceNotifications(res.data.notifications);
-      const uris = get().reasonSubjectURIs(res.data.notifications);
-      await get().getPosts(uris);
-      const reasonSubjects = _.concat(get().reasonSubjects, get().posts);
       const reducedNotifications = _.concat(get().reducedNotifications, reduced);
-      set({ reasonSubjects });
       set({ reducedNotifications, notificationCursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch notifications" }, e);
@@ -48,11 +50,48 @@ export const createNotificationSlice: StateCreator<
       .map((pair) => pair[1])
       .value();
   },
-  reasonSubjectURIs: (notifications: AppBskyNotificationListNotifications.Notification[]) => {
-    return _.chain(notifications)
-      .uniqBy((notification) => notification.reasonSubject)
-      .map((notification) => notification.reasonSubject)
-      .compact()
-      .value();
+  fetchReasonSubjects: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
+    try {
+      const uris = _.chain(notifications)
+        .uniqBy((notification) => notification.reasonSubject)
+        .map((notification) => notification.reasonSubject)
+        .compact()
+        .value();
+      if (_.isEmpty(uris)) return;
+      const res = await agent.getPosts({ uris });
+      const reasonSubjects = _.concat(get().reasonSubjects, res.data.posts);
+      set({ reasonSubjects });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed fetch reason subjects" }, e);
+    }
+  },
+  fetchReasonReplies: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
+    try {
+      const uris = _.chain(notifications)
+        .filter((notification) => notification.reason === "reply")
+        .map((notification) => notification.uri)
+        .uniq()
+        .compact()
+        .value();
+      if (_.isEmpty(uris)) return;
+      const res = await agent.getPosts({ uris });
+      const reasonReplies = _.concat(get().reasonReplies, res.data.posts);
+      set({ reasonReplies });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed fetch reason replies" }, e);
+    }
+  },
+  updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
+    const reasonReplies = _.map(get().reasonReplies, (subject) => {
+      if (subject.uri === post.uri) {
+        if (_.has(subject.viewer, action)) {
+          subject.viewer = _.omit(subject.viewer, action);
+        } else {
+          subject.viewer = { ...subject.viewer, [action]: resourceURI };
+        }
+      }
+      return subject;
+    });
+    set({ reasonReplies });
   },
 });

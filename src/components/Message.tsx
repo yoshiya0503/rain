@@ -1,28 +1,21 @@
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import useMessage from "@/hooks/useMessage";
 
-type Props = {
-  message: {
-    title: string;
-    description?: string;
-    status?: "error" | "warning" | "success" | "info";
-  };
-  open: boolean;
-  onClose: () => void;
-};
+export const Message = () => {
+  const [open, message, closeMessage] = useMessage();
 
-export const Message = (props: Props) => {
   return (
     <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      autoHideDuration={5000}
-      open={props.open}
-      onClose={props.onClose}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      autoHideDuration={3000}
+      open={open}
+      onClose={closeMessage}
     >
-      <Alert variant="outlined" onClose={props.onClose} severity={props.message.status}>
-        <AlertTitle> {props.message.title} </AlertTitle>
-        {props.message.description}
+      <Alert variant="outlined" onClose={closeMessage} severity={message?.status}>
+        <AlertTitle> {message?.title} </AlertTitle>
+        {message?.description}
       </Alert>
     </Snackbar>
   );

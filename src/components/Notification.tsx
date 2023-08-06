@@ -23,6 +23,7 @@ type Props = {
   reason: "repost" | "like" | "follow" | "reply" | "quote";
   onReply?: (post: AppBskyFeedDefs.PostView) => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
+  reasonReply?: AppBskyFeedDefs.PostView;
 };
 
 export const Post = (props: Props) => {
@@ -75,11 +76,11 @@ export const Post = (props: Props) => {
             {(props.reason === "reply" || props.reason === "quote") && <DropDownMenu items={[]} size="tiny" />}
           </Stack>
         </Stack>
-        <Stack>
+        {props.reason !== "reply" && props.reason !== "quote" && (
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             {message}
           </Typography>
-        </Stack>
+        )}
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
           {AppBskyFeedPost.isRecord(props.notification.record) ? (
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
@@ -93,9 +94,9 @@ export const Post = (props: Props) => {
             </Typography>
           )}
         </Stack>
-        {(props.reason === "reply" || props.reason === "quote") && (
+        {(props.reason === "reply" || props.reason === "quote") && props.reasonReply && (
           <Box sx={{ mb: 1 }}>
-            <SocialActions post={props.notification} onReply={props.onReply} />
+            <SocialActions post={props.reasonReply} onReply={props.onReply} />
           </Box>
         )}
       </Box>

@@ -38,13 +38,11 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   posts: [],
   getTimeline: async () => {
     try {
-      // TODO feedがbotで埋め尽くされたときにもう一回リロードしないとい
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
       if (!res.data.cursor) return true;
       const filterList: string[] = [];
       const computedFeed = _.filter(res.data.feed, (f) => {
         // TODO isThreadViewPostとかの挙動をチェック
-        if (f.post.author?.did === "did:plc:4hqjfn7m6n5hno3doamuhgef") return false;
         if (AppBskyFeedDefs.isReasonRepost(f.reason)) {
           const session = get().session;
           if (f.reason.by.did === session?.did) return false;
@@ -94,9 +92,11 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   },
   post: async (record: Record) => {
     try {
-      const postResponse = await agent.post(record);
       // TODO 新しく作られたpostにはthreads情報が入っていない
+      const postResponse = await agent.post(record);
       const res = await agent.getPosts({ uris: [postResponse.uri] });
+      // 通知欄から初めてpostした場合、長さ1のリストになってTLが取れなくなるのでスキップする
+      if (_.size(get().feed) < 10) return;
       const newPost = [{ post: res.data.posts[0] }];
       const feed = _.concat(newPost, get().feed);
       set({ feed });

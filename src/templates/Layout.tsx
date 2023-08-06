@@ -3,6 +3,7 @@ import Container from "@mui/material/Container";
 import SideMenu from "@/components/SideMenu";
 import MenuTemplate from "@/templates/MenuTemplate";
 import Paper from "@mui/material/Paper";
+import Message from "@/components/Message";
 
 type Props = {
   children: ReactNode;
@@ -16,6 +17,7 @@ export const Layout = (props: Props) => {
           <SideMenu />
         </Paper>
       </Suspense>
+      <Message />
       <Container component="main">{props.children}</Container>
     </Container>
   );

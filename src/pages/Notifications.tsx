@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import NotificationContainer from "@/containers/NotificationContainer";
 import FeedTemplate from "@/templates/FeedTemplate";
 
-export const Home = () => {
+export const Notifications = () => {
   return (
     <Layout>
       <Suspense fallback={<FeedTemplate />}>
@@ -13,4 +13,4 @@ export const Home = () => {
   );
 };
 
-export default Home;
+export default Notifications;
