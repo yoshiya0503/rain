@@ -1,9 +1,7 @@
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
-import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
@@ -11,7 +9,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import LoopIcon from "@mui/icons-material/Loop";
 import { grey, green } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import Avatar from "@mui/material/Avatar";
+import AvatarThread from "@/components/AvatarThraed";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
@@ -37,7 +35,6 @@ type Props = {
 };
 
 export const Post = (props: Props) => {
-  const navigate = useNavigate();
   const { onDeletePost, onShare } = usePost();
   const menuItems = [
     {
@@ -69,28 +66,9 @@ export const Post = (props: Props) => {
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.post.indexedAt), { locale: ja });
 
-  const onViewProfile = () => {
-    const uri = `/profile/${props.post.author.handle}`;
-    navigate(uri);
-  };
-
   return (
     <Stack direction="row" spacing={1}>
-      <Box>
-        <Stack sx={{ height: "100%" }} alignItems="center">
-          <Avatar
-            sx={{ width: 42, height: 42 }}
-            alt={props.post.author.displayName}
-            src={props.post.author.avatar}
-            onClick={onViewProfile}
-          />
-          {props.hasReply && (
-            <Box sx={{ flexGrow: 1, pb: 2 }}>
-              <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>
-            </Box>
-          )}
-        </Stack>
-      </Box>
+      <AvatarThread profile={props.post.author} hasReply={props.hasReply} />
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
           <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
