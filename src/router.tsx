@@ -4,6 +4,7 @@ import Profile from "@/pages/Profile";
 import Notification from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
+import NotFound from "@/pages/NotFound";
 import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
@@ -30,6 +31,7 @@ export const Router = () => {
           <Route path="/profile/:handle" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
