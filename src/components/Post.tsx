@@ -12,7 +12,7 @@ import LoopIcon from "@mui/icons-material/Loop";
 import { grey, green } from "@mui/material/colors";
 import Linkify from "linkify-react";
 import Avatar from "@mui/material/Avatar";
-import AvatarBadge from "@/components/AvatarBadge";
+import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
 import PostArticle from "@/components/PostArticle";
@@ -29,11 +29,10 @@ import {
   AppBskyEmbedRecordWithMedia,
 } from "@atproto/api";
 
-// TODO ここには通知を入れないようにする
 type Props = {
   post: AppBskyFeedDefs.PostView;
   onReply?: (post: AppBskyFeedDefs.PostView) => void;
-  reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string } | string;
+  reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
 };
 
@@ -79,23 +78,12 @@ export const Post = (props: Props) => {
     <Stack direction="row" spacing={1}>
       <Box>
         <Stack sx={{ height: "100%" }} alignItems="center">
-          {props.reason === "reply" ? (
-            <AvatarBadge type="reply">
-              <Avatar
-                sx={{ width: 42, height: 42 }}
-                alt={props.post.author.displayName}
-                src={props.post.author.avatar}
-                onClick={onViewProfile}
-              />
-            </AvatarBadge>
-          ) : (
-            <Avatar
-              sx={{ width: 42, height: 42 }}
-              alt={props.post.author.displayName}
-              src={props.post.author.avatar}
-              onClick={onViewProfile}
-            />
-          )}
+          <Avatar
+            sx={{ width: 42, height: 42 }}
+            alt={props.post.author.displayName}
+            src={props.post.author.avatar}
+            onClick={onViewProfile}
+          />
           {props.hasReply && (
             <Box sx={{ flexGrow: 1, pb: 2 }}>
               <Divider orientation="vertical" variant="middle" sx={{ borderRightWidth: 2 }}></Divider>
@@ -111,12 +99,7 @@ export const Post = (props: Props) => {
           </Stack>
         )}
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Stack direction="column" onClick={onViewProfile}>
-            <Typography variant="body2">{props.post.author.displayName}</Typography>
-            <Typography color={grey[500]} variant="caption">
-              @{props.post.author.handle}
-            </Typography>
-          </Stack>
+          <ProfileHeader profile={props.post.author} disableAvatar />
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
@@ -125,13 +108,7 @@ export const Post = (props: Props) => {
           </Stack>
         </Stack>
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
-          <Typography
-            sx={{
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-            variant="body2"
-          >
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
             <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
           </Typography>
           {AppBskyEmbedImages.isView(props.post.embed) && <PostImages images={props.post.embed.images} />}

@@ -23,7 +23,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import CardMedia from "@mui/material/CardMedia";
 import LabelProgress from "@/components/LabelProgress";
-import ProfileInline from "@/components/ProfileInline";
+import ProfileHeader from "@/components/ProfileHeader";
 import PostArticle from "@/components/PostArticle";
 import PostQuote from "@/components/PostQuote";
 import useMe from "@/hooks/useMe";
@@ -111,7 +111,7 @@ export const PostDialog = (props: Props) => {
         {props.post && (
           <Box sx={{ p: 2, mt: 1, mb: 2, border: 1, borderRadius: 2, borderColor: grey[700] }}>
             <DialogContentText component="div" sx={{ mt: 1, mb: 1 }}>
-              <ProfileInline profile={props.post.author} size="small" />
+              <ProfileHeader profile={props.post.author} size="small" />
               <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
                 <Linkify>{props.post.record.text}</Linkify>
               </Typography>

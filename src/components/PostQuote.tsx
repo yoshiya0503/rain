@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
-import ProfileInline from "@/components/ProfileInline";
+import ProfileHeader from "@/components/ProfileHeader";
 import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostFeed from "@/components/PostFeed";
@@ -37,7 +37,7 @@ export const PostQuote = (props: Props) => {
         <CardContent>
           <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-              <ProfileInline profile={props.record.author} size="small" />
+              <ProfileHeader profile={props.record.author} size="small" />
               <Typography color={grey[500]} variant="caption">
                 {dateLabel}
               </Typography>

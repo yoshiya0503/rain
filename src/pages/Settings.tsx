@@ -1,7 +1,7 @@
 import Layout from "@/templates/Layout";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import ProfileInline from "@/components/ProfileInline";
+import ProfileHeader from "@/components/ProfileHeader";
 import useMe from "@/hooks/useMe";
 import useAuthentication from "@/hooks/useAuthentication";
 import Button from "@mui/material/Button";
@@ -13,7 +13,7 @@ export const Settings = () => {
   return (
     <Layout>
       <Box>
-        <ProfileInline profile={me} />
+        <ProfileHeader profile={me} />
         <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
           Logout
         </Button>

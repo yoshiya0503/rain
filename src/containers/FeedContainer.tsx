@@ -37,7 +37,6 @@ export const FeedContainer = () => {
         return atPost || atRoot || atParent;
       });
       setReplyPost(post);
-      console.log(thread);
       setReplyRoot({ cid: thread?.reply?.root.cid || "", uri: thread?.reply?.root.uri || "" });
       openPostDialog();
     },

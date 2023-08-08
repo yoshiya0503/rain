@@ -8,9 +8,10 @@ import { AppBskyActorDefs } from "@atproto/api";
 type Props = {
   profile: AppBskyActorDefs.ProfileViewDetailed;
   size?: "small" | "medium" | "large";
+  disableAvatar?: boolean;
 };
 
-export const ProfileInline = (props: Props) => {
+export const ProfileHeader = (props: Props) => {
   const navigate = useNavigate();
 
   let sx = { width: 42, height: 42 };
@@ -21,14 +22,14 @@ export const ProfileInline = (props: Props) => {
     sx = { width: 64, height: 64 };
   }
 
-  const onViewProfile = () => () => {
+  const onViewProfile = () => {
     const uri = `/profile/${props.profile.handle}`;
     navigate(uri);
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center" onClick={onViewProfile()}>
-      <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={sx} />
+    <Stack direction="row" spacing={1} alignItems="center" onClick={onViewProfile}>
+      {!props.disableAvatar && <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={sx} />}
       <Stack direction="column">
         {props.size === "small" ? (
           <Typography variant="caption">{props.profile.displayName}</Typography>
@@ -43,4 +44,4 @@ export const ProfileInline = (props: Props) => {
   );
 };
 
-export default ProfileInline;
+export default ProfileHeader;

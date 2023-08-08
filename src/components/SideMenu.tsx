@@ -13,7 +13,7 @@ import Notifications from "@mui/icons-material/NotificationsRounded";
 import AccountCircle from "@mui/icons-material/AccountCircleRounded";
 import Settings from "@mui/icons-material/SettingsRounded";
 import Create from "@mui/icons-material/CreateRounded";
-import ProfileInline from "@/components/ProfileInline";
+import ProfileHeader from "@/components/ProfileHeader";
 import PostDialog from "@/components/PostDialog";
 import useMe from "@/hooks/useMe";
 import useDialog from "@/hooks/useDialog";
@@ -39,7 +39,7 @@ export const SideMenu = () => {
   return (
     <List>
       <ListItem>
-        <ProfileInline profile={me} size="large" />
+        <ProfileHeader profile={me} size="large" />
       </ListItem>
       {_.map(menus, (menu, key) => (
         <ListItem key={key} onClick={onClickMenu(menu.href)} disablePadding>

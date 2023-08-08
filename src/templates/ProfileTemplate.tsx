@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
@@ -15,12 +14,12 @@ export const ProfileTemplate = () => {
             <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
               <Skeleton width={64} height={64} variant="circular" />
             </Stack>
-            <Box>
-              <Skeleton width={100} height={30} />
-              <Skeleton width={100} height={10} />
-              <Skeleton width={200} height={10} />
-              <Skeleton width={400} height={100} />
-            </Box>
+            <Stack justifyContent="space-between">
+              <Skeleton width="50%" height={30} />
+              <Skeleton width="50%" height={10} />
+              <Skeleton width="50%" height={10} />
+              <Skeleton width="100%" height={120} />
+            </Stack>
           </Stack>
         </CardContent>
       </Card>

@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
-import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -9,9 +8,8 @@ import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
 import { grey } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import AvatarGroup from "@mui/material/AvatarGroup";
-import Avatar from "@mui/material/Avatar";
-import AvatarBadge from "@/components/AvatarBadge";
+import NotificationAvatars from "@/components/NotificatinAvatars";
+import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";
 import usePost from "@/hooks/usePost";
@@ -27,16 +25,9 @@ type Props = {
 };
 
 export const Post = (props: Props) => {
-  const navigate = useNavigate();
   const { onShare } = usePost();
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.notification.indexedAt), { locale: ja });
-
-  const onViewProfile = () => {
-    const uri = `/profile/${props.notification.author.handle}`;
-    navigate(uri);
-  };
-
   const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
   const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.reason}しました`;
 
@@ -44,29 +35,14 @@ export const Post = (props: Props) => {
     <Stack direction="row" spacing={1}>
       <Box sx={{ width: "100%" }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <AvatarBadge type={props.reason}>
-              <Avatar
-                sx={{ width: 42, height: 42 }}
-                alt={props.notification.author.displayName}
-                src={props.notification.author.avatar}
-                onClick={onViewProfile}
-              />
-            </AvatarBadge>
-            <Stack alignSelf="flex-end">
-              <AvatarGroup max={5}>
-                {_.map(props.otherAuthors, (author, key) => (
-                  <Avatar key={key} alt={author.displayName} src={author.avatar} sx={{ width: 24, height: 24 }} />
-                ))}
-              </AvatarGroup>
-            </Stack>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <NotificationAvatars
+              notification={props.notification}
+              otherAuthors={props.otherAuthors}
+              reason={props.reason}
+            />
             {AppBskyFeedPost.isRecord(props.notification.record) && (
-              <Stack direction="column" onClick={onViewProfile}>
-                <Typography variant="body2">{props.notification.author.displayName}</Typography>
-                <Typography color={grey[500]} variant="caption">
-                  @{props.notification.author.handle}
-                </Typography>
-              </Stack>
+              <ProfileHeader profile={props.notification.author} disableAvatar />
             )}
           </Stack>
           <Stack direction="row" alignItems="center">

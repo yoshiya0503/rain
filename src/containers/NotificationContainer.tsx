@@ -13,7 +13,6 @@ import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
 export const NotificationContainer = () => {
-  const getTimeline = useStore((state) => state.getTimeline);
   const reducedNotifications = useStore((state) => state.reducedNotifications);
   const reasonSubjects = useStore((state) => state.reasonSubjects);
   const reasonReplies = useStore((state) => state.reasonReplies);
@@ -47,6 +46,7 @@ export const NotificationContainer = () => {
         <TransitionGroup>
           {_.map(reducedNotifications, (item) => {
             // TODO updateSeenで既読にする
+            // TODO バッチつける
             // TODO replyとlike,repostが同じsubjectで同時に起きることがある
             const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote";
             const otherAuthors = _.chain(item).map("author").slice(1).value();
