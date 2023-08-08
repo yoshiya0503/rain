@@ -9,7 +9,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import LoopIcon from "@mui/icons-material/Loop";
 import { grey, green } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import AvatarThread from "@/components/AvatarThraed";
+import AvatarThread from "@/components/AvatarThread";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import SocialActions from "@/components/SocialActions";

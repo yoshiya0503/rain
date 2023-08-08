@@ -1,7 +1,7 @@
 import _ from "lodash";
+import CardMedia from "@mui/material/CardMedia";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import CardMedia from "@mui/material/CardMedia";
 import { AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {

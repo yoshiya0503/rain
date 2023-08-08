@@ -27,6 +27,25 @@ type Props = {
 export const Post = (props: Props) => {
   const { onShare } = usePost();
 
+  const menuItems = [
+    {
+      name: "share",
+      label: "Share",
+      icon: <ShareIcon />,
+      action: () => {
+        onShare(props.notification);
+      },
+    },
+    {
+      name: "mute",
+      label: "Mute Thread",
+      icon: <MuteIcon />,
+      action: () => {
+        console.log("mute");
+      },
+    },
+  ];
+
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.notification.indexedAt), { locale: ja });
   const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
   const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.reason}しました`;
@@ -49,7 +68,7 @@ export const Post = (props: Props) => {
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
-            {(props.reason === "reply" || props.reason === "quote") && <DropDownMenu items={[]} size="tiny" />}
+            {(props.reason === "reply" || props.reason === "quote") && <DropDownMenu items={menuItems} size="tiny" />}
           </Stack>
         </Stack>
         {props.reason !== "reply" && props.reason !== "quote" && (

@@ -18,6 +18,9 @@ export const ProfileHeader = (props: Props) => {
   if (props.size === "small") {
     sx = { width: 32, height: 32 };
   }
+  if (props.size === "medium") {
+    sx = { width: 42, height: 42 };
+  }
   if (props.size === "large") {
     sx = { width: 64, height: 64 };
   }
