@@ -2,7 +2,7 @@ import _ from "lodash";
 import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
 
-export const FeedTemplate = () => {
+export const TimelineTemplate = () => {
   return (
     <>
       {_.times(10, (index) => (
@@ -24,4 +24,4 @@ export const FeedTemplate = () => {
   );
 };
 
-export default FeedTemplate;
+export default TimelineTemplate;

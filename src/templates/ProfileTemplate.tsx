@@ -2,7 +2,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Skeleton from "@mui/material/Skeleton";
-import FeedTemplate from "@/templates/FeedTemplate";
+import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const ProfileTemplate = () => {
   return (
@@ -23,7 +23,7 @@ export const ProfileTemplate = () => {
           </Stack>
         </CardContent>
       </Card>
-      <FeedTemplate />
+      <TimelineTemplate />
     </>
   );
 };

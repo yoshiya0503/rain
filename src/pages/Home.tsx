@@ -1,13 +1,13 @@
-import Layout from "@/templates/Layout";
 import { Suspense } from "react";
-import FeedContainer from "@/containers/FeedContainer";
-import FeedTemplate from "@/templates/FeedTemplate";
+import Layout from "@/templates/Layout";
+import TimelineContainer from "@/containers/TimelineContainer";
+import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const Home = () => {
   return (
     <Layout>
-      <Suspense fallback={<FeedTemplate />}>
-        <FeedContainer />
+      <Suspense fallback={<TimelineTemplate />}>
+        <TimelineContainer />
       </Suspense>
     </Layout>
   );

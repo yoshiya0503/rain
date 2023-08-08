@@ -2,10 +2,14 @@ import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
 import { AtUri } from "@atproto/uri";
+import { AppBskyActorDefs } from "@atproto/api";
 import agent from "@/agent";
 
 export interface SocialGraphSlice {
-  //TODO follows, folowersの実装
+  follows: AppBskyActorDefs.ProfileView[];
+  followers: AppBskyActorDefs.ProfileView[];
+  followCursor: string;
+  followerCursor: string;
   getFollows: (actor: string) => Promise<void>;
   getFollowers: (actor: string) => Promise<void>;
   follow: (actor: string) => Promise<void>;
@@ -21,17 +25,25 @@ export const createSocialGraphSlice: StateCreator<
   [],
   [],
   SocialGraphSlice
-> = (_, get) => ({
+> = (set, get) => ({
+  follows: [],
+  followers: [],
+  followCursor: "",
+  followerCursor: "",
   getFollows: async (actor: string) => {
     try {
-      await agent.getFollows({ actor });
+      const res = await agent.getFollows({ actor, cursor: get().followCursor, limit: 100 });
+      if (!res.data.cursor) return;
+      set({ follows: res.data.follows, followCursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to get follows" }, e);
     }
   },
   getFollowers: async (actor: string) => {
     try {
-      await agent.getFollows({ actor });
+      const res = await agent.getFollowers({ actor, cursor: get().followerCursor, limit: 100 });
+      if (!res.data.cursor) return;
+      set({ followers: res.data.followers, followerCursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to get followers" }, e);
     }

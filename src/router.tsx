@@ -5,6 +5,7 @@ import Notification from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import Follows from "@/pages/Follows";
 import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
@@ -29,6 +30,7 @@ export const Router = () => {
           <Route path="/" element={<Home />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile/:handle" element={<Profile />} />
+          <Route path="/profile/:handle/follows" element={<Follows />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<NotFound />} />

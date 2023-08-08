@@ -12,7 +12,7 @@ import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs } from "@atproto/api";
 
-export const FeedContainer = () => {
+export const TimelineContainer = () => {
   const feed = useStore((state) => state.feed);
   const getTimeline = useStore((state) => state.getTimeline);
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
@@ -67,4 +67,4 @@ export const FeedContainer = () => {
   );
 };
 
-export default FeedContainer;
+export default TimelineContainer;
