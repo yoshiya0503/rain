@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -27,32 +29,54 @@ type Props = {
 };
 
 export const Profile = (props: Props) => {
+  const navigate = useNavigate();
   const me = useMe();
   const actor = useActor(props.handle);
-  const { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare } = useSocial(props.handle);
+  const { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare } = useSocial();
+
+  const onToggleFollow = useCallback(() => {
+    return actor.viewer?.following ? onUnFollow(actor) : onFollow(actor);
+  }, [actor, onFollow, onUnFollow]);
+
+  const onToggleMute = useCallback(() => {
+    return actor.viewer?.muted ? onUnMute(actor) : onMute(actor);
+  }, [actor, onMute, onUnMute]);
+
+  const onToggleBlock = useCallback(() => {
+    return actor.viewer?.blocking ? onUnBlock(actor) : onBlock(actor);
+  }, [actor, onBlock, onUnBlock]);
+
+  const onClickShare = useCallback(() => {
+    return onShare(actor);
+  }, [actor, onShare]);
+
+  const onViewFollow = useCallback(() => {
+    const uri = `/profile/${props.handle}/follows`;
+    navigate(uri);
+  }, [props, navigate]);
 
   const isMe = me.did === actor.did;
   const menuItems = isMe
     ? [
-        { name: "share", icon: <ShareIcon />, label: "Share", action: onShare },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onShare },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onClickShare },
       ]
     : [
         {
           name: "block",
           icon: <BlockIcon />,
           label: actor.viewer?.blocking ? "Unblock" : "Block",
-          action: actor.viewer?.blocking ? onUnBlock : onBlock,
+          action: onToggleBlock,
         },
         {
           name: "mute",
           icon: <MuteIcon />,
           label: actor?.viewer?.muted ? "Unmute" : "Mute",
-          action: actor?.viewer?.muted ? onUnMute : onMute,
+          action: onToggleMute,
         },
-        { name: "report", icon: <ReportIcon />, label: "Report", action: onMute },
-        { name: "share", icon: <ShareIcon />, label: "Share", action: onShare },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onShare },
+        { name: "report", icon: <ReportIcon />, label: "Report", action: onToggleMute },
+        { name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare },
+        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onClickShare },
       ];
 
   return (
@@ -69,7 +93,7 @@ export const Profile = (props: Props) => {
                   startIcon={<CheckIcon />}
                   size="small"
                   variant="contained"
-                  onClick={onUnFollow}
+                  onClick={onToggleFollow}
                 >
                   following
                 </Button>
@@ -80,7 +104,7 @@ export const Profile = (props: Props) => {
                   startIcon={<AddIcon />}
                   size="small"
                   variant="contained"
-                  onClick={onFollow}
+                  onClick={onToggleFollow}
                 >
                   follow
                 </Button>
@@ -131,7 +155,7 @@ export const Profile = (props: Props) => {
               <Chip sx={{ ml: 1 }} label="blocked" size="small" color="error" variant="outlined" icon={<BlockIcon />} />
             )}
           </Box>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} onClick={onViewFollow}>
             <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
                 {actor.followersCount}

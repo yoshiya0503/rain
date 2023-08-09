@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
@@ -10,14 +11,16 @@ export interface SocialGraphSlice {
   followers: AppBskyActorDefs.ProfileView[];
   followCursor: string;
   followerCursor: string;
-  getFollows: (actor: string) => Promise<void>;
-  getFollowers: (actor: string) => Promise<void>;
+  followSubject?: AppBskyActorDefs.ProfileView;
+  getFollows: (actor: string, isReset: boolean) => Promise<void>;
+  getFollowers: (actor: string, isReset: boolean) => Promise<void>;
   follow: (actor: string) => Promise<void>;
   unfollow: (following: string) => Promise<void>;
   mute: (actor: string) => Promise<void>;
   unmute: (actor: string) => Promise<void>;
   block: (actor: string) => Promise<void>;
   unblock: (blocking: string) => Promise<void>;
+  updateFollowViwer: (actor: AppBskyActorDefs.ProfileView, type: "follows" | "followers") => void;
 }
 
 export const createSocialGraphSlice: StateCreator<
@@ -30,20 +33,33 @@ export const createSocialGraphSlice: StateCreator<
   followers: [],
   followCursor: "",
   followerCursor: "",
-  getFollows: async (actor: string) => {
+  followSubject: undefined,
+  getFollows: async (actor: string, isReset: boolean) => {
     try {
-      const res = await agent.getFollows({ actor, cursor: get().followCursor, limit: 100 });
+      const cursor = isReset ? "" : get().followCursor;
+      const res = await agent.getFollows({ actor, cursor, limit: 100 });
       if (!res.data.cursor) return;
-      set({ follows: res.data.follows, followCursor: res.data.cursor });
+      if (isReset) {
+        set({ follows: res.data.follows, followSubject: res.data.subject, followCursor: res.data.cursor });
+      } else {
+        const follows = _.concat(get().follows, res.data.follows);
+        set({ follows, followSubject: res.data.subject, followerCursor: res.data.cursor });
+      }
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to get follows" }, e);
     }
   },
-  getFollowers: async (actor: string) => {
+  getFollowers: async (actor: string, isReset: boolean) => {
     try {
-      const res = await agent.getFollowers({ actor, cursor: get().followerCursor, limit: 100 });
+      const cursor = isReset ? "" : get().followCursor;
+      const res = await agent.getFollowers({ actor, cursor, limit: 100 });
       if (!res.data.cursor) return;
-      set({ followers: res.data.followers, followerCursor: res.data.cursor });
+      if (isReset) {
+        set({ followers: res.data.followers, followSubject: res.data.subject, followerCursor: res.data.cursor });
+      } else {
+        const followers = _.concat(get().followers, res.data.followers);
+        set({ followers, followSubject: res.data.subject, followerCursor: res.data.cursor });
+      }
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to get followers" }, e);
     }
@@ -100,5 +116,18 @@ export const createSocialGraphSlice: StateCreator<
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to unblock account" }, e);
     }
+  },
+  updateFollowViwer: (actor: AppBskyActorDefs.ProfileView, type: "follows" | "followers") => {
+    const update = _.map(get()[type], (f) => {
+      if (f.did === actor.did) {
+        if (_.has(f.viewer, type)) {
+          f.viewer = _.omit(f.viewer, "following");
+        } else {
+          f.viewer = { ...f.viewer, following: actor.did };
+        }
+      }
+      return f;
+    });
+    set({ [type]: update });
   },
 });

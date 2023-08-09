@@ -1,9 +1,9 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
+import { AppBskyActorDefs } from "@atproto/api";
 
-export const useSocial = (handle: string) => {
-  const actor = useStore((state) => state.actor);
+export const useSocial = () => {
   const getProfile = useStore((state) => state.getProfile);
   const follow = useStore((state) => state.follow);
   const unfollow = useStore((state) => state.unfollow);
@@ -11,49 +11,67 @@ export const useSocial = (handle: string) => {
   const unblock = useStore((state) => state.unblock);
   const mute = useStore((state) => state.mute);
   const unmute = useStore((state) => state.unmute);
+  const updateFollowViewer = useStore((state) => state.updateFollowViwer);
+  // TODO フォロー画面の更新
 
-  if (!actor) {
-    throw getProfile(handle);
-  }
+  const onFollow = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await follow(actor.did);
+      await getProfile(actor.handle);
+      // updateFollowViewer(actor, "followers");
+    },
+    [follow, getProfile, updateFollowViewer]
+  );
 
-  const onFollow = useCallback(async () => {
-    await follow(actor?.did || "");
-    await getProfile(handle || "");
-  }, [actor, handle, follow, getProfile]);
+  const onUnFollow = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await unfollow(actor.viewer?.following || "");
+      await getProfile(actor.handle);
+      // updateFollowViewer(actor, "follows");
+    },
+    [unfollow, getProfile, updateFollowViewer]
+  );
 
-  const onUnFollow = useCallback(async () => {
-    await unfollow(actor?.viewer?.following || "");
-    await getProfile(handle || "");
-  }, [actor, handle, unfollow, getProfile]);
+  const onMute = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await mute(actor.did);
+      await getProfile(actor.handle);
+    },
+    [mute, getProfile]
+  );
 
-  const onMute = useCallback(async () => {
-    await mute(actor?.did || "");
-    await getProfile(handle || "");
-  }, [actor, handle, mute, getProfile]);
+  const onUnMute = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await unmute(actor.did);
+      await getProfile(actor.handle);
+    },
+    [unmute, getProfile]
+  );
 
-  const onUnMute = useCallback(async () => {
-    await unmute(actor?.did || "");
-    await getProfile(handle || "");
-  }, [actor, handle, unmute, getProfile]);
+  const onBlock = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await block(actor.did);
+      _.delay(async () => {
+        await getProfile(actor.handle || "");
+      }, 500);
+    },
+    [block, getProfile]
+  );
 
-  const onBlock = useCallback(async () => {
-    await block(actor?.did || "");
-    _.delay(async () => {
-      await getProfile(handle || "");
-    }, 500);
-  }, [actor, handle, block, getProfile]);
+  const onUnBlock = useCallback(
+    async (actor: AppBskyActorDefs.ProfileView) => {
+      await unblock(actor.viewer?.blocking || "");
+      _.delay(async () => {
+        await getProfile(actor.handle);
+      }, 500);
+    },
+    [unblock, getProfile]
+  );
 
-  const onUnBlock = useCallback(async () => {
-    await unblock(actor?.viewer?.blocking || "");
-    _.delay(async () => {
-      await getProfile(handle || "");
-    }, 500);
-  }, [actor, handle, unblock, getProfile]);
-
-  const onShare = useCallback(() => {
-    const url = `https://bsky.app/profile/${actor?.handle}`;
+  const onShare = useCallback((actor: AppBskyActorDefs.ProfileView) => {
+    const url = `https://bsky.app/profile/${actor.handle}`;
     navigator.clipboard.writeText(url);
-  }, [actor]);
+  }, []);
 
   return { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare };
 };

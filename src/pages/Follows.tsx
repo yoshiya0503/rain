@@ -11,8 +11,12 @@ export const Feeds = () => {
   return (
     <Layout>
       <TabLayout labels={["follows", "followers"]}>
-        <Suspense fallback={<TimelineTemplate />}>{handle && <FollowsContainer handle={handle} />}</Suspense>
-        <div>followers</div>
+        <Suspense fallback={<TimelineTemplate />}>
+          {handle && <FollowsContainer handle={handle} type="follows" />}
+        </Suspense>
+        <Suspense fallback={<TimelineTemplate />}>
+          {handle && <FollowsContainer handle={handle} type="followers" />}
+        </Suspense>
       </TabLayout>
     </Layout>
   );

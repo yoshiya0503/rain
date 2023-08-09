@@ -12,7 +12,7 @@ import Linkify from "linkify-react";
 import AvatarThread from "@/components/AvatarThread";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
-import SocialActions from "@/components/SocialActions";
+import PostActions from "@/components/PostActions";
 import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostQuote from "@/components/PostQuote";
@@ -109,7 +109,7 @@ export const Post = (props: Props) => {
             )}
         </Stack>
         <Box sx={{ ml: -1, mb: 1 }}>
-          <SocialActions post={props.post} onReply={props.onReply} />
+          <PostActions post={props.post} onReply={props.onReply} />
         </Box>
       </Box>
     </Stack>

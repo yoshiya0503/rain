@@ -16,7 +16,7 @@ type Props = {
   onReply?: (post: AppBskyFeedDefs.PostView) => void;
 };
 
-export const SocialActions = (props: Props) => {
+export const PostActions = (props: Props) => {
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();
 
   const onReply = useCallback(() => {
@@ -66,4 +66,4 @@ export const SocialActions = (props: Props) => {
   );
 };
 
-export default SocialActions;
+export default PostActions;

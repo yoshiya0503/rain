@@ -25,8 +25,9 @@ export const ProfileContainer = (props: Props) => {
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
   const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
+  const isOthers = actor?.handle !== props.handle;
 
-  if (!actor || actor.handle !== props.handle) {
+  if (!actor || isOthers) {
     throw Promise.all([getProfile(props.handle), getAuthorFeed(props.handle, true)]);
   }
 

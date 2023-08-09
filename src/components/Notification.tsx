@@ -11,7 +11,7 @@ import Linkify from "linkify-react";
 import NotificationAvatars from "@/components/NotificatinAvatars";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
-import SocialActions from "@/components/SocialActions";
+import PostActions from "@/components/PostActions";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
 
@@ -91,7 +91,7 @@ export const Post = (props: Props) => {
         </Stack>
         {(props.reason === "reply" || props.reason === "quote") && props.reasonReply && (
           <Box sx={{ mb: 1 }}>
-            <SocialActions post={props.reasonReply} onReply={props.onReply} />
+            <PostActions post={props.reasonReply} onReply={props.onReply} />
           </Box>
         )}
       </Box>
