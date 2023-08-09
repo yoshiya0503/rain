@@ -10,7 +10,7 @@ type Props = {
   onScrollLimit: () => void;
 };
 
-export const ScrollView = (props: Props) => {
+export const ScrollLayout = (props: Props) => {
   const showScrollThreashold = 3000;
 
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +38,7 @@ export const ScrollView = (props: Props) => {
   };
 
   return (
-    <>
+    <Box>
       <Fade in={hasScroll}>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Fab variant="extended" size="medium" color="primary" onClick={scrollTop} sx={{ mb: -5, opacity: 0.7 }}>
@@ -48,18 +48,14 @@ export const ScrollView = (props: Props) => {
         </Box>
       </Fade>
       <Box
-        sx={{
-          height: "95vh",
-          overflowY: "scroll",
-          "&::-webkit-scrollbar": { display: "none" },
-        }}
+        sx={{ height: "95vh", overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
         onScroll={handleBottomScroll}
         ref={ref}
       >
         {props.children}
       </Box>
-    </>
+    </Box>
   );
 };
 
-export default ScrollView;
+export default ScrollLayout;

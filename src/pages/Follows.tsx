@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
-import Box from "@mui/material/Box";
 import Layout from "@/templates/Layout";
 import FollowsContainer from "@/containers/FollowsContainer";
 import TabLayout from "@/templates/TabLayout";
@@ -11,12 +10,10 @@ export const Feeds = () => {
 
   return (
     <Layout>
-      <Box sx={{ width: 480 }}>
-        <TabLayout labels={["follows", "followers"]}>
-          <Suspense fallback={<TimelineTemplate />}>{handle && <FollowsContainer handle={handle} />}</Suspense>
-          <div>followers</div>
-        </TabLayout>
-      </Box>
+      <TabLayout labels={["follows", "followers"]}>
+        <Suspense fallback={<TimelineTemplate />}>{handle && <FollowsContainer handle={handle} />}</Suspense>
+        <div>followers</div>
+      </TabLayout>
     </Layout>
   );
 };

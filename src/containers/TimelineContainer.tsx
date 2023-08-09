@@ -45,23 +45,21 @@ export const TimelineContainer = () => {
 
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
-      <Box sx={{ maxWidth: 480 }}>
-        <TransitionGroup>
-          {_.map(feed, (item) => (
-            <Collapse key={item.post.cid}>
-              <Box sx={{ mt: 1, mb: 1 }}>
-                {item.reply?.root && <Post post={item.reply.root} onReply={onReply} reason={item.reason} hasReply />}
-                {item.reply?.parent && item.reply?.parent.cid !== item.reply?.root.cid && (
-                  <Post post={item.reply.parent} onReply={onReply} reason={item.reason} hasReply />
-                )}
-                <Post post={item.post} onReply={onReply} reason={item.reason} />
-                <Divider />
-              </Box>
-            </Collapse>
-          ))}
-        </TransitionGroup>
-        <LinearProgress />
-      </Box>
+      <TransitionGroup>
+        {_.map(feed, (item) => (
+          <Collapse key={item.post.cid}>
+            <Box sx={{ mt: 1, mb: 1 }}>
+              {item.reply?.root && <Post post={item.reply.root} onReply={onReply} reason={item.reason} hasReply />}
+              {item.reply?.parent && item.reply?.parent.cid !== item.reply?.root.cid && (
+                <Post post={item.reply.parent} onReply={onReply} reason={item.reason} hasReply />
+              )}
+              <Post post={item.post} onReply={onReply} reason={item.reason} />
+              <Divider />
+            </Box>
+          </Collapse>
+        ))}
+      </TransitionGroup>
+      <LinearProgress />
       <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
     </ScrollLayout>
   );

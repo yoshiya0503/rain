@@ -1,10 +1,10 @@
 import _ from "lodash";
 import { ReactNode } from "react";
+import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Box from "@mui/material/Box";
 import useTabs from "@/hooks/useTabs";
 
 type Props = {
@@ -24,7 +24,7 @@ export const TabLayout = (props: Props) => {
         </TabList>
       </Box>
       {_.map(props.children, (component, key) => (
-        <TabPanel key={key} value={_.toString(key)}>
+        <TabPanel sx={{ m: 0, p: 0 }} key={key} value={_.toString(key)}>
           {component}
         </TabPanel>
       ))}

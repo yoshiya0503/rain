@@ -42,35 +42,33 @@ export const NotificationContainer = () => {
 
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
-      <Box sx={{ maxWidth: 480 }}>
-        <TransitionGroup>
-          {_.map(reducedNotifications, (item) => {
-            // TODO updateSeenで既読にする
-            // TODO バッチつける
-            // TODO replyとlike,repostが同じsubjectで同時に起きることがある
-            const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote";
-            const otherAuthors = _.chain(item).map("author").slice(1).value();
-            const reasonSubject = _.find(reasonSubjects, (subject) => subject.uri === item[0].reasonSubject);
-            const reasonReply = _.find(reasonReplies, (reply) => reply.uri === item[0].uri);
-            return (
-              <Collapse key={item[0].cid}>
-                <Box sx={{ mt: 1, mb: 1 }}>
-                  <Notification
-                    notification={item[0]}
-                    reason={reason}
-                    otherAuthors={otherAuthors}
-                    reasonSubject={reasonSubject}
-                    reasonReply={reasonReply}
-                    onReply={onReply}
-                  />
-                  <Divider />
-                </Box>
-              </Collapse>
-            );
-          })}
-        </TransitionGroup>
-        <LinearProgress />
-      </Box>
+      <TransitionGroup>
+        {_.map(reducedNotifications, (item) => {
+          // TODO updateSeenで既読にする
+          // TODO バッチつける
+          // TODO replyとlike,repostが同じsubjectで同時に起きることがある
+          const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote";
+          const otherAuthors = _.chain(item).map("author").slice(1).value();
+          const reasonSubject = _.find(reasonSubjects, (subject) => subject.uri === item[0].reasonSubject);
+          const reasonReply = _.find(reasonReplies, (reply) => reply.uri === item[0].uri);
+          return (
+            <Collapse key={item[0].cid}>
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Notification
+                  notification={item[0]}
+                  reason={reason}
+                  otherAuthors={otherAuthors}
+                  reasonSubject={reasonSubject}
+                  reasonReply={reasonReply}
+                  onReply={onReply}
+                />
+                <Divider />
+              </Box>
+            </Collapse>
+          );
+        })}
+      </TransitionGroup>
+      <LinearProgress />
       <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
     </ScrollLayout>
   );
