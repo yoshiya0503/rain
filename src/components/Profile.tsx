@@ -18,44 +18,46 @@ import ShareIcon from "@mui/icons-material/ShareRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
 import Linkify from "linkify-react";
 import DropDownMenu from "@/components/DropDownMenu";
+import ProfileDialog from "@/components/ProfileDialog";
 import useSocial from "@/hooks/useSocial";
+import useDialog from "@/hooks/useDialog";
 import useMe from "@/hooks/useMe";
-import useActor from "@/hooks/useActor";
+import { AppBskyActorDefs } from "@atproto/api";
 
 //TODO Add to list
 //TODO moderation report
 type Props = {
-  handle: string;
+  actor: AppBskyActorDefs.ProfileViewDetailed;
 };
 
 export const Profile = (props: Props) => {
   const navigate = useNavigate();
   const me = useMe();
-  const actor = useActor(props.handle);
+  const [isOpen, openProfileDialog, closeProfileDialog] = useDialog();
   const { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare } = useSocial();
 
   const onToggleFollow = useCallback(() => {
-    return actor.viewer?.following ? onUnFollow(actor) : onFollow(actor);
-  }, [actor, onFollow, onUnFollow]);
+    return props.actor.viewer?.following ? onUnFollow(props.actor) : onFollow(props.actor);
+  }, [props.actor, onFollow, onUnFollow]);
 
   const onToggleMute = useCallback(() => {
-    return actor.viewer?.muted ? onUnMute(actor) : onMute(actor);
-  }, [actor, onMute, onUnMute]);
+    return props.actor.viewer?.muted ? onUnMute(props.actor) : onMute(props.actor);
+  }, [props.actor, onMute, onUnMute]);
 
   const onToggleBlock = useCallback(() => {
-    return actor.viewer?.blocking ? onUnBlock(actor) : onBlock(actor);
-  }, [actor, onBlock, onUnBlock]);
+    return props.actor.viewer?.blocking ? onUnBlock(props.actor) : onBlock(props.actor);
+  }, [props.actor, onBlock, onUnBlock]);
 
   const onClickShare = useCallback(() => {
-    return onShare(actor);
-  }, [actor, onShare]);
+    return onShare(props.actor);
+  }, [props.actor, onShare]);
 
   const onViewFollow = useCallback(() => {
-    const uri = `/profile/${props.handle}/follows`;
+    const uri = `/profile/${props.actor.handle}/follows`;
     navigate(uri);
   }, [props, navigate]);
 
-  const isMe = me.did === actor.did;
+  const isMe = me.did === props.actor.did;
   const menuItems = isMe
     ? [
         { name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare },
@@ -65,13 +67,13 @@ export const Profile = (props: Props) => {
         {
           name: "block",
           icon: <BlockIcon />,
-          label: actor.viewer?.blocking ? "Unblock" : "Block",
+          label: props.actor.viewer?.blocking ? "Unblock" : "Block",
           action: onToggleBlock,
         },
         {
           name: "mute",
           icon: <MuteIcon />,
-          label: actor?.viewer?.muted ? "Unmute" : "Mute",
+          label: props.actor?.viewer?.muted ? "Unmute" : "Mute",
           action: onToggleMute,
         },
         { name: "report", icon: <ReportIcon />, label: "Report", action: onToggleMute },
@@ -81,13 +83,13 @@ export const Profile = (props: Props) => {
 
   return (
     <Card>
-      <CardMedia sx={{ height: 140 }} image={actor.banner} />
+      <CardMedia sx={{ height: 140 }} image={props.actor.banner} />
       <CardContent>
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
-            <Avatar sx={{ width: 64, height: 64 }} src={actor.avatar} />
+            <Avatar sx={{ width: 64, height: 64 }} src={props.actor.avatar} />
             <Stack sx={{ mt: 4 }} direction="row" alignItems="center">
-              {actor?.viewer?.following && (
+              {props.actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<CheckIcon />}
@@ -98,7 +100,7 @@ export const Profile = (props: Props) => {
                   following
                 </Button>
               )}
-              {!isMe && !actor?.viewer?.following && (
+              {!isMe && !props.actor?.viewer?.following && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
                   startIcon={<AddIcon />}
@@ -115,6 +117,7 @@ export const Profile = (props: Props) => {
                   startIcon={<EditIcon />}
                   size="small"
                   variant="contained"
+                  onClick={openProfileDialog}
                 >
                   Edit Profile
                 </Button>
@@ -123,15 +126,15 @@ export const Profile = (props: Props) => {
             </Stack>
           </Stack>
           <Box>
-            <Typography variant="h5">{actor.displayName}</Typography>
-            <Typography variant="caption">@{actor.handle}</Typography>
-            {actor.viewer?.followedBy && (
+            <Typography variant="h5">{props.actor.displayName}</Typography>
+            <Typography variant="caption">@{props.actor.handle}</Typography>
+            {props.actor.viewer?.followedBy && (
               <Chip sx={{ ml: 1 }} label="followed you" size="small" color="primary" variant="outlined" />
             )}
-            {actor.viewer?.muted && (
+            {props.actor.viewer?.muted && (
               <Chip sx={{ ml: 1 }} label="mute" size="small" color="info" variant="outlined" icon={<MuteIcon />} />
             )}
-            {actor.viewer?.mutedByList && (
+            {props.actor.viewer?.mutedByList && (
               <Chip
                 sx={{ ml: 1 }}
                 label="muted by"
@@ -141,7 +144,7 @@ export const Profile = (props: Props) => {
                 icon={<MuteIcon />}
               />
             )}
-            {actor.viewer?.blocking && (
+            {props.actor.viewer?.blocking && (
               <Chip
                 sx={{ ml: 1 }}
                 label="blocking"
@@ -151,35 +154,36 @@ export const Profile = (props: Props) => {
                 icon={<BlockIcon />}
               />
             )}
-            {actor.viewer?.blockedBy && (
+            {props.actor.viewer?.blockedBy && (
               <Chip sx={{ ml: 1 }} label="blocked" size="small" color="error" variant="outlined" icon={<BlockIcon />} />
             )}
           </Box>
           <Stack direction="row" spacing={1} onClick={onViewFollow}>
             <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {actor.followersCount}
+                {props.actor.followersCount}
               </Typography>
               <Typography variant="caption">followers</Typography>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {actor.followsCount}
+                {props.actor.followsCount}
               </Typography>
               <Typography variant="caption">following</Typography>
             </Stack>
             <Stack direction="row" alignItems="center" spacing={0.3}>
               <Typography sx={{ fontWeight: "bold" }} variant="caption">
-                {actor.postsCount}
+                {props.actor.postsCount}
               </Typography>
               <Typography variant="caption">posts</Typography>
             </Stack>
           </Stack>
           <Typography variant="caption">
-            <Linkify>{actor.description}</Linkify>
+            <Linkify>{props.actor.description}</Linkify>
           </Typography>
         </Stack>
       </CardContent>
+      <ProfileDialog open={isOpen} onClose={closeProfileDialog} />
     </Card>
   );
 };

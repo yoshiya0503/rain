@@ -18,8 +18,8 @@ type Props = {
 };
 
 export const ProfileContainer = (props: Props) => {
-  const authorFeed = useStore((state) => state.authorFeed);
   const actor = useStore((state) => state.actor);
+  const authorFeed = useStore((state) => state.authorFeed);
   const getProfile = useStore((state) => state.getProfile);
   const getAuthorFeed = useStore((state) => state.getAuthorFeed);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
@@ -52,7 +52,7 @@ export const ProfileContainer = (props: Props) => {
 
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
-      <Profile handle={props.handle} />
+      <Profile actor={actor} />
       <TransitionGroup>
         {_.map(authorFeed, (item) => (
           <Collapse key={item.post.cid}>

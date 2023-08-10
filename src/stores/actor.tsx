@@ -2,7 +2,7 @@ import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
-import { AppBskyActorDefs, AppBskyFeedDefs } from "@atproto/api";
+import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyActorProfile } from "@atproto/api";
 import agent from "@/agent";
 
 export interface ActorSlice {
@@ -13,6 +13,7 @@ export interface ActorSlice {
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
+  updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
@@ -55,6 +56,15 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       }
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
+    }
+  },
+  updateProfile: async (record: AppBskyActorProfile.Record) => {
+    try {
+      await agent.upsertProfile(async (existing?: AppBskyActorProfile.Record) => {
+        return { ...existing, ..._.omitBy(record, _.isEmpty) };
+      });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed update profile" }, e);
     }
   },
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string | null) => {

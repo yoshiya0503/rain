@@ -1,8 +1,10 @@
 import _ from "lodash";
 import { useState, useCallback } from "react";
 import { useStore } from "@/stores";
+import useCanvas from "@/hooks/useCanvas";
 
 export const useImage = () => {
+  const { resizeImage } = useCanvas();
   const onUploadBlob = useStore((state) => state.uploadBlob);
   const [images, setImages] = useState<File[]>([]);
 
@@ -34,7 +36,9 @@ export const useImage = () => {
     }
     const result = await Promise.all(
       _.map(images, async (image) => {
-        const arrayBuffer = await image.arrayBuffer();
+        const resized = await resizeImage(image);
+        if (!resized) return;
+        const arrayBuffer = await resized.arrayBuffer();
         return await onUploadBlob(new Uint8Array(arrayBuffer));
       })
     );
