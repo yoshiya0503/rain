@@ -55,11 +55,13 @@ export const useActor = () => {
 
   const onRemoveAvatar = useCallback(() => {
     setAvatar(undefined);
-  }, [setAvatar]);
+    setActor({ ...actor, avatar: "" });
+  }, [actor, setActor, setAvatar]);
 
   const onRemoveBanner = useCallback(() => {
     setBanner(undefined);
-  }, [setBanner]);
+    setActor({ ...actor, banner: "" });
+  }, [actor, setActor, setBanner]);
 
   const fetchBlob = useCallback(async () => {
     const [uploadedAvatar, uploadedBanner] = await Promise.all(
