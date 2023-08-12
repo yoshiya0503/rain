@@ -31,7 +31,6 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       const session = get().session;
       const res = await agent.getProfile({ actor: session?.did || "" });
       set({ me: res.data });
-      get().createMessage({ status: "success", title: "success to fetch profile" });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch profile" }, e);
     }
@@ -40,7 +39,6 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
     try {
       const res = await agent.getProfile({ actor });
       set({ actor: res.data });
-      get().createMessage({ status: "success", title: "success to fetch profile" });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch profile" }, e);
     }

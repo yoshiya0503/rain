@@ -8,12 +8,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
-import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import Backdrop from "@mui/material/Backdrop";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
+import AvatarBadge from "@/components/AvatarBadge";
 import useBackdrop from "@/hooks/useBackdrop";
 import useActor from "@/hooks/useActor";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
@@ -67,14 +67,10 @@ export const ProfileDialog = (props: Props) => {
         <Stack direction="row" sx={{ ml: 2, mt: -6 }} justifyContent="space-between">
           <Box>
             <CardActionArea sx={{ borderRadius: "50%" }} component="label">
-              <Badge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                badgeContent={<CameraAltOutlinedIcon sx={{ color: grey[400] }} />}
-              >
+              <AvatarBadge type="camera">
                 <Avatar sx={{ width: 96, height: 96 }} src={(avatar && URL.createObjectURL(avatar)) || actor.avatar} />
                 <input type="file" accept="image/*" hidden onChange={onUploadAvatar} />
-              </Badge>
+              </AvatarBadge>
             </CardActionArea>
           </Box>
         </Stack>

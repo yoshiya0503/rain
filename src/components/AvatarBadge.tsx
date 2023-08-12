@@ -1,15 +1,16 @@
 import { ReactNode } from "react";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import { pink, green, blue, purple, grey } from "@mui/material/colors";
+import { pink, green, blue, purple, orange } from "@mui/material/colors";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import LoopIcon from "@mui/icons-material/LoopRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
 type Props = {
-  type: "reply" | "like" | "repost" | "quote" | "follow" | "camera";
+  type: "reply" | "like" | "repost" | "quote" | "follow" | "mention" | "camera";
   children: ReactNode;
 };
 
@@ -42,6 +43,14 @@ export const AvatarBadge = (props: Props) => {
     );
   }
 
+  if (props.type === "mention") {
+    icon = (
+      <IconWrapper color={orange[400]}>
+        <SendRoundedIcon sx={{ fontSize: 12 }} />
+      </IconWrapper>
+    );
+  }
+
   if (props.type === "like") {
     icon = (
       <IconWrapper color={pink[400]}>
@@ -67,11 +76,7 @@ export const AvatarBadge = (props: Props) => {
   }
 
   if (props.type === "camera") {
-    icon = (
-      <IconWrapper color={grey[800]}>
-        <CameraAltOutlinedIcon sx={{ fontSize: 12 }} />
-      </IconWrapper>
-    );
+    icon = <CameraAltOutlinedIcon sx={{ color: grey[400] }} />;
   }
 
   return (

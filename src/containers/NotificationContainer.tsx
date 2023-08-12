@@ -47,10 +47,7 @@ export const NotificationContainer = () => {
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <TransitionGroup>
         {_.map(reducedNotifications, (item) => {
-          // TODO updateSeenで既読にする
-          // TODO バッチつける
-          // TODO replyとlike,repostが同じsubjectで同時に起きることがある
-          const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote";
+          const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote" | "mention";
           const otherAuthors = _.chain(item).map("author").slice(1).value();
           const reasonSubject = _.find(reasonSubjects, (subject) => subject.uri === item[0].reasonSubject);
           const reasonReply = _.find(reasonReplies, (reply) => reply.uri === item[0].uri);

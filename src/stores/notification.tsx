@@ -48,7 +48,7 @@ export const createNotificationSlice: StateCreator<
   },
   reduceNotifications: (notifications: AppBskyNotificationListNotifications.Notification[]) => {
     return _.chain(notifications)
-      .groupBy((notification) => notification.reasonSubject || notification.reason)
+      .groupBy((notification) => `${notification.reason}/${notification.reasonSubject}`)
       .toPairs()
       .orderBy((pair) => pair[1][0].indexedAt, "desc")
       .map((pair) => pair[1])

@@ -10,7 +10,7 @@ import { AppBskyActorDefs, AppBskyNotificationListNotifications } from "@atproto
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
-  reason: "repost" | "like" | "follow" | "reply" | "quote";
+  reason: "repost" | "like" | "follow" | "reply" | "quote" | "mention";
 };
 
 export const NotificationAvatars = (props: Props) => {
