@@ -14,6 +14,7 @@ export interface ActorSlice {
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
+  updateHandle: (handle: string) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
@@ -63,8 +64,19 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       await agent.upsertProfile(async (existing?: AppBskyActorProfile.Record) => {
         return { ...existing, ..._.omitBy(record, _.isEmpty) };
       });
+      await get().getMe();
+      await get().getProfile(get().me?.handle || "");
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed update profile" }, e);
+    }
+  },
+  updateHandle: async (handle: string) => {
+    try {
+      await agent.updateHandle({ handle });
+      await get().getMe();
+      await get().getProfile(get().me?.handle || "");
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed update handle" }, e);
     }
   },
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string | null) => {

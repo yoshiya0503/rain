@@ -16,6 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { grey } from "@mui/material/colors";
 import useBackdrop from "@/hooks/useBackdrop";
 import useActor from "@/hooks/useActor";
+import ImageListItemBar from "@mui/material/ImageListItemBar";
 
 type Props = {
   open: boolean;
@@ -40,9 +41,7 @@ export const ProfileDialog = (props: Props) => {
     });
   };
 
-  const onClean = () => {
-    props.onClose();
-  };
+  // TODO 画像の削除が出来ない
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
@@ -58,6 +57,12 @@ export const ProfileDialog = (props: Props) => {
             image={(banner && URL.createObjectURL(banner)) || actor.banner}
           />
           <input type="file" accept="image/*" hidden onChange={onUploadBanner} />
+          <ImageListItemBar
+            sx={{ mr: 2, background: "none" }}
+            position="bottom"
+            actionPosition="right"
+            actionIcon={<CameraAltOutlinedIcon sx={{ color: grey[400] }} />}
+          />
         </CardActionArea>
         <Stack direction="row" sx={{ ml: 2, mt: -6 }} justifyContent="space-between">
           <Box>
@@ -71,9 +76,6 @@ export const ProfileDialog = (props: Props) => {
                 <input type="file" accept="image/*" hidden onChange={onUploadAvatar} />
               </Badge>
             </CardActionArea>
-          </Box>
-          <Box sx={{ mt: 2, mr: 2 }}>
-            <CameraAltOutlinedIcon sx={{ color: grey[400] }} />
           </Box>
         </Stack>
         <Box sx={{ pt: 1 }}>
@@ -92,7 +94,7 @@ export const ProfileDialog = (props: Props) => {
       </DialogContent>
       <DialogActions>
         <Box>
-          <Button onClick={onClean}>Cancel</Button>
+          <Button onClick={props.onClose}>Cancel</Button>
           <Button onClick={onSend} disabled={disabled}>
             Save
           </Button>

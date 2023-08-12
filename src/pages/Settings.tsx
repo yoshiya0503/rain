@@ -6,18 +6,31 @@ import useMe from "@/hooks/useMe";
 import useAuthentication from "@/hooks/useAuthentication";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import HandleDialog from "@/components/HandleDialog";
+import useDialog from "@/hooks/useDialog";
 
 export const Settings = () => {
-  const { onLogout } = useAuthentication();
   const me = useMe();
+  const { onLogout } = useAuthentication();
+  const [isOpen, openHandleDialog, closeHandleDialog] = useDialog();
+
   return (
     <Layout>
-      <Box>
+      <Stack spacing={2}>
         <ProfileHeader profile={me} />
-        <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
-          Logout
-        </Button>
-      </Box>
+        <Box>
+          <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
+            Logout
+          </Button>
+        </Box>
+        <Box>
+          <Button variant="contained" startIcon={<AlternateEmailIcon />} onClick={openHandleDialog}>
+            Change Handle
+          </Button>
+        </Box>
+      </Stack>
+      <HandleDialog open={isOpen} onClose={closeHandleDialog} />
     </Layout>
   );
 };
