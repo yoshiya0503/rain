@@ -9,7 +9,8 @@ import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
 import { grey } from "@mui/material/colors";
 import Linkify from "linkify-react";
-import NotificationAvatars from "@/components/NotificatinAvatars";
+import NotificationAvatars from "@/components/NotificationAvatars";
+import NotificationImages from "@/components/NotificationImages";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
@@ -19,7 +20,7 @@ import PostQuote from "@/components/PostQuote";
 import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
-import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
+import { AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
@@ -99,7 +100,7 @@ export const Post = (props: Props) => {
                 {AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}
               </Linkify>
               {AppBskyEmbedImages.isView(props.reasonSubject?.embed) && (
-                <PostImages images={props.reasonSubject?.embed?.images} />
+                <NotificationImages images={props.reasonSubject?.embed?.images || []} />
               )}
             </Typography>
           )}
