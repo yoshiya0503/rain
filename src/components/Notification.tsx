@@ -4,6 +4,7 @@ import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
 import { grey } from "@mui/material/colors";
@@ -12,13 +13,18 @@ import NotificationAvatars from "@/components/NotificatinAvatars";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
+import PostArticle from "@/components/PostArticle";
+import PostImages from "@/components/PostImages";
+import PostQuote from "@/components/PostQuote";
+import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
+import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
 
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
-  reason: "repost" | "like" | "follow" | "reply" | "quote";
+  reason: "repost" | "like" | "follow" | "reply" | "quote" | "mention";
   onReply?: (post: AppBskyFeedDefs.PostView) => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
@@ -52,6 +58,12 @@ export const Post = (props: Props) => {
 
   return (
     <Stack direction="row" spacing={1}>
+      <Divider
+        sx={{ bgcolor: "primary.main", borderRightWidth: 1.5, mb: 2 }}
+        orientation="vertical"
+        flexItem
+        hidden={props.notification.isRead}
+      />
       <Box sx={{ width: "100%" }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Stack direction="row" alignItems="center" spacing={0.5}>
@@ -86,6 +98,9 @@ export const Post = (props: Props) => {
               <Linkify>
                 {AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}
               </Linkify>
+              {AppBskyEmbedImages.isView(props.reasonSubject?.embed) && (
+                <PostImages images={props.reasonSubject?.embed?.images} />
+              )}
             </Typography>
           )}
         </Stack>

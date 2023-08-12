@@ -7,7 +7,7 @@ export const useNotifications = () => {
   if (unreadCount === null) {
     throw countUnreadNotifications();
   }
-  return { unreadCount };
+  return { unreadCount, countUnreadNotifications };
 };
 
 export default useNotifications;

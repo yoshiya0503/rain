@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
@@ -20,12 +21,24 @@ import useMe from "@/hooks/useMe";
 import useNotification from "@/hooks/useNotification";
 import useDialog from "@/hooks/useDialog";
 
+const INTERVAL = 10 * 1000;
+
 export const SideMenu = () => {
-  // TODO 通知のリアルタイム更新
   const me = useMe();
-  const { unreadCount } = useNotification();
+  const { unreadCount, countUnreadNotifications } = useNotification();
   const navigate = useNavigate();
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
+
+  /*
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await countUnreadNotifications();
+    }, INTERVAL);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [countUnreadNotifications]);
+  */
 
   const menus = [
     { name: "Home", icon: <Home />, href: "/" },
