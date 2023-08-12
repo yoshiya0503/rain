@@ -20,7 +20,7 @@ import PostQuote from "@/components/PostQuote";
 import PostFeed from "@/components/PostFeed";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
-import { AppBskyEmbedImages } from "@atproto/api";
+import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
 
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
@@ -90,10 +90,28 @@ export const Post = (props: Props) => {
           </Typography>
         )}
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
-          {AppBskyFeedPost.isRecord(props.notification.record) ? (
-            <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-              <Linkify>{AppBskyFeedPost.isRecord(props.notification.record) && props.notification.record.text}</Linkify>
-            </Typography>
+          {AppBskyFeedPost.isRecord(props.reasonReply?.record) ? (
+            <>
+              <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
+                <Linkify>{props.reasonReply?.record.text}</Linkify>
+              </Typography>
+              {AppBskyEmbedImages.isView(props.reasonReply?.embed) && (
+                <PostImages images={props.reasonReply?.embed.images || []} />
+              )}
+              {AppBskyEmbedExternal.isView(props.reasonReply?.embed) && props.reasonReply?.embed.external && (
+                <PostArticle article={props.reasonReply?.embed.external} />
+              )}
+              {AppBskyEmbedRecord.isView(props.reasonReply?.embed) &&
+                props.reasonReply?.embed.record &&
+                AppBskyEmbedRecord.isViewRecord(props.reasonReply?.embed.record) && (
+                  <PostQuote record={props.reasonReply?.embed.record} />
+                )}
+              {AppBskyEmbedRecord.isView(props.reasonReply?.embed) &&
+                props.reasonReply?.embed.record &&
+                AppBskyFeedDefs.isGeneratorView(props.reasonReply?.embed.record) && (
+                  <PostFeed record={props.reasonReply?.embed.record} />
+                )}
+            </>
           ) : (
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption" color={grey[400]}>
               <Linkify>

@@ -71,8 +71,9 @@ export const createNotificationSlice: StateCreator<
   },
   fetchReasonReplies: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
     try {
+      // replyとmention両方使う
       const uris = _.chain(notifications)
-        .filter((notification) => notification.reason === "reply")
+        .filter((notification) => notification.reason === "reply" || notification.reason === "mention")
         .map((notification) => notification.uri)
         .uniq()
         .compact()
