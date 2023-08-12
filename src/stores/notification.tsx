@@ -8,6 +8,7 @@ import agent from "@/agent";
 export interface NotificationSlice {
   reducedNotifications: AppBskyNotificationListNotifications.Notification[][];
   notificationCursor: string;
+  unreadCount: number | null;
   reasonSubjects: AppBskyFeedDefs.PostView[];
   reasonReplies: AppBskyFeedDefs.PostView[];
   listNotifications: () => Promise<void>;
@@ -16,6 +17,8 @@ export interface NotificationSlice {
   ) => AppBskyNotificationListNotifications.Notification[][];
   fetchReasonSubjects: (notifications: AppBskyNotificationListNotifications.Notification[]) => Promise<void>;
   fetchReasonReplies: (notifications: AppBskyNotificationListNotifications.Notification[]) => Promise<void>;
+  countUnreadNotifications: () => Promise<void>;
+  updateSeen: () => Promise<void>;
   updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
@@ -27,6 +30,7 @@ export const createNotificationSlice: StateCreator<
 > = (set, get) => ({
   notificationCursor: "",
   reducedNotifications: [],
+  unreadCount: null,
   reasonSubjects: [],
   reasonReplies: [],
   listNotifications: async () => {
@@ -79,6 +83,22 @@ export const createNotificationSlice: StateCreator<
       set({ reasonReplies });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch reason replies" }, e);
+    }
+  },
+  countUnreadNotifications: async () => {
+    try {
+      const res = await agent.countUnreadNotifications({});
+      set({ unreadCount: res.data.count });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed fetch count unread notifications" }, e);
+    }
+  },
+  updateSeen: async () => {
+    try {
+      await agent.updateSeenNotifications();
+      set({ unreadCount: 0 });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", title: "failed update seen notification" }, e);
     }
   },
   updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {

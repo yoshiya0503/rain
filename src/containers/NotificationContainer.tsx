@@ -16,6 +16,7 @@ export const NotificationContainer = () => {
   const reducedNotifications = useStore((state) => state.reducedNotifications);
   const reasonSubjects = useStore((state) => state.reasonSubjects);
   const reasonReplies = useStore((state) => state.reasonReplies);
+  const updateSeen = useStore((state) => state.updateSeen);
   const listNotifications = useStore((state) => state.listNotifications);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
@@ -23,6 +24,8 @@ export const NotificationContainer = () => {
 
   if (_.isEmpty(reducedNotifications)) {
     throw listNotifications();
+  } else {
+    updateSeen();
   }
 
   const onScrollLimit = useCallback(() => {

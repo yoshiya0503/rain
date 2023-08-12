@@ -5,12 +5,12 @@ import Skeleton from "@mui/material/Skeleton";
 
 export const MenuTemplate = () => {
   return (
-    <Paper component="nav" sx={{ maxWidth: 210, height: 450, p: 2, borderRadius: 3 }}>
+    <Paper component="nav" sx={{ minWidth: 210, maxWidth: 240, height: 450, p: 2, borderRadius: 3 }}>
       <Stack direction="row" spacing={1} alignItems="center">
         <Skeleton width={64} height={64} variant="circular" />
-        <Stack direction="column" spacing={1}>
-          <Skeleton width={100} height={10} />
-          <Skeleton width={100} height={10} />
+        <Stack direction="column" spacing={1} sx={{ flexGrow: 1 }}>
+          <Skeleton height={15} />
+          <Skeleton height={15} />
         </Stack>
       </Stack>
       <Stack sx={{ mt: 2 }} spacing={2} alignItems="center">

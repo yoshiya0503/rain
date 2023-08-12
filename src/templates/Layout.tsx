@@ -17,13 +17,17 @@ export const Layout = (props: Props) => {
       <Grid container spacing={4}>
         <Grid>
           <Suspense fallback={<MenuTemplate />}>
-            <Paper component="nav" variant="outlined" sx={{ minWidth: 210, height: 450, borderRadius: 3 }}>
+            <Paper
+              component="nav"
+              variant="outlined"
+              sx={{ minWidth: 210, maxWidth: 240, height: 450, borderRadius: 3 }}
+            >
               <SideMenu />
             </Paper>
           </Suspense>
         </Grid>
         <Grid>
-          <Box sx={{ height: "95vh", overflow: "hidden", width: 480 }} component="main">
+          <Box sx={{ height: "95vh", overflow: "hidden", width: 480, minWidth: 480 }} component="main">
             {props.children}
           </Box>
         </Grid>

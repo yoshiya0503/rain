@@ -14,11 +14,11 @@ export const ProfileTemplate = () => {
             <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
               <Skeleton width={64} height={64} variant="circular" />
             </Stack>
-            <Stack justifyContent="space-between">
+            <Stack sx={{ width: "100%" }}>
               <Skeleton width="50%" height={30} />
-              <Skeleton width="50%" height={10} />
-              <Skeleton width="50%" height={10} />
-              <Skeleton width="100%" height={120} />
+              <Skeleton width="30%" height={15} />
+              <Skeleton width="30%" height={15} />
+              <Skeleton width="100%" height={80} />
             </Stack>
           </Stack>
         </CardContent>

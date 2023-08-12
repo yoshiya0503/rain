@@ -6,6 +6,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
+import Badge from "@mui/material/Badge";
 import Home from "@mui/icons-material/HomeRounded";
 import Search from "@mui/icons-material/SearchRounded";
 import Feed from "@mui/icons-material/FeedRounded";
@@ -16,10 +17,13 @@ import Create from "@mui/icons-material/CreateRounded";
 import ProfileHeader from "@/components/ProfileHeader";
 import PostDialog from "@/components/PostDialog";
 import useMe from "@/hooks/useMe";
+import useNotification from "@/hooks/useNotification";
 import useDialog from "@/hooks/useDialog";
 
 export const SideMenu = () => {
+  // TODO 通知のリアルタイム更新
   const me = useMe();
+  const { unreadCount } = useNotification();
   const navigate = useNavigate();
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
 
@@ -27,7 +31,15 @@ export const SideMenu = () => {
     { name: "Home", icon: <Home />, href: "/" },
     { name: "Search", icon: <Search />, href: "/search" },
     { name: "Feeds", icon: <Feed />, href: "/feeds" },
-    { name: "Notifications", icon: <Notifications />, href: "/notifications" },
+    {
+      name: "Notifications",
+      icon: (
+        <Badge badgeContent={unreadCount} color="primary">
+          <Notifications />
+        </Badge>
+      ),
+      href: "/notifications",
+    },
     { name: "Profile", icon: <AccountCircle />, href: `/profile/${me.handle}` },
     { name: "Settings", icon: <Settings />, href: "/settings" },
   ];
