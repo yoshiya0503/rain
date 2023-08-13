@@ -69,6 +69,7 @@ export const PostDialog = (props: Props) => {
   const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       // TODO ユーザー自体もQuoteできるとイケメン
+      // TODO メンションが入った場合
       fetchOGP(text);
       fetchQuote(text);
     }

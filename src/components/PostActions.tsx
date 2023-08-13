@@ -17,6 +17,7 @@ type Props = {
 };
 
 export const PostActions = (props: Props) => {
+  // TODO Quoteが無い
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();
 
   const onReply = useCallback(() => {

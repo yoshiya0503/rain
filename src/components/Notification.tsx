@@ -117,8 +117,8 @@ export const Post = (props: Props) => {
               <Linkify>
                 {AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}
               </Linkify>
-              {AppBskyEmbedImages.isView(props.reasonSubject?.embed) && (
-                <NotificationImages images={props.reasonSubject?.embed?.images || []} />
+              {AppBskyEmbedImages.isView(props.reasonSubject?.embed) && props.reasonSubject?.embed?.images && (
+                <NotificationImages images={props.reasonSubject?.embed?.images} />
               )}
             </Typography>
           )}

@@ -21,9 +21,7 @@ export const FollowsContainer = (props: Props) => {
   const getFollows = useStore((state) => state.getFollows);
   const getFollowers = useStore((state) => state.getFollowers);
 
-  const isOthers = subject?.handle !== props.handle;
-
-  if (isOthers) {
+  if (subject?.handle !== props.handle) {
     throw Promise.all([getFollows(props.handle, true), getFollowers(props.handle, true)]);
   }
 
