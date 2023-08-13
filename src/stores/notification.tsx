@@ -56,6 +56,7 @@ export const createNotificationSlice: StateCreator<
   },
   fetchReasonSubjects: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
     try {
+      // 通知のもとになった自分の投稿
       const uris = _.chain(notifications)
         .uniqBy((notification) => notification.reasonSubject)
         .map((notification) => notification.reasonSubject)
@@ -71,10 +72,12 @@ export const createNotificationSlice: StateCreator<
   },
   fetchReasonReplies: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
     try {
-      // replyとmention両方使う
-      // TODO quoteは？
+      // 通知に載せられた他人の投稿, mention, reply, quote
       const uris = _.chain(notifications)
-        .filter((notification) => notification.reason === "reply" || notification.reason === "mention")
+        .filter(
+          (notification) =>
+            notification.reason === "reply" || notification.reason === "mention" || notification.reason === "quote"
+        )
         .map((notification) => notification.uri)
         .uniq()
         .compact()
