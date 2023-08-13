@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { FeedSlice, createFeedSlice } from "@/stores/feed";
+import { PostThreadSlice, createPostThreadSlice } from "@/stores/post_thread";
 import { SessionSlice, createSessionSlice } from "@/stores/session";
 import { MessageSlice, createMessageSlice } from "@/stores/message";
 import { ActorSlice, createActorSlice } from "@/stores/actor";
@@ -13,11 +14,13 @@ type StoreSlice = ActorSlice &
   MessageSlice &
   NotificationSlice &
   SocialGraphSlice &
+  PostThreadSlice &
   IdentitySlice;
 
 export const useStore = create<StoreSlice>()((...a) => ({
   ...createActorSlice(...a),
   ...createFeedSlice(...a),
+  ...createPostThreadSlice(...a),
   ...createSessionSlice(...a),
   ...createMessageSlice(...a),
   ...createNotificationSlice(...a),

@@ -6,6 +6,7 @@ import Settings from "@/pages/Settings";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Follows from "@/pages/Follows";
+import PostThreads from "@/pages/PostThreads";
 import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
@@ -31,6 +32,7 @@ export const Router = () => {
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile/:handle" element={<Profile />} />
           <Route path="/profile/:handle/follows" element={<Follows />} />
+          <Route path="/profile/:handle/post/:id" element={<PostThreads />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<NotFound />} />

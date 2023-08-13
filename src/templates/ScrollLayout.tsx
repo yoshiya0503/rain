@@ -7,7 +7,7 @@ import NavigationIcon from "@mui/icons-material/Navigation";
 
 type Props = {
   children: ReactNode;
-  onScrollLimit: () => void;
+  onScrollLimit?: () => void;
 };
 
 export const ScrollLayout = (props: Props) => {
@@ -20,7 +20,7 @@ export const ScrollLayout = (props: Props) => {
     const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
     if (_.floor(nearBottom) <= 1) {
       // TODO スムーズにしたい
-      props.onScrollLimit();
+      props.onScrollLimit && props.onScrollLimit();
     }
     if (showScrollThreashold < e.currentTarget.scrollTop) {
       setHasScroll(true);

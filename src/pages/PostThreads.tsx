@@ -5,12 +5,12 @@ import PostThreadsContainer from "@/containers/PostThreadsContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const PostThreads = () => {
-  const { handle, uri } = useParams<"handle", "uri">();
+  const { handle, id } = useParams();
 
   return (
     <Layout>
       <Suspense fallback={<TimelineTemplate />}>
-        <PostThreadsContainer />
+        <PostThreadsContainer handle={handle || ""} id={id || ""} />
       </Suspense>
     </Layout>
   );

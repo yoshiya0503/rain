@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
-import { FeedSlice } from "@/stores/feed";
 import { AppBskyNotificationListNotifications, AppBskyFeedDefs } from "@atproto/api";
 import agent from "@/agent";
 
@@ -22,12 +21,10 @@ export interface NotificationSlice {
   updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
-export const createNotificationSlice: StateCreator<
-  NotificationSlice & FeedSlice & MessageSlice,
-  [],
-  [],
-  NotificationSlice
-> = (set, get) => ({
+export const createNotificationSlice: StateCreator<NotificationSlice & MessageSlice, [], [], NotificationSlice> = (
+  set,
+  get
+) => ({
   notificationCursor: "",
   reducedNotifications: [],
   unreadCount: null,
