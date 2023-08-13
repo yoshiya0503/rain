@@ -13,6 +13,7 @@ export interface FeedSlice {
   feed: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
   posts: AppBskyFeedDefs.PostView[];
+  filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
   getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
   getPosts: (uris: string[]) => Promise<unknown>;
@@ -40,32 +41,34 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
     try {
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
       if (!res.data.cursor) return true;
-      const filterList: string[] = [];
-      const computedFeed = _.filter(res.data.feed, (f) => {
-        // TODO isThreadViewPostとかの挙動をチェック
-        if (AppBskyFeedDefs.isReasonRepost(f.reason)) {
-          const session = get().session;
-          if (f.reason.by.did === session?.did) return false;
-        }
-        if (_.includes(filterList, f.post.cid)) {
-          return false;
-        }
-        // TODO これ意味ある？
-        if (AppBskyFeedDefs.isReplyRef(f.reply)) {
-          if (AppBskyFeedDefs.isPostView(f.reply.root)) {
-            filterList.push(f.reply.root.cid);
-          }
-          if (AppBskyFeedDefs.isPostView(f.reply.parent)) {
-            filterList.push(f.reply.parent.cid);
-          }
-        }
-        return true;
-      });
-      const feed = _.concat(get().feed, computedFeed);
+      const filteredFeed = get().filterFeed(res.data.feed);
+      const feed = _.concat(get().feed, filteredFeed);
       set({ feed, cursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
     }
+  },
+  filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => {
+    let filterList: string[] = [];
+    return _.chain(feed)
+      .reject((f) => {
+        return AppBskyFeedDefs.isReasonRepost(f.reason) && f.reason.by.did === get().session?.did;
+      })
+      .filter((f) => {
+        if (_.includes(filterList, f.post.cid)) {
+          return false;
+        }
+        if (f.reply) {
+          if (AppBskyFeedDefs.isPostView(f.reply.root)) {
+            filterList = _.concat(filterList, f.reply.root.cid);
+          }
+          if (AppBskyFeedDefs.isPostView(f.reply.parent)) {
+            filterList = _.concat(filterList, f.reply.parent.cid);
+          }
+        }
+        return true;
+      })
+      .value();
   },
   getInitialTimeline: async () => {
     let isLastOrder;

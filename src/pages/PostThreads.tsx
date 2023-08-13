@@ -1,13 +1,16 @@
 import { Suspense } from "react";
+import { useParams } from "react-router-dom";
 import Layout from "@/templates/Layout";
-import TimelineContainer from "@/containers/TimelineContainer";
+import PostThreadsContainer from "@/containers/PostThreadsContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const PostThreads = () => {
+  const { handle, uri } = useParams<"handle", "uri">();
+
   return (
     <Layout>
       <Suspense fallback={<TimelineTemplate />}>
-        <TimelineContainer />
+        <PostThreadsContainer />
       </Suspense>
     </Layout>
   );
