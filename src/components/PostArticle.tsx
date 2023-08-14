@@ -11,13 +11,14 @@ type Props = {
 };
 
 export const PostArticle = (props: Props) => {
-  const onLink = () => {
-    window.open(props.article.uri, "_blank");
-  };
-
   return (
     <Card variant="outlined">
-      <CardActionArea onClick={onLink}>
+      <CardActionArea
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open(props.article.uri, "_blank");
+        }}
+      >
         {props.article.thumb ? (
           <CardMedia sx={{ height: 200 }} component="img" image={props.article.thumb} alt="" />
         ) : null}
