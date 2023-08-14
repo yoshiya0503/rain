@@ -33,12 +33,12 @@ import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
 import useBackdrop from "@/hooks/useBackdrop";
 import Linkify from "linkify-react";
-import { AppBskyFeedDefs } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
 type Props = {
   title: string;
   post?: AppBskyFeedDefs.PostView;
-  root?: { cid: string; uri: string };
+  type?: "reply" | "quote";
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -68,7 +68,6 @@ export const PostDialog = (props: Props) => {
 
   const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === " ") {
-      // TODO ユーザー自体もQuoteできるとイケメン
       // TODO メンションが入った場合
       fetchOGP(text);
       fetchQuote(text);
@@ -77,10 +76,13 @@ export const PostDialog = (props: Props) => {
 
   const onSend = async () => {
     withBackdrop(async () => {
-      const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
-      const root = { cid: props.root?.cid || parent.cid, uri: props.root?.uri || parent.uri };
-      const reply = props.post && { root, parent };
+      let reply = undefined;
       let embed = undefined;
+      if (props.type === "reply" && AppBskyFeedPost.isRecord(props.post?.record)) {
+        const parent = { cid: props.post?.cid || "", uri: props.post?.uri || "" };
+        const root = props.post?.record.reply?.root || parent;
+        reply = { root, parent };
+      }
       if (article) {
         embed = await fetchEmbedExternal();
       }

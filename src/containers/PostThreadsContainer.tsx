@@ -22,8 +22,7 @@ export const PostThreadsContainer = (props: Props) => {
   const walkParents = useStore((state) => state.walkParents);
   const walkReplies = useStore((state) => state.walkReplies);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
-  const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
-  const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
+  const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
 
   if (_.isEmpty(thread) || threadSubject !== props.id) {
     throw (async () => {
@@ -34,14 +33,12 @@ export const PostThreadsContainer = (props: Props) => {
 
   const onReply = useCallback(
     (post: AppBskyFeedDefs.PostView) => {
-      setReplyPost(post);
-      // setReplyRoot({ cid: thread?.reply?.root.cid || "", uri: thread?.reply?.root.uri || "" });
+      setPost(post);
       openPostDialog();
     },
-    [openPostDialog, setReplyRoot, thread]
+    [openPostDialog, setPost]
   );
 
-  // TODO reply
   // TODO 元の位置へ戻る機能
   return (
     <ScrollLayout>
@@ -60,7 +57,7 @@ export const PostThreadsContainer = (props: Props) => {
           <Divider />
         </Box>
       ))}
-      <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
+      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

@@ -10,7 +10,7 @@ import ScrollLayout from "@/templates/ScrollLayout";
 import Notification from "@/components/Notification";
 import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 export const NotificationContainer = () => {
   const reducedNotifications = useStore((state) => state.reducedNotifications);
@@ -19,8 +19,7 @@ export const NotificationContainer = () => {
   const updateSeen = useStore((state) => state.updateSeen);
   const listNotifications = useStore((state) => state.listNotifications);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
-  const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
-  const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
+  const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
 
   if (_.isEmpty(reducedNotifications)) {
     throw listNotifications();
@@ -34,13 +33,10 @@ export const NotificationContainer = () => {
 
   const onReply = useCallback(
     (post: AppBskyFeedDefs.PostView) => {
-      setReplyPost(post);
-      if (AppBskyFeedPost.isRecord(post.record)) {
-        setReplyRoot(post.record.reply?.root);
-      }
+      setPost(post);
       openPostDialog();
     },
-    [openPostDialog, setReplyRoot]
+    [openPostDialog, setPost]
   );
 
   return (
@@ -69,7 +65,7 @@ export const NotificationContainer = () => {
         })}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
+      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

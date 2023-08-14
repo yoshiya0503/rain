@@ -17,8 +17,7 @@ export const TimelineContainer = () => {
   const getTimeline = useStore((state) => state.getTimeline);
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
-  const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
-  const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
+  const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
 
   if (_.isEmpty(feed)) {
     throw getInitialTimeline();
@@ -30,17 +29,10 @@ export const TimelineContainer = () => {
 
   const onReply = useCallback(
     (post: AppBskyFeedDefs.PostView) => {
-      const thread = _.find(feed, (item) => {
-        const atPost = item.post.uri === post.uri;
-        const atRoot = item.reply?.root.uri === post.uri;
-        const atParent = item.reply?.parent.uri === post.uri;
-        return atPost || atRoot || atParent;
-      });
-      setReplyPost(post);
-      setReplyRoot({ cid: thread?.reply?.root.cid || "", uri: thread?.reply?.root.uri || "" });
+      setPost(post);
       openPostDialog();
     },
-    [openPostDialog, setReplyRoot, feed]
+    [openPostDialog, setPost]
   );
 
   return (
@@ -60,7 +52,7 @@ export const TimelineContainer = () => {
         ))}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
+      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

@@ -23,8 +23,7 @@ export const ProfileContainer = (props: Props) => {
   const getProfile = useStore((state) => state.getProfile);
   const getAuthorFeed = useStore((state) => state.getAuthorFeed);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
-  const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
-  const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
+  const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
   const isOthers = actor?.handle !== props.handle;
 
   if (!actor || isOthers) {
@@ -37,17 +36,10 @@ export const ProfileContainer = (props: Props) => {
 
   const onReply = useCallback(
     (post: AppBskyFeedDefs.PostView) => {
-      const thread = _.find(authorFeed, (item) => {
-        const atPost = item.post.uri === post.uri;
-        const atRoot = item.reply?.root.uri === post.uri;
-        const atParent = item.reply?.parent.uri === post.uri;
-        return atPost || atRoot || atParent;
-      });
-      setReplyPost(post);
-      setReplyRoot({ cid: thread?.reply?.root.cid || "", uri: thread?.reply?.root.uri || "" });
+      setPost(post);
       openPostDialog();
     },
-    [openPostDialog, setReplyRoot, authorFeed]
+    [openPostDialog, setPost]
   );
 
   return (
@@ -68,7 +60,7 @@ export const ProfileContainer = (props: Props) => {
         ))}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title="Reply" open={isOpen} post={replyPost} root={replyRoot} onClose={closePostDialog} />
+      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
     </ScrollLayout>
   );
 };
