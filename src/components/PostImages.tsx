@@ -8,6 +8,8 @@ type Props = {
   images: AppBskyEmbedImages.ViewImage[];
 };
 
+// TODO 画像の全画面表示
+
 export const PostImages = (props: Props) => {
   if (_.size(props.images) === 1) {
     return (

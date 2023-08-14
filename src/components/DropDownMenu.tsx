@@ -40,7 +40,7 @@ export const DropDownMenu = (props: Props) => {
               if (action.action) {
                 action.action();
               }
-              closeMenu();
+              closeMenu(e);
             }}
           >
             <Stack direction="row" alignItems="center" spacing={1}>

@@ -58,27 +58,16 @@ export const Profile = (props: Props) => {
   }, [props, navigate]);
 
   const isMe = me.did === props.actor.did;
+  const muteLabel = props.actor?.viewer?.muted ? "Unmute" : "Mute";
+  const blockLabel = props.actor.viewer?.blocking ? "Unblock" : "Block";
   const menuItems = isMe
-    ? [
-        { name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare },
-        { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onClickShare },
-      ]
+    ? [{ name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare }]
     : [
-        {
-          name: "block",
-          icon: <BlockIcon />,
-          label: props.actor.viewer?.blocking ? "Unblock" : "Block",
-          action: onToggleBlock,
-        },
-        {
-          name: "mute",
-          icon: <MuteIcon />,
-          label: props.actor?.viewer?.muted ? "Unmute" : "Mute",
-          action: onToggleMute,
-        },
-        { name: "report", icon: <ReportIcon />, label: "Report", action: onToggleMute },
         { name: "share", icon: <ShareIcon />, label: "Share", action: onClickShare },
         { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onClickShare },
+        { name: "mute", icon: <MuteIcon />, label: muteLabel, action: onToggleMute },
+        { name: "block", icon: <BlockIcon />, label: blockLabel, action: onToggleBlock },
+        { name: "report", icon: <ReportIcon />, label: "Report", action: onToggleMute },
       ];
 
   return (
