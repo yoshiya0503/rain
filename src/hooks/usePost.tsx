@@ -1,10 +1,12 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
+import { useNavigate } from "react-router-dom";
 import { Record, BlobRequest } from "@/stores/feed";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 export const usePost = () => {
+  const navigate = useNavigate();
   const post = useStore((state) => state.post);
   const uploadBlob = useStore((state) => state.uploadBlob);
   const deletePost = useStore((state) => state.deletePost);
@@ -83,7 +85,17 @@ export const usePost = () => {
     navigator.clipboard.writeText(url);
   }, []);
 
-  return { onUploadBlob, onPost, onDeletePost, onRepost, onDeleteRepost, onLike, onDeleteLike, onShare };
+  const onViewThread = useCallback(
+    (post: { uri: string; author: { handle: string } }) => () => {
+      if (document.getSelection()?.toString()) return;
+      const id = _.last(_.split(post.uri, "/"));
+      const url = `/profile/${post.author.handle}/post/${id}`;
+      navigate(url);
+    },
+    [navigate]
+  );
+
+  return { onUploadBlob, onPost, onDeletePost, onRepost, onDeleteRepost, onLike, onDeleteLike, onShare, onViewThread };
 };
 
 export default usePost;

@@ -35,7 +35,7 @@ type Props = {
 };
 
 export const Post = (props: Props) => {
-  const { onDeletePost, onShare } = usePost();
+  const { onDeletePost, onShare, onViewThread } = usePost();
   const menuItems = [
     {
       name: "share",
@@ -67,7 +67,7 @@ export const Post = (props: Props) => {
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.post.indexedAt), { locale: ja });
 
   return (
-    <Stack direction="row" spacing={1}>
+    <Stack direction="row" spacing={1} onClick={onViewThread(props.post)}>
       <AvatarThread profile={props.post.author} hasReply={props.hasReply} />
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
@@ -108,7 +108,12 @@ export const Post = (props: Props) => {
               <PostQuote record={props.post.embed.record.record} />
             )}
         </Stack>
-        <Box sx={{ ml: -1, mb: 1 }}>
+        <Box
+          sx={{ ml: -1, mb: 1 }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <PostActions post={props.post} onReply={props.onReply} />
         </Box>
       </Box>

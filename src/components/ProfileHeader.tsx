@@ -25,13 +25,17 @@ export const ProfileHeader = (props: Props) => {
     sx = { width: 64, height: 64 };
   }
 
-  const onViewProfile = () => {
-    const uri = `/profile/${props.profile.handle}`;
-    navigate(uri);
-  };
-
   return (
-    <Stack direction="row" spacing={1} alignItems="center" onClick={onViewProfile}>
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="center"
+      onClick={(e) => {
+        e.stopPropagation();
+        const uri = `/profile/${props.profile.handle}`;
+        navigate(uri);
+      }}
+    >
       {!props.disableAvatar && <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={sx} />}
       <Stack direction="column">
         {props.size === "small" ? (

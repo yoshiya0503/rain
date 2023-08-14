@@ -12,6 +12,7 @@ import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostFeed from "@/components/PostFeed";
 import Linkify from "linkify-react";
+import usePost from "@/hooks/usePost";
 import {
   AppBskyFeedDefs,
   AppBskyEmbedImages,
@@ -25,15 +26,19 @@ type Props = {
 };
 
 export const PostQuote = (props: Props) => {
-  const onLink = () => {
-    console.log("TODO実装中");
-  };
+  const { onViewThread } = usePost();
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.record.indexedAt), { locale: ja });
 
   return (
     <Card variant="outlined">
-      <CardActionArea component="div" onClick={onLink}>
+      <CardActionArea
+        component="div"
+        onClick={(e) => {
+          e.stopPropagation();
+          onViewThread(props.record)();
+        }}
+      >
         <CardContent>
           <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">

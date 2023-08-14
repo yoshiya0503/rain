@@ -7,7 +7,7 @@ import ScrollLayout from "@/templates/ScrollLayout";
 import Post from "@/components/Post";
 import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
   handle: string;
@@ -16,6 +16,7 @@ type Props = {
 
 export const PostThreadsContainer = (props: Props) => {
   const thread = useStore((state) => state.thread);
+  const threadSubject = useStore((state) => state.threadSubject);
   const resolveHandle = useStore((state) => state.resolveHandle);
   const getPostThread = useStore((state) => state.getPostThread);
   const walkParents = useStore((state) => state.walkParents);
@@ -24,7 +25,7 @@ export const PostThreadsContainer = (props: Props) => {
   const [replyPost, setReplyPost] = useState<AppBskyFeedDefs.PostView>();
   const [replyRoot, setReplyRoot] = useState<{ cid: string; uri: string }>();
 
-  if (_.isEmpty(thread)) {
+  if (_.isEmpty(thread) || threadSubject !== props.id) {
     throw (async () => {
       const did = await resolveHandle(props.handle);
       await getPostThread(`at://${did}/app.bsky.feed.post/${props.id}`);

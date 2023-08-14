@@ -7,7 +7,8 @@ export const useMenu = () => {
     setAnchorEl(event.currentTarget);
   }, []);
 
-  const closeMenu = useCallback(() => {
+  const closeMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     setAnchorEl(null);
   }, []);
 

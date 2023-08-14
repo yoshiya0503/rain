@@ -1,13 +1,14 @@
 import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
-import { SessionSlice } from "@/stores/session";
-import { AppBskyFeedDefs, AppBskyFeedPost, ComAtprotoRepoUploadBlob } from "@atproto/api";
+import { IdentitySlice } from "@/stores/identity";
+import { AppBskyFeedDefs } from "@atproto/api";
 import agent from "@/agent";
 
 export interface PostThreadSlice {
   posts: AppBskyFeedDefs.PostView[];
   thread?: AppBskyFeedDefs.ThreadViewPost;
+  threadSubject?: string;
   getPosts: (uris: string[]) => Promise<unknown>;
   getPostThread: (uri: string) => Promise<unknown>;
   walkParents: (
@@ -21,12 +22,13 @@ export interface PostThreadSlice {
 }
 
 export const createPostThreadSlice: StateCreator<
-  PostThreadSlice & MessageSlice & SessionSlice,
+  PostThreadSlice & MessageSlice & IdentitySlice,
   [],
   [],
   PostThreadSlice
 > = (set, get) => ({
   posts: [],
+  subject: undefined,
   thread: undefined,
   getPosts: async (uris: string[]) => {
     try {
@@ -41,7 +43,8 @@ export const createPostThreadSlice: StateCreator<
     try {
       const res = await agent.getPostThread({ uri });
       if (AppBskyFeedDefs.isThreadViewPost(res.data.thread)) {
-        set({ thread: res.data.thread });
+        const id = _.last(_.split(res.data.thread.post.uri, "/"));
+        set({ thread: res.data.thread, threadSubject: id });
       }
       return res.data.thread;
     } catch (e) {

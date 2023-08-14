@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
@@ -14,11 +13,6 @@ type Props = {
 export const AvatarThread = (props: Props) => {
   const navigate = useNavigate();
 
-  const onViewProfile = useCallback(() => {
-    const uri = `/profile/${props.profile.handle}`;
-    navigate(uri);
-  }, [props, navigate]);
-
   return (
     <Box>
       <Stack sx={{ height: "100%" }} alignItems="center">
@@ -26,7 +20,11 @@ export const AvatarThread = (props: Props) => {
           sx={{ width: 42, height: 42 }}
           alt={props.profile.displayName}
           src={props.profile.avatar}
-          onClick={onViewProfile}
+          onClick={(e) => {
+            e.stopPropagation();
+            const uri = `/profile/${props.profile.handle}`;
+            navigate(uri);
+          }}
         />
         {props.hasReply && (
           <Box sx={{ flexGrow: 1, pb: 2 }}>
