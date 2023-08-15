@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useStore } from "@/stores";
 import { AppBskyEmbedRecord, AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
@@ -8,6 +8,13 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
   const resolveHandle = useStore((state) => state.resolveHandle);
 
   const [quote, setQuote] = useState<AppBskyEmbedRecord.ViewRecord>();
+
+  useEffect(() => {
+    if (AppBskyFeedPost.isRecord(post?.record)) {
+      const q = post ? { value: { text: post?.record.text }, ...post } : undefined;
+      setQuote(q);
+    }
+  }, [setQuote, post]);
 
   const isInvalidURL = useCallback((url: string): boolean => {
     try {

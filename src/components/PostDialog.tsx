@@ -47,19 +47,17 @@ type Props = {
 const MAX_TEXT_LENGTH = 300;
 
 export const PostDialog = (props: Props) => {
-  // TODO quote
   const me = useMe();
   const { onPost } = usePost();
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
   const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
-  const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(props.post);
+  const { quote, fetchQuote, fetchEmbedQuote } = useQuote(props.post);
   const { open, withBackdrop } = useBackdrop();
   const [text, setText] = useState<string>("");
 
   const onClean = () => {
     onClearImages();
     onClearArticle();
-    onClearQuote();
     setText("");
     props.onClose();
   };
@@ -91,7 +89,7 @@ export const PostDialog = (props: Props) => {
       if (!_.isEmpty(images)) {
         embed = await fetchEmbedImages();
       }
-      if (quote) {
+      if (props.type === "quote" && quote) {
         embed = fetchEmbedQuote();
       }
       onPost({ text, reply, embed });
@@ -175,7 +173,7 @@ export const PostDialog = (props: Props) => {
           </ImageList>
         )}
         {article && <PostArticle article={article} />}
-        {quote && <PostQuote record={quote} />}
+        {props.type === "quote" && quote && quote && <PostQuote record={quote} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>
