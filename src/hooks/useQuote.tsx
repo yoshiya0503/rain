@@ -31,10 +31,13 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
   const fetchQuote = useCallback(
     async (text: string) => {
       const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
-      const url = _.first(text.match(regexp_url)) || "";
-      if (!isInvalidURL(url) || quote) {
-        return;
-      }
+      // 引用ポストだけを拾う
+      const urls = _.reject(
+        text.match(regexp_url),
+        (url) => !isInvalidURL(url) || !_.includes(url, "https://bsky.app/profile/")
+      );
+      const url = _.first(urls);
+      if (quote || !url) return;
       const handle = fetchHandle(url);
       if (!handle) {
         return;

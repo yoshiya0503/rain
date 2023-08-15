@@ -19,14 +19,13 @@ export const useOGP = () => {
   const fetchOGP = useCallback(
     async (text: string) => {
       const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
-      const url = _.first(text.match(regexp_url)) || "";
-      if (!isInvalidURL(url) || article) {
-        return;
-      }
-      if (_.includes(url, "https://bsky.app/profile/")) {
-        // bsky内部は引用として扱う
-        return;
-      }
+      // bsky内部は引用として扱う
+      const urls = _.reject(
+        text.match(regexp_url),
+        (url) => !isInvalidURL(url) || _.includes(url, "https://bsky.app/profile/")
+      );
+      const url = _.first(urls);
+      if (article || !url) return;
       const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${url.toString()}`);
       const result = await res.json();
       if (!result.error) {
