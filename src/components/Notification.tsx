@@ -26,7 +26,7 @@ type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
   reason: "repost" | "like" | "follow" | "reply" | "quote" | "mention";
-  onReply?: (post: AppBskyFeedDefs.PostView) => void;
+  onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
 };
@@ -125,7 +125,7 @@ export const Post = (props: Props) => {
         </Stack>
         {(props.reason === "reply" || props.reason === "quote") && props.reasonReply && (
           <Box sx={{ mb: 1 }}>
-            <PostActions post={props.reasonReply} onReply={props.onReply} />
+            <PostActions post={props.reasonReply} onOpenPost={props.onOpenPost} />
           </Box>
         )}
       </Box>

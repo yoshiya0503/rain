@@ -20,6 +20,7 @@ export const NotificationContainer = () => {
   const listNotifications = useStore((state) => state.listNotifications);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
+  const [type, setType] = useState<"reply" | "quote">();
 
   if (_.isEmpty(reducedNotifications)) {
     throw listNotifications();
@@ -31,13 +32,16 @@ export const NotificationContainer = () => {
     listNotifications();
   }, [listNotifications]);
 
-  const onReply = useCallback(
-    (post: AppBskyFeedDefs.PostView) => {
+  const onOpenPost = useCallback(
+    (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
       setPost(post);
+      setType(type);
       openPostDialog();
     },
-    [openPostDialog, setPost]
+    [openPostDialog, setPost, setType]
   );
+
+  const title = type === "reply" ? "Reply" : "Quote";
 
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
@@ -56,7 +60,7 @@ export const NotificationContainer = () => {
                   otherAuthors={otherAuthors}
                   reasonSubject={reasonSubject}
                   reasonReply={reasonReply}
-                  onReply={onReply}
+                  onOpenPost={onOpenPost}
                 />
                 <Divider />
               </Box>
@@ -65,7 +69,7 @@ export const NotificationContainer = () => {
         })}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
+      <PostDialog title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

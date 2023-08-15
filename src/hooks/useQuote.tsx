@@ -3,9 +3,10 @@ import { useState, useCallback } from "react";
 import { useStore } from "@/stores";
 import { AppBskyEmbedRecord, AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
-export const useQuote = () => {
+export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
   const getPostThread = useStore((state) => state.getPostThread);
   const resolveHandle = useStore((state) => state.resolveHandle);
+
   const [quote, setQuote] = useState<AppBskyEmbedRecord.ViewRecord>();
 
   const isInvalidURL = useCallback((url: string): boolean => {
@@ -52,11 +53,15 @@ export const useQuote = () => {
   );
 
   const fetchEmbedQuote = useCallback(() => {
-    const  record = {uri: quote?.uri, cid: quote?.cid}
-    return { record, $type: 'app.bsky.embed.record' }
-  }, [quote])
+    const record = { uri: quote?.uri, cid: quote?.cid };
+    return { record, $type: "app.bsky.embed.record" };
+  }, [quote]);
 
-  return { quote, fetchQuote, fetchEmbedQuote };
+  const onClearQuote = useCallback(() => {
+    setQuote(undefined);
+  }, [setQuote]);
+
+  return { quote, fetchQuote, fetchEmbedQuote, onClearQuote };
 };
 
 export default useQuote;

@@ -1,13 +1,14 @@
 import { ReactNode } from "react";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import { pink, green, blue, purple, orange, grey } from "@mui/material/colors";
+import { pink, green, blue, purple, orange, grey, teal } from "@mui/material/colors";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import LoopIcon from "@mui/icons-material/LoopRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 
 type Props = {
   type: "reply" | "like" | "repost" | "quote" | "follow" | "mention" | "camera";
@@ -39,6 +40,14 @@ export const AvatarBadge = (props: Props) => {
     icon = (
       <IconWrapper color={blue[400]}>
         <ReplyRoundedIcon sx={{ fontSize: 12 }} />
+      </IconWrapper>
+    );
+  }
+
+  if (props.type === "quote") {
+    icon = (
+      <IconWrapper color={teal[400]}>
+        <FormatQuoteRoundedIcon sx={{ fontSize: 12 }} />
       </IconWrapper>
     );
   }

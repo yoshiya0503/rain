@@ -10,7 +10,7 @@ import ScrollLayout from "@/templates/ScrollLayout";
 import Post from "@/components/Post";
 import PostDialog from "@/components/PostDialog";
 import useDialog from "@/hooks/useDialog";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { AppBskyFeedDefs } from "@atproto/api";
 
 export const TimelineContainer = () => {
   const feed = useStore((state) => state.feed);
@@ -18,6 +18,7 @@ export const TimelineContainer = () => {
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
+  const [type, setType] = useState<"reply" | "quote">();
 
   if (_.isEmpty(feed)) {
     throw getInitialTimeline();
@@ -27,13 +28,16 @@ export const TimelineContainer = () => {
     getTimeline();
   }, [getTimeline]);
 
-  const onReply = useCallback(
-    (post: AppBskyFeedDefs.PostView) => {
+  const onOpenPost = useCallback(
+    (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
       setPost(post);
+      setType(type);
       openPostDialog();
     },
-    [openPostDialog, setPost]
+    [openPostDialog, setPost, setType]
   );
+
+  const title = type === "reply" ? "Reply" : "Quote";
 
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
@@ -42,21 +46,21 @@ export const TimelineContainer = () => {
           <Collapse key={item.post.cid}>
             <Box sx={{ mt: 1, mb: 1 }}>
               {AppBskyFeedDefs.isPostView(item.reply?.root) && item.reply?.root && (
-                <Post post={item.reply.root} onReply={onReply} reason={item.reason} hasReply />
+                <Post post={item.reply.root} onOpenPost={onOpenPost} reason={item.reason} hasReply />
               )}
               {AppBskyFeedDefs.isPostView(item.reply?.parent) &&
                 item.reply?.parent &&
                 item.reply?.parent.cid !== item.reply?.root.cid && (
-                  <Post post={item.reply.parent} onReply={onReply} reason={item.reason} hasReply />
+                  <Post post={item.reply.parent} onOpenPost={onOpenPost} reason={item.reason} hasReply />
                 )}
-              <Post post={item.post} onReply={onReply} reason={item.reason} />
+              <Post post={item.post} onOpenPost={onOpenPost} reason={item.reason} />
               <Divider />
             </Box>
           </Collapse>
         ))}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
+      <PostDialog title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

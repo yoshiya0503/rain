@@ -47,17 +47,19 @@ type Props = {
 const MAX_TEXT_LENGTH = 300;
 
 export const PostDialog = (props: Props) => {
+  // TODO quote
   const me = useMe();
   const { onPost } = usePost();
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
   const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
-  const { quote, fetchQuote, fetchEmbedQuote } = useQuote();
+  const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(props.post);
   const { open, withBackdrop } = useBackdrop();
   const [text, setText] = useState<string>("");
 
   const onClean = () => {
     onClearImages();
     onClearArticle();
+    onClearQuote();
     setText("");
     props.onClose();
   };
@@ -105,13 +107,16 @@ export const PostDialog = (props: Props) => {
         <CircularProgress color="primary" />
       </Backdrop>
       <DialogTitle>
-        <IconButton color="primary" component="label">
-          <AddPhotoAlternateIcon />
-          <input type="file" accept="image/*" multiple hidden onChange={onUpload} />
-        </IconButton>
+        <Stack spacing={1} alignItems="flex-start">
+          {props.title}
+          <IconButton color="primary" component="label">
+            <AddPhotoAlternateIcon />
+            <input type="file" accept="image/*" multiple hidden onChange={onUpload} />
+          </IconButton>
+        </Stack>
       </DialogTitle>
       <DialogContent>
-        {props.post && (
+        {props.post && props.type === "reply" && (
           <Box sx={{ p: 2, mt: 1, mb: 2, border: 1, borderRadius: 2, borderColor: grey[700] }}>
             <DialogContentText component="div" sx={{ mt: 1, mb: 1 }}>
               <ProfileHeader profile={props.post.author} size="small" />
@@ -184,7 +189,7 @@ export const PostDialog = (props: Props) => {
         <Box>
           <Button onClick={onClean}>Cancel</Button>
           <Button onClick={onSend} disabled={isNotPostable}>
-            {props.title}
+            Send
           </Button>
         </Box>
       </DialogActions>

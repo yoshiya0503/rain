@@ -23,6 +23,7 @@ export const PostThreadsContainer = (props: Props) => {
   const walkReplies = useStore((state) => state.walkReplies);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
+  const [type, setType] = useState<"reply" | "quote">();
 
   if (_.isEmpty(thread) || threadSubject !== props.id) {
     throw (async () => {
@@ -31,33 +32,43 @@ export const PostThreadsContainer = (props: Props) => {
     })();
   }
 
-  const onReply = useCallback(
-    (post: AppBskyFeedDefs.PostView) => {
+  const onOpenPost = useCallback(
+    (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
       setPost(post);
+      setType(type);
       openPostDialog();
     },
-    [openPostDialog, setPost]
+    [openPostDialog, setPost, setType]
   );
+
+  const title = type === "reply" ? "Reply" : "Quote";
 
   // TODO 元の位置へ戻る機能
   return (
     <ScrollLayout>
       <Box sx={{ mt: 1, mb: 1 }}>
         {AppBskyFeedDefs.isThreadViewPost(thread.parent) &&
-          _.map(walkParents(thread.parent), (item) => <Post key={item.cid} post={item} onReply={onReply} hasReply />)}
-        <Post post={thread.post} onReply={onReply} />
+          _.map(walkParents(thread.parent), (item) => (
+            <Post key={item.cid} post={item} onOpenPost={onOpenPost} hasReply />
+          ))}
+        <Post post={thread.post} onOpenPost={onOpenPost} />
         <Divider />
       </Box>
       {_.map(thread.replies, (reply, key) => (
         <Box key={key} sx={{ mt: 1, mb: 1 }}>
           {AppBskyFeedDefs.isThreadViewPost(reply) &&
             _.map(walkReplies(reply), (item, len) => (
-              <Post key={item.cid} post={item} onReply={onReply} hasReply={_.size(walkReplies(reply)) - 1 !== len} />
+              <Post
+                key={item.cid}
+                post={item}
+                onOpenPost={onOpenPost}
+                hasReply={_.size(walkReplies(reply)) - 1 !== len}
+              />
             ))}
           <Divider />
         </Box>
       ))}
-      <PostDialog title="Reply" open={isOpen} post={post} type="reply" onClose={closePostDialog} />
+      <PostDialog title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
     </ScrollLayout>
   );
 };

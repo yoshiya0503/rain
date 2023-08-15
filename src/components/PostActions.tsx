@@ -6,23 +6,29 @@ import ChatBubbleIconOutline from "@mui/icons-material/ChatBubbleOutlineRounded"
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorderRounded";
 import LoopIcon from "@mui/icons-material/LoopRounded";
-import { pink, green, blue } from "@mui/material/colors";
+import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
+import { pink, green, blue, teal } from "@mui/material/colors";
 import { alpha } from "@mui/material";
 import usePost from "@/hooks/usePost";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
   post: AppBskyFeedDefs.PostView;
-  onReply?: (post: AppBskyFeedDefs.PostView) => void;
+  onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
 };
 
 export const PostActions = (props: Props) => {
-  // TODO Quoteが無い
   const { onLike, onDeleteLike, onRepost, onDeleteRepost } = usePost();
 
   const onReply = useCallback(() => {
-    if (props.onReply) {
-      props.onReply(props.post);
+    if (props.onOpenPost) {
+      props.onOpenPost(props.post, "reply");
+    }
+  }, [props]);
+
+  const onQuote = useCallback(() => {
+    if (props.onOpenPost) {
+      props.onOpenPost(props.post, "quote");
     }
   }, [props]);
 
@@ -62,6 +68,9 @@ export const PostActions = (props: Props) => {
       </IconButton>
       <IconButton sx={{ "&:hover": { color: blue[400], backgroundColor: alpha(blue[400], 0.1) } }} onClick={onReply}>
         <ChatBubbleIconOutline fontSize="small" />
+      </IconButton>
+      <IconButton sx={{ "&:hover": { color: teal[400], backgroundColor: alpha(blue[400], 0.1) } }} onClick={onQuote}>
+        <FormatQuoteRoundedIcon fontSize="small" />
       </IconButton>
     </Stack>
   );

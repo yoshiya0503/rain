@@ -29,7 +29,7 @@ import {
 
 type Props = {
   post: AppBskyFeedDefs.PostView;
-  onReply?: (post: AppBskyFeedDefs.PostView) => void;
+  onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
 };
@@ -114,7 +114,7 @@ export const Post = (props: Props) => {
             e.stopPropagation();
           }}
         >
-          <PostActions post={props.post} onReply={props.onReply} />
+          <PostActions post={props.post} onOpenPost={props.onOpenPost} />
         </Box>
       </Box>
     </Stack>
