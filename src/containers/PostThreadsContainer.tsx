@@ -54,6 +54,7 @@ export const PostThreadsContainer = (props: Props) => {
   }
 
   // TODO 元の位置へ戻る機能
+  // ページ遷移にアニメーションを付けたい
   return (
     <ScrollLayout>
       <Box sx={{ mt: 1, mb: 1 }}>
