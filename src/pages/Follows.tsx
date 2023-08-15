@@ -5,7 +5,7 @@ import FollowsContainer from "@/containers/FollowsContainer";
 import TabLayout from "@/templates/TabLayout";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
-export const Feeds = () => {
+export const Follows = () => {
   const { handle } = useParams<"handle">();
 
   return (
@@ -22,4 +22,4 @@ export const Feeds = () => {
   );
 };
 
-export default Feeds;
+export default Follows;

@@ -43,24 +43,24 @@ export const PostActions = (props: Props) => {
   return (
     <Stack direction="row" spacing={1}>
       <IconButton
-        sx={{ "&:hover": { color: pink[400], backgroundColor: alpha(pink[400], 0.1) } }}
+        sx={{ "&:hover": { color: pink["A200"], backgroundColor: alpha(pink["A200"], 0.1) } }}
         onClick={onToggleLike}
       >
         {props.post.viewer?.like ? (
           <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 1000 } : {})}>
-            <FavoriteIcon sx={{ color: pink[400] }} fontSize="small" />
+            <FavoriteIcon sx={{ color: pink["A200"] }} fontSize="small" />
           </Grow>
         ) : (
           <FavoriteBorderIcon fontSize="small" />
         )}
       </IconButton>
       <IconButton
-        sx={{ "&:hover": { color: green[400], backgroundColor: alpha(green[400], 0.1) } }}
+        sx={{ "&:hover": { color: green["A400"], backgroundColor: alpha(green["A400"], 0.1) } }}
         onClick={onToggleRePost}
       >
         {props.post.viewer?.repost ? (
           <Grow in={!!props.post.viewer?.repost} {...(props.post.viewer?.repost ? { timeout: 1000 } : {})}>
-            <LoopIcon fontSize="small" sx={{ color: green[400] }} />
+            <LoopIcon fontSize="small" sx={{ color: green["A400"] }} />
           </Grow>
         ) : (
           <LoopIcon fontSize="small" />

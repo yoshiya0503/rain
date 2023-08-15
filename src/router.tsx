@@ -7,6 +7,8 @@ import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Follows from "@/pages/Follows";
 import PostThreads from "@/pages/PostThreads";
+import Reposted from "@/pages/Reposted";
+import Liked from "@/pages/Liked";
 import useAuthentication from "@/hooks/useAuthentication";
 
 const Authentication = () => {
@@ -33,6 +35,8 @@ export const Router = () => {
           <Route path="/profile/:handle" element={<Profile />} />
           <Route path="/profile/:handle/follows" element={<Follows />} />
           <Route path="/profile/:handle/post/:id" element={<PostThreads />} />
+          <Route path="/profile/:handle/post/:id/reposted" element={<Reposted />} />
+          <Route path="/profile/:handle/post/:id/liked" element={<Liked />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<NotFound />} />

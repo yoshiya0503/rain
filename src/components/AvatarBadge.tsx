@@ -62,7 +62,7 @@ export const AvatarBadge = (props: Props) => {
 
   if (props.type === "like") {
     icon = (
-      <IconWrapper color={pink[400]}>
+      <IconWrapper color={pink["A200"]}>
         <FavoriteIcon sx={{ fontSize: 12 }} />
       </IconWrapper>
     );
@@ -70,7 +70,7 @@ export const AvatarBadge = (props: Props) => {
 
   if (props.type === "repost") {
     icon = (
-      <IconWrapper color={green[400]}>
+      <IconWrapper color={green["A400"]}>
         <LoopIcon sx={{ fontSize: 12 }} />
       </IconWrapper>
     );

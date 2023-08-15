@@ -4,8 +4,10 @@ import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import ScrollLayout from "@/templates/ScrollLayout";
+import CenterLayout from "@/templates/CenterLayout";
 import Post from "@/components/Post";
 import PostDialog from "@/components/PostDialog";
+import NotFound from "@/components/NotFound";
 import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs } from "@atproto/api";
 
@@ -25,7 +27,7 @@ export const PostThreadsContainer = (props: Props) => {
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
   const [type, setType] = useState<"reply" | "quote">();
 
-  if (_.isEmpty(thread) || threadSubject !== props.id) {
+  if (threadSubject !== props.id) {
     throw (async () => {
       const did = await resolveHandle(props.handle);
       await getPostThread(`at://${did}/app.bsky.feed.post/${props.id}`);
@@ -43,6 +45,14 @@ export const PostThreadsContainer = (props: Props) => {
 
   const title = type === "reply" ? "Reply" : "Quote";
 
+  if (_.isEmpty(thread)) {
+    return (
+      <CenterLayout>
+        <NotFound type="thread" />
+      </CenterLayout>
+    );
+  }
+
   // TODO 元の位置へ戻る機能
   return (
     <ScrollLayout>
@@ -51,7 +61,7 @@ export const PostThreadsContainer = (props: Props) => {
           _.map(walkParents(thread.parent), (item) => (
             <Post key={item.cid} post={item} onOpenPost={onOpenPost} hasReply />
           ))}
-        <Post post={thread.post} onOpenPost={onOpenPost} />
+        <Post post={thread.post} onOpenPost={onOpenPost} showStats />
         <Divider />
       </Box>
       {_.map(thread.replies, (reply, key) => (

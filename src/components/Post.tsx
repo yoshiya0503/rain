@@ -17,6 +17,7 @@ import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostQuote from "@/components/PostQuote";
 import PostFeed from "@/components/PostFeed";
+import PostStats from "@/components/PostStats";
 import usePost from "@/hooks/usePost";
 import {
   AppBskyFeedDefs,
@@ -32,6 +33,7 @@ type Props = {
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
+  showStats?: boolean;
 };
 
 export const Post = (props: Props) => {
@@ -72,7 +74,7 @@ export const Post = (props: Props) => {
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
           <Stack sx={{ color: grey[400] }} direction="row" alignItems="center" spacing={0.5}>
-            <LoopIcon sx={{ fontSize: 16, color: green[400] }} />
+            <LoopIcon sx={{ fontSize: 16, color: green["A400"] }} />
             <Typography variant="caption">Reposted by {props.reason.by.displayName}</Typography>
           </Stack>
         )}
@@ -116,6 +118,11 @@ export const Post = (props: Props) => {
         >
           <PostActions post={props.post} onOpenPost={props.onOpenPost} />
         </Box>
+        {props.showStats && (
+          <Box sx={{ mb: 1 }}>
+            <PostStats post={props.post} />
+          </Box>
+        )}
       </Box>
     </Stack>
   );
