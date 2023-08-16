@@ -7,7 +7,7 @@ import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import { grey, pink } from "@mui/material/colors";
-import Linkify from "linkify-react";
+import Text from "@/components/Text";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
@@ -41,7 +41,7 @@ export const PostFeed = (props: Props) => {
               <Typography variant="body1">{props.record.likeCount} Likes</Typography>
             </Stack>
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-              <Linkify>{props.record.description}</Linkify>
+              <Text>{props.record.description}</Text>
             </Typography>
           </Stack>
         </CardContent>

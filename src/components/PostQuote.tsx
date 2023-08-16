@@ -11,10 +11,11 @@ import ProfileHeader from "@/components/ProfileHeader";
 import PostArticle from "@/components/PostArticle";
 import PostImages from "@/components/PostImages";
 import PostFeed from "@/components/PostFeed";
-import Linkify from "linkify-react";
+import Text from "@/components/Text";
 import usePost from "@/hooks/usePost";
 import {
   AppBskyFeedDefs,
+  AppBskyFeedPost,
   AppBskyEmbedImages,
   AppBskyEmbedExternal,
   AppBskyEmbedRecord,
@@ -48,7 +49,7 @@ export const PostQuote = (props: Props) => {
               </Typography>
             </Stack>
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-              <Linkify>{_.get(props.record.value, "text")}</Linkify>
+              <Text>{AppBskyFeedPost.isRecord(props.record.value) && props.record.value.text}</Text>
             </Typography>
             {_.map(props.record.embeds, (embed, key) => {
               if (AppBskyEmbedImages.isView(embed)) {

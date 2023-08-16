@@ -3,7 +3,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
-import Linkify from "linkify-react";
+import Text from "@/components/Text";
 import { AppBskyEmbedExternal } from "@atproto/api";
 
 type Props = {
@@ -27,10 +27,10 @@ export const PostArticle = (props: Props) => {
             {props.article.title}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
-            <Linkify>{props.article.uri}</Linkify>
+            <Text>{props.article.uri}</Text>
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-            <Linkify>{props.article.description}</Linkify>
+            <Text>{props.article.description}</Text>
           </Typography>
         </CardContent>
       </CardActionArea>

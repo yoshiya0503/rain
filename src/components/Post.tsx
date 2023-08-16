@@ -8,12 +8,12 @@ import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import LoopIcon from "@mui/icons-material/Loop";
 import { grey, green } from "@mui/material/colors";
-import Linkify from "linkify-react";
 import AvatarThread from "@/components/AvatarThread";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
 import PostStats from "@/components/PostStats";
+import Text from "@/components/Text";
 import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
@@ -79,7 +79,7 @@ export const Post = (props: Props) => {
         </Stack>
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
-            <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
+            <Text>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Text>
           </Typography>
           <Attachments embed={props.post.embed} />
         </Stack>

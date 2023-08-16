@@ -9,13 +9,13 @@ import Divider from "@mui/material/Divider";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
 import { grey } from "@mui/material/colors";
-import Linkify from "linkify-react";
 import NotificationAvatars from "@/components/NotificationAvatars";
 import NotificationImages from "@/components/NotificationImages";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
 import Attachments from "@/components/Attachments";
+import Text from "@/components/Text";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
 import { AppBskyEmbedImages } from "@atproto/api";
@@ -94,17 +94,13 @@ export const Post = (props: Props) => {
           {props.reasonReply ? (
             <>
               <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-                <Linkify>
-                  {AppBskyFeedPost.isRecord(props.reasonReply?.record) && props.reasonReply?.record.text}
-                </Linkify>
+                <Text>{AppBskyFeedPost.isRecord(props.reasonReply?.record) && props.reasonReply?.record.text}</Text>
               </Typography>
               <Attachments embed={props.reasonReply.embed} />
             </>
           ) : (
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption" color={grey[400]}>
-              <Linkify>
-                {AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}
-              </Linkify>
+              <Text>{AppBskyFeedPost.isRecord(props.reasonSubject?.record) && props.reasonSubject?.record.text}</Text>
               {AppBskyEmbedImages.isView(props.reasonSubject?.embed) && props.reasonSubject?.embed?.images && (
                 <NotificationImages images={props.reasonSubject?.embed?.images} />
               )}

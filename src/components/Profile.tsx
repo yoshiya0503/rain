@@ -16,9 +16,9 @@ import MuteIcon from "@mui/icons-material/VolumeOffRounded";
 import ReportIcon from "@mui/icons-material/ReportRounded";
 import ShareIcon from "@mui/icons-material/ShareRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
-import Linkify from "linkify-react";
 import DropDownMenu from "@/components/DropDownMenu";
 import ProfileDialog from "@/components/ProfileDialog";
+import Text from "@/components/Text";
 import useSocial from "@/hooks/useSocial";
 import useDialog from "@/hooks/useDialog";
 import useMe from "@/hooks/useMe";
@@ -168,7 +168,7 @@ export const Profile = (props: Props) => {
             </Stack>
           </Stack>
           <Typography variant="caption">
-            <Linkify>{props.actor.description}</Linkify>
+            <Text>{props.actor.description}</Text>
           </Typography>
         </Stack>
       </CardContent>

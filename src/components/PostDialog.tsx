@@ -25,6 +25,7 @@ import LabelProgress from "@/components/LabelProgress";
 import ProfileHeader from "@/components/ProfileHeader";
 import PostArticle from "@/components/PostArticle";
 import PostQuote from "@/components/PostQuote";
+import Text from "@/components/Text";
 import useMe from "@/hooks/useMe";
 import usePost from "@/hooks/usePost";
 import useQuote from "@/hooks/useQuote";
@@ -32,7 +33,6 @@ import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
 import useBackdrop from "@/hooks/useBackdrop";
 import useRichText from "@/hooks/useRichText";
-import Linkify from "linkify-react";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
 type Props = {
@@ -116,7 +116,7 @@ export const PostDialog = (props: Props) => {
             <DialogContentText component="div" sx={{ mt: 1, mb: 1 }}>
               <ProfileHeader profile={props.post.author} size="small" />
               <Typography sx={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }} variant="caption">
-                <Linkify>{props.post.record.text}</Linkify>
+                <Text>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Text>
               </Typography>
             </DialogContentText>
           </Box>

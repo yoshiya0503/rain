@@ -11,7 +11,7 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
 
   useEffect(() => {
     if (AppBskyFeedPost.isRecord(post?.record)) {
-      const q = post ? { value: { text: post?.record.text }, ...post } : undefined;
+      const q = post ? { value: post.record, ...post } : undefined;
       setQuote(q);
     }
   }, [setQuote, post]);
@@ -39,7 +39,7 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
       const thread = await getPostThread(`at://${actorURI}/${postURI}`);
       if (AppBskyFeedDefs.isThreadViewPost(thread)) {
         if (AppBskyFeedPost.isRecord(thread.post.record)) {
-          const q = { value: { text: thread.post.record.text }, ...thread.post };
+          const q = { value: thread.post.record, ...thread.post };
           setQuote(q);
         }
       }
