@@ -10,31 +10,45 @@ import { AppBskyActorDefs, AppBskyNotificationListNotifications } from "@atproto
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
-  reason: "repost" | "like" | "follow" | "reply" | "quote" | "mention";
 };
 
 export const NotificationAvatars = (props: Props) => {
   const navigate = useNavigate();
 
-  const onViewProfile = useCallback(() => {
-    const uri = `/profile/${props.notification.author.handle}`;
-    navigate(uri);
-  }, [navigate, props]);
+  const onViewProfile = useCallback(
+    (author: AppBskyActorDefs.ProfileView) => {
+      const uri = `/profile/${author.handle}`;
+      navigate(uri);
+    },
+    [navigate]
+  );
 
   return (
     <Stack direction="row" alignItems="center" spacing={0.5}>
-      <AvatarBadge type={props.reason}>
+      <AvatarBadge type={props.notification.reason}>
         <Avatar
           sx={{ width: 42, height: 42 }}
           alt={props.notification.author.displayName}
           src={props.notification.author.avatar}
-          onClick={onViewProfile}
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewProfile(props.notification.author);
+          }}
         />
       </AvatarBadge>
       <Stack alignSelf="flex-end">
         <AvatarGroup max={5}>
           {_.map(props.otherAuthors, (author, key) => (
-            <Avatar key={key} alt={author.displayName} src={author.avatar} sx={{ width: 24, height: 24 }} />
+            <Avatar
+              key={key}
+              alt={author.displayName}
+              src={author.avatar}
+              sx={{ width: 24, height: 24 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewProfile(author);
+              }}
+            />
           ))}
         </AvatarGroup>
       </Stack>

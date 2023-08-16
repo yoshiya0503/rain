@@ -11,7 +11,7 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 
 type Props = {
-  type: "reply" | "like" | "repost" | "quote" | "follow" | "mention" | "camera";
+  type: "like" | "repost" | "follow" | "mention" | "reply" | "quote" | "camera" | string;
   children: ReactNode;
 };
 

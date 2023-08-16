@@ -47,7 +47,6 @@ export const NotificationContainer = () => {
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <TransitionGroup>
         {_.map(reducedNotifications, (item) => {
-          const reason = item[0].reason as "repost" | "like" | "follow" | "reply" | "quote" | "mention";
           const otherAuthors = _.chain(item).map("author").slice(1).value();
           const reasonSubject = _.find(reasonSubjects, (subject) => subject.uri === item[0].reasonSubject);
           const reasonReply = _.find(reasonReplies, (reply) => reply.uri === item[0].uri);
@@ -56,7 +55,6 @@ export const NotificationContainer = () => {
               <Box sx={{ mt: 1, mb: 1 }}>
                 <Notification
                   notification={item[0]}
-                  reason={reason}
                   otherAuthors={otherAuthors}
                   reasonSubject={reasonSubject}
                   reasonReply={reasonReply}

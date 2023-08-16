@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { useCallback } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
@@ -14,25 +15,22 @@ import NotificationImages from "@/components/NotificationImages";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
-import PostArticle from "@/components/PostArticle";
-import PostImages from "@/components/PostImages";
-import PostQuote from "@/components/PostQuote";
-import PostFeed from "@/components/PostFeed";
+import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
-import { AppBskyEmbedImages, AppBskyEmbedExternal, AppBskyEmbedRecord } from "@atproto/api";
+import { AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
-  reason: "repost" | "like" | "follow" | "reply" | "quote" | "mention";
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
 };
 
 export const Post = (props: Props) => {
-  const { onShare } = usePost();
+  const { onShare, onViewThread } = usePost();
+  // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
 
   const menuItems = [
     {
@@ -55,10 +53,15 @@ export const Post = (props: Props) => {
 
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.notification.indexedAt), { locale: ja });
   const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
-  const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.reason}しました`;
+  const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.notification.reason}しました`;
+
+  const onViewReason = useCallback(() => {
+    if (props.reasonReply) return onViewThread(props.reasonReply)();
+    if (props.reasonSubject) return onViewThread(props.reasonSubject)();
+  }, [onViewThread, props.reasonSubject, props.reasonReply]);
 
   return (
-    <Stack direction="row" spacing={1}>
+    <Stack direction="row" spacing={1} onClick={onViewReason}>
       <Divider
         sx={{ bgcolor: "primary.main", borderRightWidth: 1.5, mb: 2 }}
         orientation="vertical"
@@ -68,11 +71,7 @@ export const Post = (props: Props) => {
       <Box sx={{ width: "100%" }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
           <Stack direction="row" alignItems="center" spacing={0.5}>
-            <NotificationAvatars
-              notification={props.notification}
-              otherAuthors={props.otherAuthors}
-              reason={props.reason}
-            />
+            <NotificationAvatars notification={props.notification} otherAuthors={props.otherAuthors} />
             {AppBskyFeedPost.isRecord(props.notification.record) && (
               <ProfileHeader profile={props.notification.author} disableAvatar />
             )}
@@ -81,36 +80,25 @@ export const Post = (props: Props) => {
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
-            {(props.reason === "reply" || props.reason === "quote") && <DropDownMenu items={menuItems} size="tiny" />}
+            {_.includes(["reply", "quote", "mention"], props.notification.reason) && (
+              <DropDownMenu items={menuItems} size="tiny" />
+            )}
           </Stack>
         </Stack>
-        {props.reason !== "reply" && props.reason !== "quote" && (
+        {!_.includes(["reply", "quote", "mention"], props.notification.reason) && (
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             {message}
           </Typography>
         )}
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>
-          {AppBskyFeedPost.isRecord(props.reasonReply?.record) ? (
+          {props.reasonReply ? (
             <>
               <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
-                <Linkify>{props.reasonReply?.record.text}</Linkify>
+                <Linkify>
+                  {AppBskyFeedPost.isRecord(props.reasonReply?.record) && props.reasonReply?.record.text}
+                </Linkify>
               </Typography>
-              {AppBskyEmbedImages.isView(props.reasonReply?.embed) && (
-                <PostImages images={props.reasonReply?.embed.images || []} />
-              )}
-              {AppBskyEmbedExternal.isView(props.reasonReply?.embed) && props.reasonReply?.embed.external && (
-                <PostArticle article={props.reasonReply?.embed.external} />
-              )}
-              {AppBskyEmbedRecord.isView(props.reasonReply?.embed) &&
-                props.reasonReply?.embed.record &&
-                AppBskyEmbedRecord.isViewRecord(props.reasonReply?.embed.record) && (
-                  <PostQuote record={props.reasonReply?.embed.record} />
-                )}
-              {AppBskyEmbedRecord.isView(props.reasonReply?.embed) &&
-                props.reasonReply?.embed.record &&
-                AppBskyFeedDefs.isGeneratorView(props.reasonReply?.embed.record) && (
-                  <PostFeed record={props.reasonReply?.embed.record} />
-                )}
+              <Attachments embed={props.reasonReply.embed} />
             </>
           ) : (
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption" color={grey[400]}>
@@ -123,8 +111,13 @@ export const Post = (props: Props) => {
             </Typography>
           )}
         </Stack>
-        {(props.reason === "reply" || props.reason === "quote") && props.reasonReply && (
-          <Box sx={{ mb: 1 }}>
+        {_.includes(["reply", "mention", "quote"], props.notification.reason) && props.reasonReply && (
+          <Box
+            sx={{ mb: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <PostActions post={props.reasonReply} onOpenPost={props.onOpenPost} />
           </Box>
         )}

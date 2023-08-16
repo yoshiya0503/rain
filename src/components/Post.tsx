@@ -13,20 +13,10 @@ import AvatarThread from "@/components/AvatarThread";
 import ProfileHeader from "@/components/ProfileHeader";
 import DropDownMenu from "@/components/DropDownMenu";
 import PostActions from "@/components/PostActions";
-import PostArticle from "@/components/PostArticle";
-import PostImages from "@/components/PostImages";
-import PostQuote from "@/components/PostQuote";
-import PostFeed from "@/components/PostFeed";
 import PostStats from "@/components/PostStats";
+import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
-import {
-  AppBskyFeedDefs,
-  AppBskyFeedPost,
-  AppBskyEmbedImages,
-  AppBskyEmbedExternal,
-  AppBskyEmbedRecord,
-  AppBskyEmbedRecordWithMedia,
-} from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
 type Props = {
   post: AppBskyFeedDefs.PostView;
@@ -91,24 +81,7 @@ export const Post = (props: Props) => {
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
             <Linkify>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Linkify>
           </Typography>
-          {AppBskyEmbedImages.isView(props.post.embed) && <PostImages images={props.post.embed.images} />}
-          {AppBskyEmbedExternal.isView(props.post.embed) && <PostArticle article={props.post.embed.external} />}
-          {AppBskyEmbedRecord.isView(props.post.embed) && AppBskyEmbedRecord.isViewRecord(props.post.embed.record) && (
-            <PostQuote record={props.post.embed.record} />
-          )}
-          {AppBskyEmbedRecord.isView(props.post.embed) && AppBskyFeedDefs.isGeneratorView(props.post.embed.record) && (
-            <PostFeed record={props.post.embed.record} />
-          )}
-          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-            AppBskyEmbedImages.isView(props.post.embed.media) && <PostImages images={props.post.embed.media.images} />}
-          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-            AppBskyEmbedExternal.isView(props.post.embed.media) && (
-              <PostArticle article={props.post.embed.media.external} />
-            )}
-          {AppBskyEmbedRecordWithMedia.isView(props.post.embed) &&
-            AppBskyEmbedRecord.isViewRecord(props.post.embed.record.record) && (
-              <PostQuote record={props.post.embed.record.record} />
-            )}
+          <Attachments embed={props.post.embed} />
         </Stack>
         <Box
           sx={{ ml: -1, mb: 1 }}
