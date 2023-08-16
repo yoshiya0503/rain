@@ -16,15 +16,6 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
     }
   }, [setQuote, post]);
 
-  const isInvalidURL = useCallback((url: string): boolean => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }, []);
-
   const fetchHandle = useCallback((url: string) => {
     const splited = _.split(url, "/");
     return _.findLast(splited, (str) => _.includes(str, "."));
@@ -36,21 +27,15 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
   }, []);
 
   const fetchQuote = useCallback(
-    async (text: string) => {
-      const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
+    async (link: string) => {
       // 引用ポストだけを拾う
-      const urls = _.reject(
-        text.match(regexp_url),
-        (url) => !isInvalidURL(url) || !_.includes(url, "https://bsky.app/profile/")
-      );
-      const url = _.first(urls);
-      if (quote || !url) return;
-      const handle = fetchHandle(url);
+      if (quote || !link) return;
+      const handle = fetchHandle(link);
       if (!handle) {
         return;
       }
       const actorURI = await resolveHandle(handle);
-      const postURI = fetchPostURI(url);
+      const postURI = fetchPostURI(link);
       const thread = await getPostThread(`at://${actorURI}/${postURI}`);
       if (AppBskyFeedDefs.isThreadViewPost(thread)) {
         if (AppBskyFeedPost.isRecord(thread.post.record)) {
@@ -59,7 +44,7 @@ export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
         }
       }
     },
-    [quote, setQuote, getPostThread, resolveHandle, fetchHandle, fetchPostURI, isInvalidURL]
+    [quote, setQuote, getPostThread, resolveHandle, fetchHandle, fetchPostURI]
   );
 
   const fetchEmbedQuote = useCallback(() => {

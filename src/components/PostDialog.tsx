@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { useState } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -32,6 +31,7 @@ import useQuote from "@/hooks/useQuote";
 import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
 import useBackdrop from "@/hooks/useBackdrop";
+import useRichText from "@/hooks/useRichText";
 import Linkify from "linkify-react";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
@@ -53,24 +53,21 @@ export const PostDialog = (props: Props) => {
   const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
   const { quote, fetchQuote, fetchEmbedQuote } = useQuote(props.post);
   const { open, withBackdrop } = useBackdrop();
-  const [text, setText] = useState<string>("");
+  const { text, facets, fetchFacets, link, onChange, onClearText } = useRichText();
 
   const onClean = () => {
     onClearImages();
     onClearArticle();
-    setText("");
+    onClearText();
     props.onClose();
-  };
-
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.currentTarget.value);
   };
 
   const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       // TODO メンションが入った場合
-      fetchOGP(text);
-      fetchQuote(text);
+      await fetchFacets();
+      fetchOGP(link("ogp"));
+      fetchQuote(link("quote"));
     }
   };
 
@@ -92,7 +89,7 @@ export const PostDialog = (props: Props) => {
       if (props.type === "quote" && quote) {
         embed = fetchEmbedQuote();
       }
-      onPost({ text, reply, embed });
+      onPost({ text, facets: facets(), reply, embed });
       onClean();
     });
   };
@@ -173,7 +170,7 @@ export const PostDialog = (props: Props) => {
           </ImageList>
         )}
         {article && <PostArticle article={article} />}
-        {props.type === "quote" && quote && quote && <PostQuote record={quote} />}
+        {quote && <PostQuote record={quote} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>

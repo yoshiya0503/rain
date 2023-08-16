@@ -7,26 +7,11 @@ export const useOGP = () => {
   const onUploadBlob = useStore((state) => state.uploadBlob);
   const [article, setArticle] = useState<AppBskyEmbedExternal.ViewExternal>();
 
-  const isInvalidURL = useCallback((url: string): boolean => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }, []);
-
   const fetchOGP = useCallback(
-    async (text: string) => {
-      const regexp_url = /((https|http)?:\/\/[\w/:%#$&?()~.=+-]+)/g;
+    async (link: string) => {
       // bsky内部は引用として扱う
-      const urls = _.reject(
-        text.match(regexp_url),
-        (url) => !isInvalidURL(url) || _.includes(url, "https://bsky.app/profile/")
-      );
-      const url = _.first(urls);
-      if (article || !url) return;
-      const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${url.toString()}`);
+      if (article || !link) return;
+      const res = await fetch(`https://cardyb.bsky.app/v1/extract?url=${link}`);
       const result = await res.json();
       if (!result.error) {
         const article = {
@@ -38,7 +23,7 @@ export const useOGP = () => {
         setArticle(article);
       }
     },
-    [article, setArticle, isInvalidURL]
+    [article, setArticle]
   );
 
   const fetchEmbedExternal = async () => {
