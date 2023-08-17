@@ -23,12 +23,12 @@ export const LikedContainer = (props: Props) => {
   if (!_.includes(seenURI, props.id)) {
     throw (async () => {
       const did = await resolveHandle(props.handle);
-      await getLikedBy(`at://${did}/app.bsky.feed.post/${props.id}`);
+      await getLikedBy(`at://${did}/app.bsky.feed.post/${props.id}`, true);
     })();
   }
 
   const onScrollLimit = useCallback(() => {
-    getLikedBy(uri);
+    getLikedBy(uri, false);
   }, [getLikedBy, uri]);
 
   if (_.isEmpty(likedBy)) {

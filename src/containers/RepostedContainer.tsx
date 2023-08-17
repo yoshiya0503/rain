@@ -23,12 +23,12 @@ export const RepostedContainer = (props: Props) => {
   if (!_.includes(seenURI, props.id)) {
     throw (async () => {
       const did = await resolveHandle(props.handle);
-      await getRepostedBy(`at://${did}/app.bsky.feed.post/${props.id}`);
+      await getRepostedBy(`at://${did}/app.bsky.feed.post/${props.id}`, true);
     })();
   }
 
   const onScrollLimit = useCallback(() => {
-    getRepostedBy(uri);
+    getRepostedBy(uri, false);
   }, [getRepostedBy, uri]);
 
   if (_.isEmpty(repostedBy)) {

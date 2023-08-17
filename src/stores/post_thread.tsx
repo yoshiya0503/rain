@@ -10,8 +10,8 @@ export interface PostThreadSlice {
   thread?: AppBskyFeedDefs.ThreadViewPost;
   threadParent?: AppBskyFeedDefs.PostView[];
   threadReplies?: AppBskyFeedDefs.PostView[][];
-  repostedBy?: AppBskyActorDefs.ProfileView[];
-  likedBy?: AppBskyFeedGetLikes.Like[];
+  repostedBy: AppBskyActorDefs.ProfileView[];
+  likedBy: AppBskyFeedGetLikes.Like[];
   threadSubject?: string;
   repostedByCursor: string;
   likedByCursor: string;
@@ -20,8 +20,8 @@ export interface PostThreadSlice {
   seenLikedURI: string;
   getPosts: (uris: string[]) => Promise<unknown>;
   getPostThread: (uri: string) => Promise<unknown>;
-  getRepostedBy: (uri: string) => Promise<unknown>;
-  getLikedBy: (uri: string) => Promise<unknown>;
+  getRepostedBy: (uri: string, isReset: boolean) => Promise<unknown>;
+  getLikedBy: (uri: string, isReset: boolean) => Promise<unknown>;
   walkParents: (
     thread: AppBskyFeedDefs.ThreadViewPost,
     result?: AppBskyFeedDefs.PostView[]
@@ -40,8 +40,8 @@ export const createPostThreadSlice: StateCreator<
   PostThreadSlice
 > = (set, get) => ({
   posts: [],
-  likedBy: undefined,
-  repostedBy: undefined,
+  likedBy: [],
+  repostedBy: [],
   repostedByCursor: "",
   likedByCursor: "",
   uri: "",
@@ -84,22 +84,32 @@ export const createPostThreadSlice: StateCreator<
       get().createFailedMessage({ status: "error", title: "failed to fetch post thread" }, e);
     }
   },
-  getRepostedBy: async (uri: string) => {
+  getRepostedBy: async (uri: string, isReset: boolean) => {
     try {
-      // TODO cursor
-      const res = await agent.getRepostedBy({ uri });
+      const cursor = isReset ? "" : get().repostedByCursor;
       const seenRepostedURI = `${uri}/reposted`;
-      set({ repostedByCursor: res.data.cursor, repostedBy: res.data.repostedBy, uri, seenRepostedURI });
+      const res = await agent.getRepostedBy({ uri, cursor });
+      if (isReset) {
+        set({ repostedByCursor: res.data.cursor, repostedBy: res.data.repostedBy, uri, seenRepostedURI });
+      } else {
+        const repostedBy = _.concat(get().repostedBy, res.data.repostedBy);
+        set({ repostedByCursor: res.data.cursor, repostedBy, uri, seenRepostedURI });
+      }
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to fetch reposted actors" }, e);
     }
   },
-  getLikedBy: async (uri: string) => {
+  getLikedBy: async (uri: string, isReset: boolean) => {
     try {
-      // TODO cursor
-      const res = await agent.getLikes({ uri });
+      const cursor = isReset ? "" : get().likedByCursor;
       const seenLikedURI = `${uri}/liked`;
-      set({ likedByCursor: res.data.cursor, likedBy: res.data.likes, uri, seenLikedURI });
+      const res = await agent.getLikes({ uri, cursor });
+      if (isReset) {
+        set({ likedByCursor: res.data.cursor, likedBy: res.data.likes, uri, seenLikedURI });
+      } else {
+        const likedBy = _.concat(get().likedBy, res.data.likes);
+        set({ likedByCursor: res.data.cursor, likedBy, uri, seenLikedURI });
+      }
     } catch (e) {
       get().createFailedMessage({ status: "error", title: "failed to fetch liked actors" }, e);
     }
