@@ -15,7 +15,7 @@ export interface ActorSlice {
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateHandle: (handle: string) => Promise<void>;
-  updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
+  updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionSlice, [], [], ActorSlice> = (
@@ -77,32 +77,20 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       get().createFailedMessage({ status: "error", title: "failed update handle" }, e);
     }
   },
-  updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string | null) => {
+  updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => {
     const authorFeed = _.map(get().authorFeed, (f) => {
       if (AppBskyFeedDefs.isPostView(f.reply?.root)) {
         if (f.reply?.root.uri === post.uri) {
-          if (_.has(f.reply?.root?.viewer, action)) {
-            f.reply.root.viewer = _.omit(f.reply.root.viewer, action);
-          } else {
-            f.reply.root.viewer = { ...f.reply.root.viewer, [action]: resourceURI };
-          }
+          f.reply.root = post;
         }
       }
       if (AppBskyFeedDefs.isPostView(f.reply?.parent)) {
         if (f.reply?.parent.uri === post.uri) {
-          if (_.has(f.reply?.parent?.viewer, action)) {
-            f.reply.parent.viewer = _.omit(f.reply.parent.viewer, action);
-          } else {
-            f.reply.parent.viewer = { ...f.reply.parent.viewer, [action]: resourceURI };
-          }
+          f.reply.parent = post;
         }
       }
       if (f.post.uri === post.uri) {
-        if (_.has(f.post.viewer, action)) {
-          f.post.viewer = _.omit(f.post.viewer, action);
-        } else {
-          f.post.viewer = { ...f.post.viewer, [action]: resourceURI };
-        }
+        f.post = post;
       }
       return f;
     });

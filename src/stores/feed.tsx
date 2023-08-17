@@ -22,7 +22,7 @@ export interface FeedSlice {
   deleteRepost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
   like: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
   deleteLike: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  updateFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
+  updateFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSlice, [], [], FeedSlice> = (
@@ -74,10 +74,9 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   },
   post: async (record: Record) => {
     try {
-      // TODO 新しく作られたpostにはthreads情報が入っていない
       const postResponse = await agent.post(record);
       const res = await agent.getPosts({ uris: [postResponse.uri] });
-      // 通知欄から初めてpostした場合、長さ1のリストになってTLが取れなくなるのでスキップする
+      // 初めてpostした場合、長さ1のリストになってTLが取れなくなるのでスキップする
       if (_.size(get().feed) < 10) return;
       const newPost = [{ post: res.data.posts[0] }];
       const feed = _.concat(newPost, get().feed);
@@ -134,32 +133,20 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       get().createFailedMessage({ status: "error", title: "failed to like" }, e);
     }
   },
-  updateFeedViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
+  updateFeedViewer: (post: AppBskyFeedDefs.PostView) => {
     const feed = _.map(get().feed, (f) => {
       if (AppBskyFeedDefs.isPostView(f.reply?.root)) {
         if (f.reply?.root.uri === post.uri) {
-          if (_.has(f.reply?.root?.viewer, action)) {
-            f.reply.root.viewer = _.omit(f.reply.root.viewer, action);
-          } else {
-            f.reply.root.viewer = { ...f.reply.root.viewer, [action]: resourceURI };
-          }
+          f.reply.root = post;
         }
       }
       if (AppBskyFeedDefs.isPostView(f.reply?.parent)) {
         if (f.reply?.parent.uri === post.uri) {
-          if (_.has(f.reply?.parent?.viewer, action)) {
-            f.reply.parent.viewer = _.omit(f.reply.parent.viewer, action);
-          } else {
-            f.reply.parent.viewer = { ...f.reply.parent.viewer, [action]: resourceURI };
-          }
+          f.reply.parent = post;
         }
       }
       if (f.post.uri === post.uri) {
-        if (_.has(f.post.viewer, action)) {
-          f.post.viewer = _.omit(f.post.viewer, action);
-        } else {
-          f.post.viewer = { ...f.post.viewer, [action]: resourceURI };
-        }
+        f.post = post;
       }
       return f;
     });

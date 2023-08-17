@@ -18,7 +18,7 @@ export interface NotificationSlice {
   fetchReasonReplies: (notifications: AppBskyNotificationListNotifications.Notification[]) => Promise<void>;
   countUnreadNotifications: () => Promise<void>;
   updateSeen: () => Promise<void>;
-  updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
+  updateNotificationViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createNotificationSlice: StateCreator<NotificationSlice & MessageSlice, [], [], NotificationSlice> = (
@@ -103,17 +103,8 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       get().createFailedMessage({ status: "error", title: "failed update seen notification" }, e);
     }
   },
-  updateNotificationViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
-    const reasonReplies = _.map(get().reasonReplies, (subject) => {
-      if (subject.uri === post.uri) {
-        if (_.has(subject.viewer, action)) {
-          subject.viewer = _.omit(subject.viewer, action);
-        } else {
-          subject.viewer = { ...subject.viewer, [action]: resourceURI };
-        }
-      }
-      return subject;
-    });
+  updateNotificationViewer: (post: AppBskyFeedDefs.PostView) => {
+    const reasonReplies = _.map(get().reasonReplies, (subject) => (subject.uri === post.uri ? post : subject));
     set({ reasonReplies });
   },
 });

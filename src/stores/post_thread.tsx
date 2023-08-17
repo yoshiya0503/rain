@@ -30,7 +30,7 @@ export interface PostThreadSlice {
     thread: AppBskyFeedDefs.ThreadViewPost,
     result?: AppBskyFeedDefs.PostView[]
   ) => AppBskyFeedDefs.PostView[];
-  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
+  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createPostThreadSlice: StateCreator<
@@ -117,36 +117,14 @@ export const createPostThreadSlice: StateCreator<
     }
     return _.concat(result, [thread.post]);
   },
-  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string | null) => {
+  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView) => {
     const threadReplies = _.map(get().threadReplies, (r) => {
-      return _.map(r, (t) => {
-        if (t.uri === post.uri) {
-          if (_.has(t.viewer, action)) {
-            t.viewer = _.omit(t.viewer, action);
-          } else {
-            t.viewer = { ...t.viewer, [action]: resourceURI };
-          }
-        }
-        return t;
-      });
+      return _.map(r, (t) => (t.uri === post.uri ? post : t));
     });
-    const threadParent = _.map(get().threadParent, (t) => {
-      if (t.uri === post.uri) {
-        if (_.has(t.viewer, action)) {
-          t.viewer = _.omit(t.viewer, action);
-        } else {
-          t.viewer = { ...t.viewer, [action]: resourceURI };
-        }
-      }
-      return t;
-    });
+    const threadParent = _.map(get().threadParent, (t) => (t.uri === post.uri ? post : t));
     const thread = get().thread;
     if (AppBskyFeedDefs.isThreadViewPost(thread) && post.uri === thread?.post.uri) {
-      if (_.has(thread.post.viewer, action)) {
-        thread.post.viewer = _.omit(thread.post.viewer, action);
-      } else {
-        thread.post.viewer = { ...thread.post.viewer, [action]: resourceURI };
-      }
+      thread.post = post;
     }
     set({ thread, threadReplies, threadParent });
     return;
