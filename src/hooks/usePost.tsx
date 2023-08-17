@@ -36,8 +36,20 @@ export const usePost = () => {
   const updateViewer = useCallback(
     (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
       if (_.has(post.viewer, action)) {
+        if (_.isNumber(post.likeCount) && action === "like") {
+          post.likeCount -= 1;
+        }
+        if (_.isNumber(post.repostCount) && action === "repost") {
+          post.repostCount -= 1;
+        }
         post.viewer = _.omit(post.viewer, action);
       } else {
+        if (_.isNumber(post.likeCount) && action === "like") {
+          post.likeCount += 1;
+        }
+        if (_.isNumber(post.repostCount) && action === "repost") {
+          post.repostCount += 1;
+        }
         post.viewer = { ...post.viewer, [action]: resourceURI };
       }
       updateFeedViewer(post);
