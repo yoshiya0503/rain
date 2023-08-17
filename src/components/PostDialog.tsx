@@ -51,13 +51,16 @@ export const PostDialog = (props: Props) => {
   const { onPost } = usePost();
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
   const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
-  const { quote, fetchQuote, fetchEmbedQuote } = useQuote(props.post);
+
+  const q = props.type === "quote" && props.post ? { value: props.post.record, ...props.post } : undefined;
+  const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(q, props.open);
   const { open, withBackdrop } = useBackdrop();
   const { text, facets, fetchFacets, link, onChange, onClearText } = useRichText();
 
   const onClean = () => {
     onClearImages();
     onClearArticle();
+    onClearQuote();
     onClearText();
     props.onClose();
   };
@@ -97,7 +100,7 @@ export const PostDialog = (props: Props) => {
   const isNotPostable = MAX_TEXT_LENGTH < text.length || !text.length;
 
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={onClean}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="primary" />
       </Backdrop>

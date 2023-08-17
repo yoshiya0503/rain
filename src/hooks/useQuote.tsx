@@ -3,18 +3,17 @@ import { useState, useCallback, useEffect } from "react";
 import { useStore } from "@/stores";
 import { AppBskyEmbedRecord, AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
-export const useQuote = (post?: AppBskyFeedDefs.PostView) => {
+export const useQuote = (post?: AppBskyEmbedRecord.ViewRecord, reload?: boolean) => {
   const getPostThread = useStore((state) => state.getPostThread);
   const resolveHandle = useStore((state) => state.resolveHandle);
 
   const [quote, setQuote] = useState<AppBskyEmbedRecord.ViewRecord>();
 
   useEffect(() => {
-    if (AppBskyFeedPost.isRecord(post?.record)) {
-      const q = post ? { value: post.record, ...post } : undefined;
-      setQuote(q);
+    if (reload) {
+      setQuote(post);
     }
-  }, [setQuote, post]);
+  }, [setQuote, post, reload]);
 
   const fetchHandle = useCallback((url: string) => {
     const splited = _.split(url, "/");

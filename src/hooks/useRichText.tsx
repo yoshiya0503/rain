@@ -56,7 +56,8 @@ export const useRichText = () => {
 
   const onClearText = useCallback(() => {
     setRT(undefined);
-  }, [setRT]);
+    setText("");
+  }, [setRT, setText]);
 
   return { text, facets, fetchFacets, mention, link, onChange, onClearText };
 };
