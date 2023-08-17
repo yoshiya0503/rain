@@ -24,8 +24,9 @@ import useDialog from "@/hooks/useDialog";
 import useMe from "@/hooks/useMe";
 import { AppBskyActorDefs } from "@atproto/api";
 
-//TODO Add to list
-//TODO moderation report
+// TODO Add to list
+// TODO moderation report
+// TODO プロフィール画像やバナーがない場合の対応
 type Props = {
   actor: AppBskyActorDefs.ProfileViewDetailed;
 };

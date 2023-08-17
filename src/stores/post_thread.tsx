@@ -8,6 +8,8 @@ import agent from "@/agent";
 export interface PostThreadSlice {
   posts: AppBskyFeedDefs.PostView[];
   thread?: AppBskyFeedDefs.ThreadViewPost;
+  threadParent?: AppBskyFeedDefs.PostView[];
+  threadReplies?: AppBskyFeedDefs.PostView[][];
   repostedBy?: AppBskyActorDefs.ProfileView[];
   likedBy?: AppBskyFeedGetLikes.Like[];
   threadSubject?: string;
@@ -28,6 +30,7 @@ export interface PostThreadSlice {
     thread: AppBskyFeedDefs.ThreadViewPost,
     result?: AppBskyFeedDefs.PostView[]
   ) => AppBskyFeedDefs.PostView[];
+  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => void;
 }
 
 export const createPostThreadSlice: StateCreator<
@@ -46,6 +49,8 @@ export const createPostThreadSlice: StateCreator<
   seenLikedURI: "",
   subject: undefined,
   thread: undefined,
+  threadParent: undefined,
+  threadReplies: undefined,
   getPosts: async (uris: string[]) => {
     try {
       const res = await agent.getPosts({ uris });
@@ -60,7 +65,18 @@ export const createPostThreadSlice: StateCreator<
     try {
       const res = await agent.getPostThread({ uri });
       if (AppBskyFeedDefs.isThreadViewPost(res.data.thread)) {
-        set({ thread: res.data.thread, threadSubject: id });
+        const threadParent =
+          (AppBskyFeedDefs.isThreadViewPost(res.data.thread.parent) && get().walkParents(res.data.thread.parent)) ||
+          undefined;
+        const threadReplies = _.chain(res.data.thread.replies)
+          .map((reply) => {
+            if (AppBskyFeedDefs.isThreadViewPost(reply)) {
+              return get().walkReplies(reply);
+            }
+          })
+          .compact()
+          .value();
+        set({ thread: res.data.thread, threadSubject: id, threadReplies, threadParent });
       }
       return res.data.thread;
     } catch (e) {
@@ -100,5 +116,39 @@ export const createPostThreadSlice: StateCreator<
       return get().walkReplies(thread.replies[0], _.concat(result, [thread.post]));
     }
     return _.concat(result, [thread.post]);
+  },
+  updatePostThreadViewer: (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string | null) => {
+    const threadReplies = _.map(get().threadReplies, (r) => {
+      return _.map(r, (t) => {
+        if (t.uri === post.uri) {
+          if (_.has(t.viewer, action)) {
+            t.viewer = _.omit(t.viewer, action);
+          } else {
+            t.viewer = { ...t.viewer, [action]: resourceURI };
+          }
+        }
+        return t;
+      });
+    });
+    const threadParent = _.map(get().threadParent, (t) => {
+      if (t.uri === post.uri) {
+        if (_.has(t.viewer, action)) {
+          t.viewer = _.omit(t.viewer, action);
+        } else {
+          t.viewer = { ...t.viewer, [action]: resourceURI };
+        }
+      }
+      return t;
+    });
+    const thread = get().thread;
+    if (AppBskyFeedDefs.isThreadViewPost(thread) && post.uri === thread?.post.uri) {
+      if (_.has(thread.post.viewer, action)) {
+        thread.post.viewer = _.omit(thread.post.viewer, action);
+      } else {
+        thread.post.viewer = { ...thread.post.viewer, [action]: resourceURI };
+      }
+    }
+    set({ thread, threadReplies, threadParent });
+    return;
   },
 });

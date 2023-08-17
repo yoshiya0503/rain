@@ -17,6 +17,7 @@ export const usePost = () => {
   const updateFeedViewer = useStore((state) => state.updateFeedViewer);
   const updateAuthorFeedViewer = useStore((state) => state.updateAuthorFeedViewer);
   const updateNotificationViewer = useStore((state) => state.updateNotificationViewer);
+  const updatePostThreadViewer = useStore((state) => state.updatePostThreadViewer);
 
   const onUploadBlob = useCallback(
     (data: BlobRequest) => {
@@ -45,8 +46,9 @@ export const usePost = () => {
       updateFeedViewer(post, "like", res?.uri);
       updateAuthorFeedViewer(post, "like", res?.uri);
       updateNotificationViewer(post, "like", res?.uri);
+      updatePostThreadViewer(post, "like", res?.uri);
     },
-    [like, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer]
+    [like, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
   );
 
   const onDeleteLike = useCallback(
@@ -55,8 +57,9 @@ export const usePost = () => {
       updateFeedViewer(post, "like");
       updateAuthorFeedViewer(post, "like");
       updateNotificationViewer(post, "like");
+      updatePostThreadViewer(post, "like");
     },
-    [deleteLike, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer]
+    [deleteLike, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
   );
 
   const onRepost = useCallback(
@@ -65,8 +68,9 @@ export const usePost = () => {
       updateFeedViewer(post, "repost", res?.uri);
       updateAuthorFeedViewer(post, "repost", res?.uri);
       updateNotificationViewer(post, "repost", res?.uri);
+      updatePostThreadViewer(post, "repost", res?.uri);
     },
-    [repost, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer]
+    [repost, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
   );
 
   const onDeleteRepost = useCallback(
@@ -75,8 +79,9 @@ export const usePost = () => {
       updateFeedViewer(post, "repost");
       updateAuthorFeedViewer(post, "repost");
       updateNotificationViewer(post, "repost");
+      updatePostThreadViewer(post, "repost");
     },
-    [deleteRepost, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer]
+    [deleteRepost, updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
   );
 
   const onShare = useCallback((post: AppBskyFeedDefs.PostView) => {

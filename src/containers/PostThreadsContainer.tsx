@@ -19,10 +19,10 @@ type Props = {
 export const PostThreadsContainer = (props: Props) => {
   const thread = useStore((state) => state.thread);
   const threadSubject = useStore((state) => state.threadSubject);
+  const threadParent = useStore((state) => state.threadParent);
+  const threadReplies = useStore((state) => state.threadReplies);
   const resolveHandle = useStore((state) => state.resolveHandle);
   const getPostThread = useStore((state) => state.getPostThread);
-  const walkParents = useStore((state) => state.walkParents);
-  const walkReplies = useStore((state) => state.walkReplies);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
   const [type, setType] = useState<"reply" | "quote">();
@@ -58,24 +58,17 @@ export const PostThreadsContainer = (props: Props) => {
   return (
     <ScrollLayout>
       <Box sx={{ mt: 1, mb: 1 }}>
-        {AppBskyFeedDefs.isThreadViewPost(thread.parent) &&
-          _.map(walkParents(thread.parent), (item) => (
-            <Post key={item.cid} post={item} onOpenPost={onOpenPost} hasReply />
-          ))}
+        {_.map(threadParent, (item) => (
+          <Post key={item.cid} post={item} onOpenPost={onOpenPost} hasReply />
+        ))}
         <Post post={thread.post} onOpenPost={onOpenPost} showStats />
         <Divider />
       </Box>
-      {_.map(thread.replies, (reply, key) => (
+      {_.map(threadReplies, (reply, key) => (
         <Box key={key} sx={{ mt: 1, mb: 1 }}>
-          {AppBskyFeedDefs.isThreadViewPost(reply) &&
-            _.map(walkReplies(reply), (item, len) => (
-              <Post
-                key={item.cid}
-                post={item}
-                onOpenPost={onOpenPost}
-                hasReply={_.size(walkReplies(reply)) - 1 !== len}
-              />
-            ))}
+          {_.map(reply, (item, index) => (
+            <Post key={item.cid} post={item} onOpenPost={onOpenPost} hasReply={_.size(reply) - 1 !== index} />
+          ))}
           <Divider />
         </Box>
       ))}

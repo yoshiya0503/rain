@@ -16,6 +16,7 @@ type Props = {
   profile: AppBskyActorDefs.ProfileView;
 };
 
+// TODO 自分で自分をフォローできてしまう
 export const Follow = (props: Props) => {
   const { onFollow, onUnFollow } = useSocial();
 
