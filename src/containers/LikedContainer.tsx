@@ -39,7 +39,6 @@ export const LikedContainer = (props: Props) => {
     );
   }
 
-  // TODO 元の位置へ戻る機能
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
       {_.map(likedBy, (item, key) => (

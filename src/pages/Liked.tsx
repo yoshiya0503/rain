@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "@/templates/Layout";
+import HistoryLayout from "@/templates/HistoryLayout";
 import LikedContainer from "@/containers/LikedContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
@@ -9,9 +10,11 @@ export const Liked = () => {
 
   return (
     <Layout>
-      <Suspense fallback={<TimelineTemplate />}>
-        <LikedContainer handle={handle || ""} id={id || ""} />
-      </Suspense>
+      <HistoryLayout>
+        <Suspense fallback={<TimelineTemplate />}>
+          <LikedContainer handle={handle || ""} id={id || ""} />
+        </Suspense>
+      </HistoryLayout>
     </Layout>
   );
 };

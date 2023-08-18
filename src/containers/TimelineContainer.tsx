@@ -39,6 +39,7 @@ export const TimelineContainer = () => {
 
   const title = type === "reply" ? "Reply" : "Quote";
 
+  // TODO スクロール位置を記憶しておきたい
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <TransitionGroup>

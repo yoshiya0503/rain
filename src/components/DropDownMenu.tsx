@@ -18,6 +18,7 @@ type Props = {
   size?: "tiny";
 };
 
+// TODO sizeはinheritで行けそう
 export const DropDownMenu = (props: Props) => {
   const [anchor, openMenu, closeMenu] = useMenu();
   return (

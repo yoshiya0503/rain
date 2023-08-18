@@ -1,4 +1,5 @@
 import Layout from "@/templates/Layout";
+import HistoryLayout from "@/templates/HistoryLayout";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import ProfileHeader from "@/components/ProfileHeader";
@@ -17,20 +18,22 @@ export const Settings = () => {
 
   return (
     <Layout>
-      <Stack spacing={2}>
-        <ProfileHeader profile={me} />
-        <Box>
-          <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
-            Logout
-          </Button>
-        </Box>
-        <Box>
-          <Button variant="contained" startIcon={<AlternateEmailIcon />} onClick={openHandleDialog}>
-            Change Handle
-          </Button>
-        </Box>
-      </Stack>
-      <HandleDialog open={isOpen} onClose={closeHandleDialog} />
+      <HistoryLayout>
+        <Stack spacing={2}>
+          <ProfileHeader profile={me} />
+          <Box>
+            <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
+              Logout
+            </Button>
+          </Box>
+          <Box>
+            <Button variant="contained" startIcon={<AlternateEmailIcon />} onClick={openHandleDialog}>
+              Change Handle
+            </Button>
+          </Box>
+        </Stack>
+        <HandleDialog open={isOpen} onClose={closeHandleDialog} />
+      </HistoryLayout>
     </Layout>
   );
 };
