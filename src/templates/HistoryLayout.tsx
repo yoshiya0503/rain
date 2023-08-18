@@ -8,6 +8,7 @@ type Props = {
   children: ReactNode;
 };
 
+// TODO コンテンツの上じゃなくて横のほうがいいかもしれない
 export const HistoryLayout = (props: Props) => {
   const navigate = useNavigate();
   return (

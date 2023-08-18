@@ -110,6 +110,7 @@ export const usePost = () => {
       if (document.getSelection()?.toString()) return;
       const id = _.last(_.split(post.uri, "/"));
       const url = `/profile/${post.author.handle}/post/${id}`;
+      //TODO 同じページへのnavigateをスキップしないと履歴に積まれる
       navigate(url);
     },
     [navigate]
