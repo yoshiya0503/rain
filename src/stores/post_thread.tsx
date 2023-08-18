@@ -57,7 +57,7 @@ export const createPostThreadSlice: StateCreator<
       set({ posts: res.data.posts });
       return res.data.posts;
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to fetch posts" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to fetch posts" }, e);
     }
   },
   getPostThread: async (uri: string) => {
@@ -81,7 +81,7 @@ export const createPostThreadSlice: StateCreator<
       return res.data.thread;
     } catch (e) {
       set({ threadSubject: id });
-      get().createFailedMessage({ status: "error", title: "failed to fetch post thread" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to fetch post thread" }, e);
     }
   },
   getRepostedBy: async (uri: string, isReset: boolean) => {
@@ -96,7 +96,7 @@ export const createPostThreadSlice: StateCreator<
         set({ repostedByCursor: res.data.cursor, repostedBy, uri, seenRepostedURI });
       }
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to fetch reposted actors" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to fetch reposted actors" }, e);
     }
   },
   getLikedBy: async (uri: string, isReset: boolean) => {
@@ -111,7 +111,7 @@ export const createPostThreadSlice: StateCreator<
         set({ likedByCursor: res.data.cursor, likedBy, uri, seenLikedURI });
       }
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to fetch liked actors" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to fetch liked actors" }, e);
     }
   },
   walkParents: (thread: AppBskyFeedDefs.ThreadViewPost, result = []) => {

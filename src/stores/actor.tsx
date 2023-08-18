@@ -32,7 +32,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       const res = await agent.getProfile({ actor: session?.did || "" });
       set({ me: res.data });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch profile" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch profile" }, e);
     }
   },
   getProfile: async (actor: string) => {
@@ -40,7 +40,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       const res = await agent.getProfile({ actor });
       set({ actor: res.data });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch profile" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch profile" }, e);
     }
   },
   getAuthorFeed: async (actor: string, isReset: boolean) => {
@@ -54,7 +54,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
         set({ authorFeed, authorCursor: res.data.cursor });
       }
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
   },
   updateProfile: async (record: AppBskyActorProfile.Record) => {
@@ -65,7 +65,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       await get().getMe();
       await get().getProfile(get().me?.handle || "");
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed update profile" }, e);
+      get().createFailedMessage({ status: "error", description: "failed update profile" }, e);
     }
   },
   updateHandle: async (handle: string) => {
@@ -74,7 +74,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       await get().getMe();
       await get().getProfile(get().me?.handle || "");
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed update handle" }, e);
+      get().createFailedMessage({ status: "error", description: "failed update handle" }, e);
     }
   },
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => {

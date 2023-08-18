@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -26,12 +27,12 @@ import { AppBskyActorDefs } from "@atproto/api";
 
 // TODO Add to list
 // TODO moderation report
-// TODO プロフィール画像やバナーがない場合の対応
 type Props = {
   actor: AppBskyActorDefs.ProfileViewDetailed;
 };
 
 export const Profile = (props: Props) => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const me = useMe();
   const [isOpen, openProfileDialog, closeProfileDialog] = useDialog();
@@ -73,7 +74,11 @@ export const Profile = (props: Props) => {
 
   return (
     <Card>
-      <CardMedia sx={{ height: 140 }} image={props.actor.banner} />
+      {props.actor.banner ? (
+        <CardMedia sx={{ height: 140 }} image={props.actor.banner} />
+      ) : (
+        <Box sx={{ height: 140, backgroundColor: theme.palette.primary.main }} />
+      )}
       <CardContent>
         <Stack>
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">

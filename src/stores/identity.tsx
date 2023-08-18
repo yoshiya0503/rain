@@ -16,7 +16,7 @@ export const createIdentitySlice: StateCreator<IdentitySlice & MessageSlice & Se
       const res = await agent.resolveHandle({ handle });
       return res.data.did;
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to resolve handle" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to resolve handle" }, e);
     }
   },
 });

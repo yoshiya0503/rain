@@ -40,7 +40,7 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       const reducedNotifications = _.concat(get().reducedNotifications, reduced);
       set({ reducedNotifications, notificationCursor: res.data.cursor });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch notifications" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch notifications" }, e);
     }
   },
   reduceNotifications: (notifications: AppBskyNotificationListNotifications.Notification[]) => {
@@ -64,7 +64,7 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       const reasonSubjects = _.concat(get().reasonSubjects, res.data.posts);
       set({ reasonSubjects });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch reason subjects" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch reason subjects" }, e);
     }
   },
   fetchReasonReplies: async (notifications: AppBskyNotificationListNotifications.Notification[]) => {
@@ -84,7 +84,7 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       const reasonReplies = _.concat(get().reasonReplies, res.data.posts);
       set({ reasonReplies });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch reason replies" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch reason replies" }, e);
     }
   },
   countUnreadNotifications: async () => {
@@ -92,7 +92,7 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       const res = await agent.countUnreadNotifications({});
       set({ unreadCount: res.data.count });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch count unread notifications" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch count unread notifications" }, e);
     }
   },
   updateSeen: async () => {
@@ -100,7 +100,7 @@ export const createNotificationSlice: StateCreator<NotificationSlice & MessageSl
       await agent.updateSeenNotifications();
       set({ unreadCount: 0 });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed update seen notification" }, e);
+      get().createFailedMessage({ status: "error", description: "failed update seen notification" }, e);
     }
   },
   updateNotificationViewer: (post: AppBskyFeedDefs.PostView) => {

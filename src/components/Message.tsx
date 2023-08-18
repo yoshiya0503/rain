@@ -14,7 +14,7 @@ export const Message = () => {
       onClose={closeMessage}
     >
       <Alert variant="outlined" onClose={closeMessage} severity={message?.status}>
-        <AlertTitle> {message?.title} </AlertTitle>
+        {message?.title && <AlertTitle> {message.title} </AlertTitle>}
         {message?.description}
       </Alert>
     </Snackbar>

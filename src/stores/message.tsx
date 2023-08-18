@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 
 export interface Message {
-  title: string;
+  title?: string;
   description?: string;
   status?: "success" | "error" | "warning" | "info";
 }

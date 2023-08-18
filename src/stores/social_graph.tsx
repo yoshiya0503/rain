@@ -46,7 +46,7 @@ export const createSocialGraphSlice: StateCreator<
         set({ follows, followSubject: res.data.subject, followerCursor: res.data.cursor });
       }
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to get follows" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to get follows" }, e);
     }
   },
   getFollowers: async (actor: string, isReset: boolean) => {
@@ -61,35 +61,35 @@ export const createSocialGraphSlice: StateCreator<
         set({ followers, followSubject: res.data.subject, followerCursor: res.data.cursor });
       }
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to get followers" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to get followers" }, e);
     }
   },
   follow: async (actor: string) => {
     try {
       await agent.follow(actor);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to follow" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to follow" }, e);
     }
   },
   unfollow: async (following: string) => {
     try {
       await agent.deleteFollow(following);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to unfollow" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to unfollow" }, e);
     }
   },
   mute: async (actor: string) => {
     try {
       await agent.mute(actor);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to mute account" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to mute account" }, e);
     }
   },
   unmute: async (actor: string) => {
     try {
       await agent.unmute(actor);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to mute account" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to mute account" }, e);
     }
   },
   block: async (actor: string) => {
@@ -103,7 +103,7 @@ export const createSocialGraphSlice: StateCreator<
         }
       );
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to block account" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to block account" }, e);
     }
   },
   unblock: async (blocking: string) => {
@@ -114,7 +114,7 @@ export const createSocialGraphSlice: StateCreator<
         rkey: blockingUrip.rkey,
       });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to unblock account" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to unblock account" }, e);
     }
   },
   updateFollowViwer: (actor: AppBskyActorDefs.ProfileView, type: "follows" | "followers") => {

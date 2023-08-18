@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -28,8 +29,9 @@ const MAX_NAME_LENGTH = 64;
 const MAX_DESC_LENGTH = 256;
 
 export const ProfileDialog = (props: Props) => {
-  const { actor, avatar, banner } = useActor();
-  const { onChangeName, onChangeDescription, onUploadAvatar, onUploadBanner, onUpdateActor } = useActor();
+  const theme = useTheme();
+  const { actor, avatar, banner, onChangeName, onChangeDescription, onUploadAvatar, onUploadBanner, onUpdateActor } =
+    useActor();
   const { open, withBackdrop } = useBackdrop();
 
   const disabled = MAX_NAME_LENGTH < actor.displayName?.length || MAX_DESC_LENGTH < actor.description?.length;
@@ -42,7 +44,6 @@ export const ProfileDialog = (props: Props) => {
   };
 
   // TODO 画像の削除が出来ない
-
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
@@ -51,11 +52,14 @@ export const ProfileDialog = (props: Props) => {
       <DialogTitle>Edit Profile</DialogTitle>
       <DialogContent>
         <CardActionArea component="label">
-          <CardMedia
-            sx={{ borderRadius: 1, height: 140 }}
-            component="img"
-            image={(banner && URL.createObjectURL(banner)) || actor.banner}
-          />
+          {banner || actor.banner ? (
+            <CardMedia
+              sx={{ borderRadius: 1, height: 140 }}
+              image={(banner && URL.createObjectURL(banner)) || actor.banner || ""}
+            />
+          ) : (
+            <Box sx={{ height: 140, backgroundColor: theme.palette.primary.main }} />
+          )}
           <input type="file" accept="image/*" hidden onChange={onUploadBanner} />
           <ImageListItemBar
             sx={{ mr: 2, background: "none" }}

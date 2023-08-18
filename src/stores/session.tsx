@@ -26,7 +26,7 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       localStorage.setItem("X-SKYLINE-HANDLE", res.data.handle);
       set({ session: res.data });
     } catch (e) {
-      get().createMessage({ status: "error", title: "invalid identifier" });
+      get().createMessage({ status: "error", description: "invalid identifier" });
     }
   },
   logout: async () => {
@@ -38,7 +38,7 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       localStorage.removeItem("X-SKYLINE-HANDLE");
       set({ session: undefined });
     } catch (e) {
-      get().createMessage({ status: "error", title: "logout error" });
+      get().createMessage({ status: "error", description: "logout error" });
     }
   },
   resume: async () => {
@@ -59,7 +59,7 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       };
       set({ session });
     } catch (e) {
-      get().createMessage({ status: "error", title: "token expired" });
+      get().createMessage({ status: "error", description: "token expired" });
       set({ session: null });
     }
   },

@@ -41,7 +41,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       const feed = _.concat(get().feed, filteredFeed);
       set({ feed, cursor: res.data.cursor });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed fetch timeline" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
   },
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => {
@@ -82,7 +82,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       const feed = _.concat(newPost, get().feed);
       set({ feed });
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to post" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to post" }, e);
     }
   },
   uploadBlob: async (data: BlobRequest) => {
@@ -90,7 +90,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       const res = await agent.uploadBlob(data, { encoding: "image/png" });
       return res.data;
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to upload blob" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to upload blob" }, e);
     }
   },
   deletePost: async (post: AppBskyFeedDefs.PostView) => {
@@ -102,35 +102,35 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       set({ feed: feed });
       await agent.deletePost(post.uri);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to post" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to post" }, e);
     }
   },
   repost: async (post: AppBskyFeedDefs.PostView) => {
     try {
       return await agent.repost(post.uri, post.cid);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to repost" }, e);
     }
   },
   deleteRepost: async (post: AppBskyFeedDefs.PostView) => {
     try {
       await agent.deleteRepost(post.viewer?.repost || "");
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to repost" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to repost" }, e);
     }
   },
   like: async (post: AppBskyFeedDefs.PostView) => {
     try {
       return await agent.like(post.uri, post.cid);
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to like" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to like" }, e);
     }
   },
   deleteLike: async (post: AppBskyFeedDefs.PostView) => {
     try {
       await agent.deleteLike(post.viewer?.like || "");
     } catch (e) {
-      get().createFailedMessage({ status: "error", title: "failed to like" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to like" }, e);
     }
   },
   updateFeedViewer: (post: AppBskyFeedDefs.PostView) => {

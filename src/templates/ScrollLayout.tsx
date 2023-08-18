@@ -19,7 +19,6 @@ export const ScrollLayout = (props: Props) => {
   const handleBottomScroll = (e: UIEvent<HTMLDivElement>) => {
     const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
     if (_.floor(nearBottom) <= 1) {
-      // TODO スムーズにしたい
       props.onScrollLimit && props.onScrollLimit();
     }
     if (showScrollThreashold < e.currentTarget.scrollTop) {
