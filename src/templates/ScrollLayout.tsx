@@ -31,6 +31,8 @@ export const ScrollLayout = (props: Props) => {
   const handleBottomScroll = useCallback(
     (e: UIEvent<HTMLDivElement>) => {
       if (pathname === "/") {
+        // TODO 別ページからバックで戻ってきた際に
+        // 意図せずスクロールイベントがかなり下のscrollTopで呼ばれることがある。
         updateScrollTop(pathname, e.currentTarget.scrollTop);
       }
 
