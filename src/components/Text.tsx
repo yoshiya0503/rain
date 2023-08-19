@@ -13,7 +13,6 @@ type RenderProps = {
 };
 
 export const Text = (props: Props) => {
-  // TODO e.stopPropagation
   const render = ({ attributes, content }: RenderProps) => {
     return (
       <Link underline="hover" href={_.get(attributes, "href")} {...attributes}>

@@ -75,7 +75,7 @@ export const Post = (props: Props) => {
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
-            <DropDownMenu items={menuItems} size="tiny" />
+            <DropDownMenu items={menuItems} />
           </Stack>
         </Stack>
         <Stack sx={{ pt: 1, pb: 1 }} spacing={1}>

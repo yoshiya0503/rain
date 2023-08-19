@@ -15,10 +15,8 @@ type Props = {
     icon: ReactNode;
     action: () => void;
   }[];
-  size?: "tiny";
 };
 
-// TODO sizeはinheritで行けそう
 export const DropDownMenu = (props: Props) => {
   const [anchor, openMenu, closeMenu] = useMenu();
   return (
@@ -30,7 +28,7 @@ export const DropDownMenu = (props: Props) => {
         }}
         size="small"
       >
-        {props.size ? <MoreIcon sx={{ fontSize: 18 }} /> : <MoreIcon />}
+        <MoreIcon fontSize="inherit" />
       </IconButton>
       <Menu onClose={closeMenu} anchorEl={anchor} open={Boolean(anchor)}>
         {_.map(props.items, (action, key) => (

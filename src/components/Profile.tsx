@@ -84,28 +84,28 @@ export const Profile = (props: Props) => {
           <Stack sx={{ mt: -6 }} direction="row" justifyContent="space-between">
             <Avatar sx={{ width: 64, height: 64 }} src={props.actor.avatar} />
             <Stack sx={{ mt: 4 }} direction="row" alignItems="center">
-              {props.actor?.viewer?.following && (
-                <Button
-                  sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
-                  startIcon={<CheckIcon />}
-                  size="small"
-                  variant="contained"
-                  onClick={onToggleFollow}
-                >
-                  following
-                </Button>
-              )}
-              {!isMe && !props.actor?.viewer?.following && (
-                <Button
-                  sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
-                  startIcon={<AddIcon />}
-                  size="small"
-                  variant="contained"
-                  onClick={onToggleFollow}
-                >
-                  follow
-                </Button>
-              )}
+              {!isMe &&
+                (props.actor?.viewer?.following ? (
+                  <Button
+                    sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
+                    startIcon={<CheckIcon />}
+                    size="small"
+                    variant="contained"
+                    onClick={onToggleFollow}
+                  >
+                    following
+                  </Button>
+                ) : (
+                  <Button
+                    sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
+                    startIcon={<AddIcon />}
+                    size="small"
+                    variant="contained"
+                    onClick={onToggleFollow}
+                  >
+                    follow
+                  </Button>
+                ))}
               {isMe && (
                 <Button
                   sx={{ width: "100%", borderRadius: 6, fontSize: 10 }}
