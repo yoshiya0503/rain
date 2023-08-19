@@ -8,7 +8,7 @@ import useAuthentication from "@/hooks/useAuthentication";
 import Button from "@mui/material/Button";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import HandleDialog from "@/components/HandleDialog";
+import DialogHandle from "@/components/DialogHandle";
 import useDialog from "@/hooks/useDialog";
 
 export const Settings = () => {
@@ -32,7 +32,7 @@ export const Settings = () => {
             </Button>
           </Box>
         </Stack>
-        <HandleDialog open={isOpen} onClose={closeHandleDialog} />
+        <DialogHandle open={isOpen} onClose={closeHandleDialog} />
       </HistoryLayout>
     </Layout>
   );

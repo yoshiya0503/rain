@@ -46,7 +46,7 @@ type Props = {
 
 const MAX_TEXT_LENGTH = 300;
 
-export const PostDialog = (props: Props) => {
+export const DialogPost = (props: Props) => {
   const me = useMe();
   const { onPost } = usePost();
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
@@ -195,4 +195,4 @@ export const PostDialog = (props: Props) => {
   );
 };
 
-export default PostDialog;
+export default DialogPost;

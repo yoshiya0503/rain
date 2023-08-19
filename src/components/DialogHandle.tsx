@@ -22,7 +22,7 @@ type Props = {
   onSend?: () => void;
 };
 
-export const HandleDialog = (props: Props) => {
+export const DialogHandle = (props: Props) => {
   const me = useMe();
   const { open, withBackdrop } = useBackdrop();
   const { handle, onChangeHandle, onUpdateHandle } = useHandle();
@@ -75,4 +75,4 @@ export const HandleDialog = (props: Props) => {
   );
 };
 
-export default HandleDialog;
+export default DialogHandle;

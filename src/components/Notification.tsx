@@ -24,6 +24,7 @@ type Props = {
   notification: AppBskyNotificationListNotifications.Notification;
   otherAuthors: AppBskyActorDefs.ProfileView[];
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
+  onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
 };
@@ -96,7 +97,7 @@ export const Post = (props: Props) => {
               <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
                 <Text>{AppBskyFeedPost.isRecord(props.reasonReply?.record) && props.reasonReply?.record.text}</Text>
               </Typography>
-              <Attachments embed={props.reasonReply.embed} />
+              <Attachments embed={props.reasonReply.embed} onOpenImage={props.onOpenImage} />
             </>
           ) : (
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption" color={grey[400]}>

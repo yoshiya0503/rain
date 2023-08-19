@@ -28,7 +28,7 @@ type Props = {
 const MAX_NAME_LENGTH = 64;
 const MAX_DESC_LENGTH = 256;
 
-export const ProfileDialog = (props: Props) => {
+export const DialogProfile = (props: Props) => {
   const theme = useTheme();
   const { actor, avatar, banner, onChangeName, onChangeDescription, onUploadAvatar, onUploadBanner, onUpdateActor } =
     useActor();
@@ -104,4 +104,4 @@ export const ProfileDialog = (props: Props) => {
   );
 };
 
-export default ProfileDialog;
+export default DialogProfile;

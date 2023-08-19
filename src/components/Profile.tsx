@@ -18,7 +18,7 @@ import ReportIcon from "@mui/icons-material/ReportRounded";
 import ShareIcon from "@mui/icons-material/ShareRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
 import DropDownMenu from "@/components/DropDownMenu";
-import ProfileDialog from "@/components/ProfileDialog";
+import DialogProfile from "@/components/DialogProfile";
 import Text from "@/components/Text";
 import useSocial from "@/hooks/useSocial";
 import useDialog from "@/hooks/useDialog";
@@ -178,7 +178,7 @@ export const Profile = (props: Props) => {
           </Typography>
         </Stack>
       </CardContent>
-      <ProfileDialog open={isOpen} onClose={closeProfileDialog} />
+      <DialogProfile open={isOpen} onClose={closeProfileDialog} />
     </Card>
   );
 };

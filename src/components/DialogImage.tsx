@@ -18,7 +18,7 @@ type Props = {
   onClose: () => void;
 };
 
-export const ImageDialog = (props: Props) => {
+export const DialogImage = (props: Props) => {
   const [imageIndex, setImageIndex] = useState<number>(0);
   const image = props.images && props.images[imageIndex];
 
@@ -58,7 +58,7 @@ export const ImageDialog = (props: Props) => {
             <CardMedia
               sx={{ borderRadius: 3, maxWidth: "80vh", maxHeight: "80vh" }}
               component="img"
-              image={image?.fullsize}
+              image={image?.thumb}
               alt={image?.alt}
             />
             <ImageListItemBar subtitle={image?.alt} position="bottom" />
@@ -76,4 +76,4 @@ export const ImageDialog = (props: Props) => {
   );
 };
 
-export default ImageDialog;
+export default DialogImage;

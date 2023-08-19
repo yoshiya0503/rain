@@ -16,7 +16,7 @@ import AccountCircle from "@mui/icons-material/AccountCircleRounded";
 import Settings from "@mui/icons-material/SettingsRounded";
 import Create from "@mui/icons-material/CreateRounded";
 import ProfileHeader from "@/components/ProfileHeader";
-import PostDialog from "@/components/PostDialog";
+import DialogPost from "@/components/DialogPost";
 import useMe from "@/hooks/useMe";
 import useNotification from "@/hooks/useNotification";
 import useDialog from "@/hooks/useDialog";
@@ -83,7 +83,7 @@ export const SideMenu = () => {
         >
           New Post
         </Button>
-        <PostDialog title="Post" open={isOpen} onClose={closePostDialog} />
+        <DialogPost title="Post" open={isOpen} onClose={closePostDialog} />
       </ListItem>
     </List>
   );

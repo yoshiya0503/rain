@@ -8,9 +8,10 @@ import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
 import ScrollLayout from "@/templates/ScrollLayout";
 import Notification from "@/components/Notification";
-import PostDialog from "@/components/PostDialog";
+import DialogPost from "@/components/DialogPost";
+import DialogImage from "@/components/DialogImage";
 import useDialog from "@/hooks/useDialog";
-import { AppBskyFeedDefs } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 export const NotificationContainer = () => {
   const reducedNotifications = useStore((state) => state.reducedNotifications);
@@ -19,7 +20,9 @@ export const NotificationContainer = () => {
   const updateSeen = useStore((state) => state.updateSeen);
   const listNotifications = useStore((state) => state.listNotifications);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
+  const [isOpenImage, openImageDialog, closeImageDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
+  const [images, setImages] = useState<AppBskyEmbedImages.ViewImage[]>();
   const [type, setType] = useState<"reply" | "quote">();
 
   if (_.isEmpty(reducedNotifications)) {
@@ -41,6 +44,14 @@ export const NotificationContainer = () => {
     [openPostDialog, setPost, setType]
   );
 
+  const onOpenImage = useCallback(
+    (images: AppBskyEmbedImages.ViewImage[]) => {
+      setImages(images);
+      openImageDialog();
+    },
+    [openImageDialog, setImages]
+  );
+
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
@@ -59,6 +70,7 @@ export const NotificationContainer = () => {
                   reasonSubject={reasonSubject}
                   reasonReply={reasonReply}
                   onOpenPost={onOpenPost}
+                  onOpenImage={onOpenImage}
                 />
                 <Divider />
               </Box>
@@ -67,7 +79,8 @@ export const NotificationContainer = () => {
         })}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
+      <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
+      <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
     </ScrollLayout>
   );
 };

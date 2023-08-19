@@ -28,7 +28,7 @@ export const Attachments = (props: Props) => {
       {AppBskyEmbedImages.isView(embed) && <PostImages images={embed.images} onOpenImage={props.onOpenImage} />}
       {AppBskyEmbedExternal.isView(embed) && <PostArticle article={embed.external} />}
       {AppBskyEmbedRecord.isView(embed) && AppBskyEmbedRecord.isViewRecord(embed.record) && (
-        <PostQuote record={embed.record} />
+        <PostQuote record={embed.record} onOpenImage={props.onOpenImage} />
       )}
       {AppBskyEmbedRecord.isView(embed) && AppBskyFeedDefs.isGeneratorView(embed.record) && (
         <PostFeed record={embed.record} />
@@ -40,7 +40,7 @@ export const Attachments = (props: Props) => {
         <PostArticle article={embed.media.external} />
       )}
       {AppBskyEmbedRecordWithMedia.isView(embed) && AppBskyEmbedRecord.isViewRecord(embed.record.record) && (
-        <PostQuote record={embed.record.record} />
+        <PostQuote record={embed.record.record} onOpenImage={props.onOpenImage} />
       )}
     </>
   );

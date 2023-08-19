@@ -24,6 +24,7 @@ import {
 
 type Props = {
   record: AppBskyEmbedRecord.ViewRecord;
+  onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
 };
 
 export const PostQuote = (props: Props) => {
@@ -53,7 +54,7 @@ export const PostQuote = (props: Props) => {
             </Typography>
             {_.map(props.record.embeds, (embed, key) => {
               if (AppBskyEmbedImages.isView(embed)) {
-                return <PostImages key={key} images={embed.images} />;
+                return <PostImages key={key} images={embed.images} onOpenImage={props.onOpenImage} />;
               }
               if (AppBskyEmbedExternal.isView(embed)) {
                 return <PostArticle key={key} article={embed.external} />;

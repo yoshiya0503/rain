@@ -8,8 +8,8 @@ import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
 import ScrollLayout from "@/templates/ScrollLayout";
 import Post from "@/components/Post";
-import PostDialog from "@/components/PostDialog";
-import ImageDialog from "@/components/ImageDialog";
+import DialogPost from "@/components/DialogPost";
+import DialogImage from "@/components/DialogImage";
 import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
@@ -83,8 +83,8 @@ export const TimelineContainer = () => {
         ))}
       </TransitionGroup>
       <LinearProgress />
-      <PostDialog title={title} open={isOpenPost} post={post} type={type} onClose={closePostDialog} />
-      <ImageDialog open={isOpenImage} images={images} onClose={closeImageDialog} />
+      <DialogPost title={title} open={isOpenPost} post={post} type={type} onClose={closePostDialog} />
+      <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
     </ScrollLayout>
   );
 };
