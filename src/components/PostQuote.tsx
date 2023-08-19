@@ -32,7 +32,7 @@ export const PostQuote = (props: Props) => {
   const dateLabel = formatDistanceToNowStrict(Date.parse(props.record.indexedAt), { locale: ja });
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ borderRadius: 3 }}>
       <CardActionArea
         component="div"
         onClick={(e) => {

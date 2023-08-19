@@ -12,7 +12,7 @@ type Props = {
 
 export const PostArticle = (props: Props) => {
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ borderRadius: 3 }}>
       <CardActionArea
         onClick={(e) => {
           e.stopPropagation();
@@ -23,11 +23,11 @@ export const PostArticle = (props: Props) => {
           <CardMedia sx={{ height: 200 }} component="img" image={props.article.thumb} alt="" />
         ) : null}
         <CardContent>
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
+            <Text>{props.article.uri}</Text>
+          </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body1">
             {props.article.title}
-          </Typography>
-          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
-            <Text>{props.article.uri}</Text>
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Text>{props.article.description}</Text>
