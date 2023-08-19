@@ -1,5 +1,7 @@
 import _ from "lodash";
-import { ReactNode, UIEvent, useRef, useState } from "react";
+import { ReactNode, UIEvent, useRef, useState, useEffect, useCallback } from "react";
+import { useStore } from "@/stores";
+import { useLocation } from "react-router-dom";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
@@ -10,31 +12,45 @@ type Props = {
   onScrollLimit?: () => void;
 };
 
-export const ScrollLayout = (props: Props) => {
-  const showScrollThreashold = 3000;
+const SHOW_SCROLL_THREASHOLD = 3000;
 
+export const ScrollLayout = (props: Props) => {
+  const { pathname } = useLocation();
   const ref = useRef<HTMLDivElement>(null);
   const [hasScroll, setHasScroll] = useState<boolean>(false);
+  const getScrollTop = useStore((state) => state.getScrollTop);
+  const updateScrollTop = useStore((state) => state.updateScrollTop);
+
+  useEffect(() => {
+    ref?.current?.scrollTo({
+      top: getScrollTop(pathname),
+      behavior: "auto",
+    });
+  }, [pathname, getScrollTop]);
 
   const handleBottomScroll = (e: UIEvent<HTMLDivElement>) => {
+    if (pathname === "/") {
+      updateScrollTop(pathname, _.floor(e.currentTarget.scrollTop));
+    }
+
     const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
     if (_.floor(nearBottom) <= 1) {
       props.onScrollLimit && props.onScrollLimit();
     }
-    if (showScrollThreashold < e.currentTarget.scrollTop) {
+    if (SHOW_SCROLL_THREASHOLD < e.currentTarget.scrollTop) {
       setHasScroll(true);
     }
-    if (e.currentTarget.scrollTop < showScrollThreashold) {
+    if (e.currentTarget.scrollTop < SHOW_SCROLL_THREASHOLD) {
       setHasScroll(false);
     }
   };
 
-  const scrollTop = () => {
+  const scrollTop = useCallback(() => {
     ref?.current?.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  };
+  }, []);
 
   return (
     <Box>

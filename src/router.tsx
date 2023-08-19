@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { RouterProvider, createBrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Home from "@/pages/Home";
 import Profile from "@/pages/Profile";
 import Notification from "@/pages/Notifications";
@@ -25,24 +25,24 @@ const Authentication = () => {
 };
 
 export const Router = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/authentication" element={<Login />} />
-        <Route element={<Authentication />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/notifications" element={<Notification />} />
-          <Route path="/profile/:handle" element={<Profile />} />
-          <Route path="/profile/:handle/follows" element={<Follows />} />
-          <Route path="/profile/:handle/post/:id" element={<PostThreads />} />
-          <Route path="/profile/:handle/post/:id/reposted" element={<Reposted />} />
-          <Route path="/profile/:handle/post/:id/liked" element={<Liked />} />
-          <Route path="/settings" element={<Settings />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+  const Component = () => (
+    <Routes>
+      <Route path="/authentication" element={<Login />} />
+      <Route element={<Authentication />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/notifications" element={<Notification />} />
+        <Route path="/profile/:handle" element={<Profile />} />
+        <Route path="/profile/:handle/follows" element={<Follows />} />
+        <Route path="/profile/:handle/post/:id" element={<PostThreads />} />
+        <Route path="/profile/:handle/post/:id/reposted" element={<Reposted />} />
+        <Route path="/profile/:handle/post/:id/liked" element={<Liked />} />
+        <Route path="/settings" element={<Settings />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
+  const router = createBrowserRouter([{ path: "*", Component }]);
+  return <RouterProvider router={router} />;
 };
 
 export default Router;
