@@ -18,13 +18,14 @@ type Props = {
     | AppBskyEmbedImages.View
     | { [k: string]: unknown; $type: string }
     | undefined;
+  onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
 };
 
 export const Attachments = (props: Props) => {
   const { embed } = props;
   return (
     <>
-      {AppBskyEmbedImages.isView(embed) && <PostImages images={embed.images} />}
+      {AppBskyEmbedImages.isView(embed) && <PostImages images={embed.images} onOpenImage={props.onOpenImage} />}
       {AppBskyEmbedExternal.isView(embed) && <PostArticle article={embed.external} />}
       {AppBskyEmbedRecord.isView(embed) && AppBskyEmbedRecord.isViewRecord(embed.record) && (
         <PostQuote record={embed.record} />
@@ -33,7 +34,7 @@ export const Attachments = (props: Props) => {
         <PostFeed record={embed.record} />
       )}
       {AppBskyEmbedRecordWithMedia.isView(embed) && AppBskyEmbedImages.isView(embed.media) && (
-        <PostImages images={embed.media.images} />
+        <PostImages images={embed.media.images} onOpenImage={props.onOpenImage} />
       )}
       {AppBskyEmbedRecordWithMedia.isView(embed) && AppBskyEmbedExternal.isView(embed.media) && (
         <PostArticle article={embed.media.external} />

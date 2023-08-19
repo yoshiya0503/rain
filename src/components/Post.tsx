@@ -16,11 +16,12 @@ import PostStats from "@/components/PostStats";
 import Text from "@/components/Text";
 import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
-import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
   post: AppBskyFeedDefs.PostView;
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
+  onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
   showStats?: boolean;
@@ -81,7 +82,7 @@ export const Post = (props: Props) => {
           <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="body2">
             <Text>{AppBskyFeedPost.isRecord(props.post.record) && props.post.record.text}</Text>
           </Typography>
-          <Attachments embed={props.post.embed} />
+          <Attachments embed={props.post.embed} onOpenImage={props.onOpenImage} />
         </Stack>
         <Box
           sx={{ ml: -1, mb: 1 }}

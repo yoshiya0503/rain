@@ -28,22 +28,25 @@ export const ScrollLayout = (props: Props) => {
     });
   }, [pathname, getScrollTop]);
 
-  const handleBottomScroll = (e: UIEvent<HTMLDivElement>) => {
-    if (pathname === "/") {
-      updateScrollTop(pathname, _.floor(e.currentTarget.scrollTop));
-    }
+  const handleBottomScroll = useCallback(
+    (e: UIEvent<HTMLDivElement>) => {
+      if (pathname === "/") {
+        updateScrollTop(pathname, e.currentTarget.scrollTop);
+      }
 
-    const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
-    if (_.floor(nearBottom) <= 1) {
-      props.onScrollLimit && props.onScrollLimit();
-    }
-    if (SHOW_SCROLL_THREASHOLD < e.currentTarget.scrollTop) {
-      setHasScroll(true);
-    }
-    if (e.currentTarget.scrollTop < SHOW_SCROLL_THREASHOLD) {
-      setHasScroll(false);
-    }
-  };
+      const nearBottom = e.currentTarget.scrollHeight - e.currentTarget.scrollTop - e.currentTarget.clientHeight;
+      if (_.floor(nearBottom) <= 1) {
+        props.onScrollLimit && props.onScrollLimit();
+      }
+      if (SHOW_SCROLL_THREASHOLD < e.currentTarget.scrollTop) {
+        setHasScroll(true);
+      }
+      if (e.currentTarget.scrollTop < SHOW_SCROLL_THREASHOLD) {
+        setHasScroll(false);
+      }
+    },
+    [props, pathname, updateScrollTop]
+  );
 
   const scrollTop = useCallback(() => {
     ref?.current?.scrollTo({
