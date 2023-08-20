@@ -9,7 +9,7 @@ export type Record = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Reco
 export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
 export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
-export interface FeedSlice {
+export interface TimelineSlice {
   timeline: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
@@ -25,7 +25,7 @@ export interface FeedSlice {
   updateTimelineViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
-export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSlice, [], [], FeedSlice> = (
+export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & SessionSlice, [], [], TimelineSlice> = (
   set,
   get
 ) => ({
