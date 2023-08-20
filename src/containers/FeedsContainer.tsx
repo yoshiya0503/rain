@@ -11,12 +11,15 @@ import { AppBskyFeedDefs } from "@atproto/api";
 export const FeedsContainer = () => {
   const feedGenerators = useStore((state) => state.feedGenerators);
   const feedBrief = useStore((state) => state.feedBrief);
+  const preferences = useStore((state) => state.preferences);
   const getFeedGenerators = useStore((state) => state.getFeedGenerators);
   const getFeedBrief = useStore((state) => state.getFeedBrief);
+  const getPreferences = useStore((state) => state.getPreferences);
+  const updatePreferences = useStore((state) => state.updatePreferences);
   const [expanded, setExpanded] = useState<string>();
 
-  if (_.isEmpty(feedGenerators)) {
-    throw getFeedGenerators("");
+  if (_.isEmpty(feedGenerators) || _.isEmpty(preferences)) {
+    throw Promise.all([getFeedGenerators(""), getPreferences()]);
   }
   const onSearchFeeds = useCallback(() => {
     console.log("search");
@@ -40,6 +43,8 @@ export const FeedsContainer = () => {
         <Box key={index} sx={{ mt: 1, mb: 1 }}>
           <Feed
             feed={feedGenerator}
+            preferences={preferences}
+            updatePreferences={updatePreferences}
             feedBrief={feedBrief}
             onChangeFeed={onChangeFeed}
             expanded={expanded === feedGenerator.uri}

@@ -14,10 +14,11 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
+import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import Text from "@/components/Text";
 import FeedBrief from "@/components/FeedBrief";
-import { AppBskyFeedDefs } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyActorDefs } from "@atproto/api";
 
 const FeedAccordion = styled((props: AccordionProps) => <Accordion disableGutters elevation={0} square {...props} />)(
   ({ theme, expanded }) => ({
@@ -33,7 +34,9 @@ const FeedAccordion = styled((props: AccordionProps) => <Accordion disableGutter
 type Props = {
   feed: AppBskyFeedDefs.GeneratorView;
   feedBrief: AppBskyFeedDefs.FeedViewPost[];
+  preferences: AppBskyActorDefs.Preferences;
   onChangeFeed: (feed: AppBskyFeedDefs.GeneratorView) => void;
+  updatePreferences: (Preferences: AppBskyActorDefs.Preferences) => void;
   expanded?: boolean;
 };
 
@@ -50,6 +53,32 @@ export const Feed = (props: Props) => {
       .value();
     navigate(uri);
   }, [props, navigate]);
+
+  const feedPref = _.find(props.preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
+  const isSaved =
+    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.saved, (uri) => props.feed.uri === uri);
+  const isPinned =
+    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.pinned, (uri) => props.feed.uri === uri);
+
+  const onToggleSave = useCallback(() => {
+    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
+    const preferences = _.map(props.preferences, (p) => {
+      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
+      if (isSaved) return { ...p, saved: _.reject(feedPref.saved, (uri) => uri === props.feed.uri) };
+      return { ...p, saved: _.concat(feedPref.saved, props.feed.uri) };
+    });
+    props.updatePreferences(preferences);
+  }, [props, feedPref, isSaved]);
+
+  const onTogglePin = useCallback(() => {
+    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
+    const preferences = _.map(props.preferences, (p) => {
+      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
+      if (isPinned) return { ...p, pinned: _.reject(feedPref.pinned, (uri) => uri === props.feed.uri) };
+      return { ...p, pinned: _.concat(feedPref.pinned, props.feed.uri) };
+    });
+    props.updatePreferences(preferences);
+  }, [props, feedPref, isPinned]);
 
   return (
     <FeedAccordion sx={{ borderRadius: 3 }} onChange={onChangeFeed} expanded={props.expanded}>
@@ -77,18 +106,28 @@ export const Feed = (props: Props) => {
                 </Typography>
               </Stack>
             </Stack>
-            <Box>
+            <Stack direction="row" spacing={1} alignItems="center">
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  console.log("test");
+                  onToggleSave();
                 }}
               >
-                <AddRoundedIcon />
+                {isSaved ? <RssFeedRoundedIcon /> : <RssFeedRoundedIcon color="disabled" />}
               </IconButton>
-            </Box>
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onTogglePin();
+                }}
+              >
+                {isPinned ? <PushPinRoundedIcon /> : <PushPinRoundedIcon color="disabled" />}
+              </IconButton>
+            </Stack>
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <FavoriteIcon fontSize="small" sx={{ color: pink[400] }} />

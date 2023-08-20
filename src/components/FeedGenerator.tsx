@@ -27,7 +27,7 @@ export const FeedGenerator = (props: Props) => {
     navigate(uri);
   }, [props, navigate]);
 
-  // TODO fix UI
+  // TODO add preferences
   return (
     <Card>
       <CardContent>
@@ -40,10 +40,10 @@ export const FeedGenerator = (props: Props) => {
                 by @{props.feed.creator.handle}
               </Typography>
             </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <FavoriteIcon fontSize="large" sx={{ color: pink[400] }} />
-              <Typography variant="h6">{props.feed.likeCount}</Typography>
-            </Stack>
+          </Stack>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <FavoriteIcon sx={{ color: pink[400] }} />
+            <Typography variant="body1">{props.feed.likeCount} Likes</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Box>
