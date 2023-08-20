@@ -35,6 +35,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   authorFeed: [],
   getTimeline: async () => {
     try {
+      // TODO リアルタイムで新規投稿をチェックしたい
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
       if (!res.data.cursor) return true;
       const filteredFeed = get().filterFeed(res.data.feed);

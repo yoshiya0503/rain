@@ -34,27 +34,23 @@ export const FollowsContainer = (props: Props) => {
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <TransitionGroup>
         {props.type === "follows" &&
-          _.map(follows, (item) => {
-            return (
-              <Collapse key={item.did}>
-                <Box sx={{ mt: 1, mb: 1 }}>
-                  <Follow profile={item} />
-                </Box>
-                <Divider />
-              </Collapse>
-            );
-          })}
+          _.map(follows, (item) => (
+            <Collapse key={item.did}>
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Follow profile={item} />
+              </Box>
+              <Divider />
+            </Collapse>
+          ))}
         {props.type === "followers" &&
-          _.map(followers, (item) => {
-            return (
-              <Collapse key={item.did}>
-                <Box sx={{ mt: 1, mb: 1 }}>
-                  <Follow profile={item} />
-                </Box>
-                <Divider />
-              </Collapse>
-            );
-          })}
+          _.map(followers, (item) => (
+            <Collapse key={item.did}>
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Follow profile={item} />
+              </Box>
+              <Divider />
+            </Collapse>
+          ))}
       </TransitionGroup>
       <LinearProgress />
     </ScrollLayout>
