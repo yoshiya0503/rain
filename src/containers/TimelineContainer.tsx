@@ -14,7 +14,7 @@ import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 export const TimelineContainer = () => {
-  const feed = useStore((state) => state.feed);
+  const timeline = useStore((state) => state.timeline);
   const getTimeline = useStore((state) => state.getTimeline);
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
   const [isOpenPost, openPostDialog, closePostDialog] = useDialog();
@@ -23,7 +23,7 @@ export const TimelineContainer = () => {
   const [images, setImages] = useState<AppBskyEmbedImages.ViewImage[]>();
   const [type, setType] = useState<"reply" | "quote">();
 
-  if (_.isEmpty(feed)) {
+  if (_.isEmpty(timeline)) {
     throw getInitialTimeline();
   }
 
@@ -53,7 +53,7 @@ export const TimelineContainer = () => {
   return (
     <ScrollLayout onScrollLimit={onScrollLimit}>
       <TransitionGroup>
-        {_.map(feed, (item) => (
+        {_.map(timeline, (item) => (
           <Collapse key={item.post.cid}>
             <Box sx={{ mt: 1, mb: 1 }}>
               {AppBskyFeedDefs.isPostView(item.reply?.root) && item.reply?.root && (

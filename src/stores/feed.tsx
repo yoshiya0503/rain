@@ -10,7 +10,7 @@ export type BlobRequest = ComAtprotoRepoUploadBlob.InputSchema;
 export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
 export interface FeedSlice {
-  feed: AppBskyFeedDefs.FeedViewPost[];
+  timeline: AppBskyFeedDefs.FeedViewPost[];
   cursor: string;
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
   getTimeline: () => Promise<void | boolean>;
@@ -22,7 +22,7 @@ export interface FeedSlice {
   deleteRepost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
   like: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
   deleteLike: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  updateFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
+  updateTimelineViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSlice, [], [], FeedSlice> = (
@@ -31,7 +31,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
 ) => ({
   cursor: "",
   authorCursor: "",
-  feed: [],
+  timeline: [],
   authorFeed: [],
   getTimeline: async () => {
     try {
@@ -39,8 +39,8 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
       if (!res.data.cursor) return true;
       const filteredFeed = get().filterFeed(res.data.feed);
-      const feed = _.concat(get().feed, filteredFeed);
-      set({ feed, cursor: res.data.cursor });
+      const timeline = _.concat(get().timeline, filteredFeed);
+      set({ timeline, cursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
@@ -69,7 +69,7 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   },
   getInitialTimeline: async () => {
     let isLastOrder;
-    while (_.size(get().feed) < 10 && !isLastOrder) {
+    while (_.size(get().timeline) < 10 && !isLastOrder) {
       isLastOrder = await get().getTimeline();
     }
   },
@@ -78,10 +78,10 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       const postResponse = await agent.post(record);
       const res = await agent.getPosts({ uris: [postResponse.uri] });
       // 初めてpostした場合、長さ1のリストになってTLが取れなくなるのでスキップする
-      if (_.size(get().feed) < 10) return;
+      if (_.size(get().timeline) < 10) return;
       const newPost = [{ post: res.data.posts[0] }];
-      const feed = _.concat(newPost, get().feed);
-      set({ feed });
+      const timeline = _.concat(newPost, get().timeline);
+      set({ timeline });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to post" }, e);
     }
@@ -97,10 +97,10 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
   deletePost: async (post: AppBskyFeedDefs.PostView) => {
     try {
       // delete Postが遅いので先にUIから削除する
-      const feed = _.reject(get().feed, (f) => {
+      const timeline = _.reject(get().timeline, (f) => {
         return f.post.uri === post.uri;
       });
-      set({ feed: feed });
+      set({ timeline: timeline });
       await agent.deletePost(post.uri);
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to post" }, e);
@@ -134,8 +134,8 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       get().createFailedMessage({ status: "error", description: "failed to like" }, e);
     }
   },
-  updateFeedViewer: (post: AppBskyFeedDefs.PostView) => {
-    const feed = _.map(get().feed, (f) => {
+  updateTimelineViewer: (post: AppBskyFeedDefs.PostView) => {
+    const timeline = _.map(get().timeline, (f) => {
       if (AppBskyFeedDefs.isPostView(f.reply?.root)) {
         if (f.reply?.root.uri === post.uri) {
           f.reply.root = post;
@@ -151,6 +151,6 @@ export const createFeedSlice: StateCreator<FeedSlice & MessageSlice & SessionSli
       }
       return f;
     });
-    set({ feed });
+    set({ timeline });
   },
 });

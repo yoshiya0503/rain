@@ -14,7 +14,7 @@ export const usePost = () => {
   const deleteRepost = useStore((state) => state.deleteRepost);
   const like = useStore((state) => state.like);
   const deleteLike = useStore((state) => state.deleteLike);
-  const updateFeedViewer = useStore((state) => state.updateFeedViewer);
+  const updateTimelineViewer = useStore((state) => state.updateTimelineViewer);
   const updateAuthorFeedViewer = useStore((state) => state.updateAuthorFeedViewer);
   const updateNotificationViewer = useStore((state) => state.updateNotificationViewer);
   const updatePostThreadViewer = useStore((state) => state.updatePostThreadViewer);
@@ -52,12 +52,12 @@ export const usePost = () => {
         }
         post.viewer = { ...post.viewer, [action]: resourceURI };
       }
-      updateFeedViewer(post);
+      updateTimelineViewer(post);
       updateAuthorFeedViewer(post);
       updateNotificationViewer(post);
       updatePostThreadViewer(post);
     },
-    [updateFeedViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
+    [updateTimelineViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
   );
 
   const onDeletePost = useCallback(
