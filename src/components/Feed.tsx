@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { grey, pink } from "@mui/material/colors";
 import Box from "@mui/material/Box";
@@ -15,7 +16,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Text from "@/components/Text";
-import Post from "@/components/Post";
 import FeedBrief from "@/components/FeedBrief";
 import { AppBskyFeedDefs } from "@atproto/api";
 
@@ -38,16 +38,32 @@ type Props = {
 };
 
 export const Feed = (props: Props) => {
+  const navigate = useNavigate();
   const onChangeFeed = useCallback(() => {
     props.onChangeFeed(props.feed);
   }, [props]);
+
+  const onViewFeedGenerator = useCallback(() => {
+    const uri = _.chain(props.feed.uri)
+      .replace("at://", "/profile/")
+      .replace("app.bsky.feed.generator", "feed")
+      .value();
+    navigate(uri);
+  }, [props, navigate]);
 
   return (
     <FeedAccordion sx={{ borderRadius: 3 }} onChange={onChangeFeed} expanded={props.expanded}>
       <AccordionSummary>
         <Stack sx={{ width: "100%" }} direction="column" spacing={1}>
           <Stack direction="row" justifyContent="space-between">
-            <Stack direction="row" spacing={1}>
+            <Stack
+              direction="row"
+              spacing={1}
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewFeedGenerator();
+              }}
+            >
               <Avatar
                 sx={{ width: 42, height: 42 }}
                 alt={props.feed.avatar}
@@ -86,9 +102,9 @@ export const Feed = (props: Props) => {
       <AccordionDetails>
         {!_.isEmpty(props.feedBrief) ? (
           _.map(props.feedBrief, (f, index) => (
-            <Box key={index} sx={{ pt: 1, pb: 1 }}>
-              <FeedBrief brief={f.post} />
+            <Box key={index} sx={{ pb: 1 }}>
               <Divider />
+              <FeedBrief brief={f.post} />
             </Box>
           ))
         ) : (

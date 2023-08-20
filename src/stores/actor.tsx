@@ -10,11 +10,13 @@ export interface ActorSlice {
   actor?: AppBskyActorDefs.ProfileViewDetailed;
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
   authorCursor: string;
+  preferences: AppBskyActorDefs.Preferences;
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
+  getPreferences: () => Promise<void>;
+  updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
-  updateHandle: (handle: string) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
@@ -26,6 +28,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
   me: undefined,
   authorCursor: "",
   authorFeed: [],
+  preferences: [],
   getMe: async () => {
     try {
       const session = get().session;
@@ -57,6 +60,22 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
   },
+  getPreferences: async () => {
+    try {
+      const res = await agent.api.app.bsky.actor.getPreferences();
+      set({ preferences: res.data.preferences });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
+    }
+  },
+  updatePreferences: async (preferences: AppBskyActorDefs.Preferences) => {
+    try {
+      await agent.api.app.bsky.actor.putPreferences({ preferences });
+      set({ preferences: preferences });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
+    }
+  },
   updateProfile: async (record: AppBskyActorProfile.Record) => {
     try {
       await agent.upsertProfile(async (existing?: AppBskyActorProfile.Record) => {
@@ -66,15 +85,6 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       await get().getProfile(get().me?.handle || "");
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed update profile" }, e);
-    }
-  },
-  updateHandle: async (handle: string) => {
-    try {
-      await agent.updateHandle({ handle });
-      await get().getMe();
-      await get().getProfile(get().me?.handle || "");
-    } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed update handle" }, e);
     }
   },
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => {

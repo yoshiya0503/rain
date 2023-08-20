@@ -11,7 +11,7 @@ export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
 export interface TimelineSlice {
   timeline: AppBskyFeedDefs.FeedViewPost[];
-  cursor: string;
+  timelineCursor: string;
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
   getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
@@ -29,18 +29,18 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
   set,
   get
 ) => ({
-  cursor: "",
+  timelineCursor: "",
   authorCursor: "",
   timeline: [],
   authorFeed: [],
   getTimeline: async () => {
     try {
       // TODO リアルタイムで新規投稿をチェックしたい
-      const res = await agent.getTimeline({ cursor: get().cursor, limit: 100 });
+      const res = await agent.getTimeline({ cursor: get().timelineCursor, limit: 100 });
       if (!res.data.cursor) return true;
       const filteredFeed = get().filterFeed(res.data.feed);
       const timeline = _.concat(get().timeline, filteredFeed);
-      set({ timeline, cursor: res.data.cursor });
+      set({ timeline, timelineCursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
