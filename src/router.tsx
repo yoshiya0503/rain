@@ -10,6 +10,7 @@ import PostThreads from "@/pages/PostThreads";
 import Reposted from "@/pages/Reposted";
 import Liked from "@/pages/Liked";
 import Feeds from "@/pages/Feeds";
+import Search from "@/pages/Search";
 import FeedGenerator from "@/pages/FeedGenerator";
 import useAuthentication from "@/hooks/useAuthentication";
 
@@ -40,6 +41,7 @@ export const Router = () => {
         <Route path="/profile/:handle/post/:id/liked" element={<Liked />} />
         <Route path="/profile/:did/feed/:id" element={<FeedGenerator />} />
         <Route path="/feeds" element={<Feeds />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<NotFound />} />

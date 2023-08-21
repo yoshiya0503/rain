@@ -11,6 +11,7 @@ export interface FeedGeneratorSlice {
   feedCursor: string;
   feedBrief: AppBskyFeedDefs.FeedViewPost[];
   feed: AppBskyFeedDefs.FeedViewPost[];
+  query?: string;
   getFeedGenerators: (query: string) => Promise<void>;
   getFeedGenerator: (feed: string) => Promise<AppBskyFeedDefs.GeneratorView | undefined>;
   getFeedBrief: (feed: string) => Promise<void>;
@@ -27,14 +28,15 @@ export const createFeedGeneratorSlice: StateCreator<FeedGeneratorSlice & Message
   feed: [],
   feedGeneratorCursor: "",
   feedCursor: "",
+  query: undefined,
   getFeedGenerators: async (query: string) => {
     try {
+      // 気になるフィードは検索で絞り込ませる
       const res = await agent.api.app.bsky.unspecced.getPopularFeedGenerators({
         query,
         limit: 50,
-        cursor: get().feedGeneratorCursor,
       });
-      set({ feedGenerators: res.data.feeds, feedGeneratorCursor: res.data.cursor });
+      set({ feedGenerators: res.data.feeds, query });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to fetch feeds" }, e);
     }
