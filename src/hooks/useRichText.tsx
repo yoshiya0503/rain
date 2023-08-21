@@ -10,11 +10,6 @@ export const useRichText = () => {
   const fetchFacets = useCallback(async () => {
     await rt?.detectFacets(agent);
     setRT(rt);
-    /*
-    for (const seg of rt.segments()) {
-      console.log(seg);
-    }
-    */
   }, [rt, setRT]);
 
   const onChange = useCallback(
@@ -27,13 +22,16 @@ export const useRichText = () => {
   );
 
   const link = useCallback(
-    (type: "ogp" | "quote") => {
+    (type: "ogp" | "quote" | "feed") => {
       for (const f of rt?.facets || []) {
         if (f.features[0].uri) {
           if (type === "ogp" && !_.includes(f.features[0].uri.toString(), "https://bsky.app/profile/")) {
             return f.features[0].uri.toString();
           }
-          if (type === "quote" && _.includes(f.features[0].uri.toString(), "https://bsky.app/profile/")) {
+          if (type === "quote" && _.chain(f.features[0].uri).split("/").nth(-2).value() === "post") {
+            return f.features[0].uri.toString();
+          }
+          if (type === "feed" && _.chain(f.features[0].uri).split("/").nth(-2).value() === "feed") {
             return f.features[0].uri.toString();
           }
         }

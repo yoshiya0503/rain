@@ -12,7 +12,7 @@ export interface FeedGeneratorSlice {
   feedBrief: AppBskyFeedDefs.FeedViewPost[];
   feed: AppBskyFeedDefs.FeedViewPost[];
   getFeedGenerators: (query: string) => Promise<void>;
-  getFeedGenerator: (feed: string) => Promise<void>;
+  getFeedGenerator: (feed: string) => Promise<AppBskyFeedDefs.GeneratorView | undefined>;
   getFeedBrief: (feed: string) => Promise<void>;
   getFeed: (feed: string, isReset: boolean) => Promise<void>;
 }
@@ -43,6 +43,7 @@ export const createFeedGeneratorSlice: StateCreator<FeedGeneratorSlice & Message
     try {
       const res = await agent.api.app.bsky.feed.getFeedGenerator({ feed });
       set({ feedGenerator: res.data.view });
+      return res.data.view;
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to fetch feeds" }, e);
     }

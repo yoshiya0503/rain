@@ -25,12 +25,14 @@ import LabelProgress from "@/components/LabelProgress";
 import ProfileHeader from "@/components/ProfileHeader";
 import PostArticle from "@/components/PostArticle";
 import PostQuote from "@/components/PostQuote";
+import PostFeed from "@/components/PostFeed";
 import Text from "@/components/Text";
 import useMe from "@/hooks/useMe";
 import usePost from "@/hooks/usePost";
 import useQuote from "@/hooks/useQuote";
 import useOGP from "@/hooks/useOGP";
 import useImage from "@/hooks/useImage";
+import useFeed from "@/hooks/useFeed";
 import useBackdrop from "@/hooks/useBackdrop";
 import useRichText from "@/hooks/useRichText";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
@@ -54,14 +56,16 @@ export const DialogPost = (props: Props) => {
   const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
   const { images, onUpload, onDrop, onRemove, fetchEmbedImages, onClearImages } = useImage();
   const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(q, props.open);
+  const { feed, fetchFeed, fetchEmbedFeed, onClearFeed } = useFeed();
   const { text, facets, fetchFacets, link, onChange, onClearText } = useRichText();
 
   const onClean = () => {
+    props.onClose();
     onClearImages();
     onClearArticle();
     onClearQuote();
     onClearText();
-    props.onClose();
+    onClearFeed();
   };
 
   const onKeyboard = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,6 +74,7 @@ export const DialogPost = (props: Props) => {
       await fetchFacets();
       fetchOGP(link("ogp"));
       fetchQuote(link("quote"));
+      fetchFeed(link("feed"));
     }
   };
 
@@ -90,6 +95,9 @@ export const DialogPost = (props: Props) => {
       }
       if (props.type === "quote" && quote) {
         embed = fetchEmbedQuote();
+      }
+      if (feed) {
+        embed = fetchEmbedFeed();
       }
       onPost({ text, facets: facets(), reply, embed });
       onClean();
@@ -173,6 +181,7 @@ export const DialogPost = (props: Props) => {
         )}
         {article && <PostArticle article={article} />}
         {quote && <PostQuote record={quote} />}
+        {feed && <PostFeed record={feed} />}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Box sx={{ ml: 2 }}>

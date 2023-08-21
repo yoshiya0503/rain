@@ -9,6 +9,7 @@ import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import FeedRoundedIcon from "@mui/icons-material/FeedRounded";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ShareIcon from "@mui/icons-material/ShareRounded";
@@ -33,7 +34,14 @@ export const FeedGenerator = (props: Props) => {
       <CardContent>
         <Stack spacing={1}>
           <Stack direction="row" alignItems="flex-end" spacing={2}>
-            <Avatar sx={{ width: 64, height: 64 }} src={props.feed.avatar} alt={props.feed.avatar} variant="rounded" />
+            <Avatar
+              sx={{ width: 64, height: 64, bgcolor: "primary.main" }}
+              src={props.feed.avatar}
+              alt={props.feed.avatar}
+              variant="rounded"
+            >
+              <FeedRoundedIcon fontSize="large" />
+            </Avatar>
             <Stack>
               <Typography variant="h6">{props.feed.displayName}</Typography>
               <Typography variant="caption" color={grey[500]} onClick={onViewCreator}>
