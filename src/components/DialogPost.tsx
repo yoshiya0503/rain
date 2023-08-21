@@ -48,13 +48,12 @@ const MAX_TEXT_LENGTH = 300;
 
 export const DialogPost = (props: Props) => {
   const me = useMe();
-  const { onPost } = usePost();
-  const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
-  const { images, onUpload, onRemove, fetchEmbedImages, onClearImages } = useImage();
-
   const q = props.type === "quote" && props.post ? { value: props.post.record, ...props.post } : undefined;
-  const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(q, props.open);
+  const { onPost } = usePost();
   const { open, withBackdrop } = useBackdrop();
+  const { article, fetchOGP, fetchEmbedExternal, onClearArticle } = useOGP();
+  const { images, onUpload, onDrop, onRemove, fetchEmbedImages, onClearImages } = useImage();
+  const { quote, fetchQuote, fetchEmbedQuote, onClearQuote } = useQuote(q, props.open);
   const { text, facets, fetchFacets, link, onChange, onClearText } = useRichText();
 
   const onClean = () => {
@@ -124,7 +123,7 @@ export const DialogPost = (props: Props) => {
             </DialogContentText>
           </Box>
         )}
-        <Box sx={{ mt: 1, mb: 1 }}>
+        <Box sx={{ mt: 1, mb: 1 }} onDrop={onDrop}>
           <TextField
             multiline
             rows={4}

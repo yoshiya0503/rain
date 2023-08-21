@@ -53,6 +53,24 @@ export const useActor = () => {
     [setBanner]
   );
 
+  const onDropAvatar = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setAvatar(_.first(e.dataTransfer.files));
+    },
+    [setAvatar]
+  );
+
+  const onDropBanner = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setBanner(_.first(e.dataTransfer.files));
+    },
+    [setBanner]
+  );
+
   const onRemoveAvatar = useCallback(() => {
     setAvatar(undefined);
     setActor({ ...actor, avatar: "" });
@@ -82,7 +100,18 @@ export const useActor = () => {
     updateProfile(update);
   }, [updateProfile, actor, fetchBlob]);
 
-  return { actor, avatar, banner, onUpdateActor, onChangeName, onChangeDescription, onUploadAvatar, onUploadBanner };
+  return {
+    actor,
+    avatar,
+    banner,
+    onUpdateActor,
+    onChangeName,
+    onChangeDescription,
+    onUploadAvatar,
+    onUploadBanner,
+    onDropAvatar,
+    onDropBanner,
+  };
 };
 
 export default useActor;

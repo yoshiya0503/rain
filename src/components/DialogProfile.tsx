@@ -30,8 +30,18 @@ const MAX_DESC_LENGTH = 256;
 
 export const DialogProfile = (props: Props) => {
   const theme = useTheme();
-  const { actor, avatar, banner, onChangeName, onChangeDescription, onUploadAvatar, onUploadBanner, onUpdateActor } =
-    useActor();
+  const {
+    actor,
+    avatar,
+    banner,
+    onChangeName,
+    onChangeDescription,
+    onUploadAvatar,
+    onUploadBanner,
+    onUpdateActor,
+    onDropAvatar,
+    onDropBanner,
+  } = useActor();
   const { open, withBackdrop } = useBackdrop();
 
   const disabled = MAX_NAME_LENGTH < actor.displayName?.length || MAX_DESC_LENGTH < actor.description?.length;

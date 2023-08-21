@@ -10,11 +10,23 @@ export const useImage = () => {
 
   const onUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
       if (e.target.files) {
         const items = _.map(e.target.files, (item) => item);
         const result = _.concat(images, items);
         setImages(_.take(result, 4));
       }
+    },
+    [images, setImages]
+  );
+
+  const onDrop = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const items = _.map(e.dataTransfer.files, (item) => item);
+      const result = _.concat(images, items);
+      setImages(_.take(result, 4));
     },
     [images, setImages]
   );
@@ -46,7 +58,7 @@ export const useImage = () => {
     return { images: uploadImages, $type: "app.bsky.embed.images" };
   };
 
-  return { images, onUpload, onRemove, fetchEmbedImages, onClearImages };
+  return { images, onUpload, onDrop, onRemove, fetchEmbedImages, onClearImages };
 };
 
 export default useImage;
