@@ -22,11 +22,11 @@ export const FeedsContainer = (props: Props) => {
   const updatePreferences = useStore((state) => state.updatePreferences);
   const [expanded, setExpanded] = useState<string>();
 
-  if (query !== props.keyword) {
-    throw getFeedGenerators(props.keyword);
-  }
   if (_.isUndefined(query)) {
     throw Promise.all([getFeedGenerators(props.keyword), getPreferences()]);
+  }
+  if (query !== props.keyword) {
+    throw getFeedGenerators(props.keyword);
   }
 
   const onChangeFeed = useCallback(
