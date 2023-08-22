@@ -6,4 +6,7 @@ import pluginRewriteAll from "vite-plugin-rewrite-all";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), pluginRewriteAll()],
+  build: {
+    chunkSizeWarningLimit: 1600,
+  },
 });
