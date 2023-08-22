@@ -26,7 +26,7 @@ export const Login = () => {
       <Card sx={{ width: 480, height: 320 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            SKYLINE
+            RAIN
           </Typography>
         </CardContent>
         <CardContent>
