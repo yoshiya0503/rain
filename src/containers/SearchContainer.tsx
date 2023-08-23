@@ -58,6 +58,7 @@ export const SearchContainer = (props: Props) => {
   const title = type === "reply" ? "Reply" : "Quote";
 
   if (_.isEmpty(searchedActors) || _.isEmpty(searchedPosts) || !props.keyword) {
+    // TODO Tabの要素を検知してズレている
     return (
       <CenterLayout>
         <NotFound type="search" />

@@ -25,7 +25,7 @@ export const TabLayout = (props: Props) => {
       </Box>
       {_.map(props.children, (component, key) => (
         <TabPanel
-          sx={{ display: "flex", flexDirection: "column", height: "90vh", m: 0, p: 0 }}
+          sx={{ display: "flex", flexDirection: "column", height: "80vh", m: 0, p: 0 }}
           key={key}
           value={_.toString(key)}
         >
