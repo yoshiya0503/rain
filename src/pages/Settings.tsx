@@ -22,6 +22,7 @@ import Layout from "@/templates/Layout";
 import ProfileHeader from "@/components/ProfileHeader";
 import HistoryLayout from "@/templates/HistoryLayout";
 import DialogHandle from "@/components/DialogHandle";
+import DialogInviteCodes from "@/components/DialogInviteCodes";
 import useMe from "@/hooks/useMe";
 import useAuthentication from "@/hooks/useAuthentication";
 import useDialog from "@/hooks/useDialog";
@@ -31,20 +32,21 @@ export const Settings = () => {
   const preferences = useStore((state) => state.preferences);
   const { onLogout } = useAuthentication();
   const getPreferences = useStore((state) => state.getPreferences);
-  const [isOpen, openHandleDialog, closeHandleDialog] = useDialog();
+  const [isOpenHandle, openHandleDialog, closeHandleDialog] = useDialog();
+  const [isOpenCode, openCodeDialog, closeCodeDialog] = useDialog();
 
   if (_.isEmpty(preferences)) {
     throw getPreferences();
   }
 
   const specialMenu = [
-    { name: "inviteCode", label: "Invite Code", icon: <ConfirmationNumberIcon />, onClick: () => {} },
+    { name: "inviteCode", label: "Invite Code", icon: <ConfirmationNumberIcon />, onClick: openCodeDialog },
   ];
   const menu = [
     { name: "appPassword", label: "Add Password", icon: <KeyRoundedIcon />, onClick: () => {} },
     { name: "savedFeed", label: "Saved Feed", icon: <RssFeedRoundedIcon />, onClick: () => {} },
     { name: "contentLanguage", label: "Content Language", icon: <GTranslateRoundedIcon />, onClick: () => {} },
-    { name: "changeHandle", label: "Change Handle", icon: <AlternateEmailIcon />, onClick: () => {} },
+    { name: "changeHandle", label: "Change Handle", icon: <AlternateEmailIcon />, onClick: openHandleDialog },
   ];
 
   const moderationMenu = [
@@ -63,15 +65,10 @@ export const Settings = () => {
               </Button>
             </Box>
           </Stack>
-          <Box>
-            <Button variant="contained" startIcon={<AlternateEmailIcon />} onClick={openHandleDialog}>
-              Change Handle
-            </Button>
-          </Box>
           <List>
             {_.map(specialMenu, (item) => (
-              <ListItem disablePadding>
-                <ListItemButton sx={{ borderRadius: 6 }}>
+              <ListItem disablePadding key={item.name}>
+                <ListItemButton sx={{ borderRadius: 6 }} onClick={item.onClick}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={<Typography sx={{ fontWeight: 700 }}>{item.label}</Typography>} />
                 </ListItemButton>
@@ -84,8 +81,8 @@ export const Settings = () => {
           </Typography>
           <List>
             {_.map(menu, (item) => (
-              <ListItem disablePadding>
-                <ListItemButton sx={{ borderRadius: 6 }}>
+              <ListItem disablePadding key={item.name}>
+                <ListItemButton sx={{ borderRadius: 6 }} onClick={item.onClick}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={<Typography sx={{ fontWeight: 600 }}>{item.label}</Typography>} />
                 </ListItemButton>
@@ -98,7 +95,7 @@ export const Settings = () => {
           </Typography>
           <List>
             {_.map(moderationMenu, (item) => (
-              <ListItem disablePadding>
+              <ListItem disablePadding key={item.name}>
                 <ListItemButton sx={{ borderRadius: 6 }}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={<Typography sx={{ fontWeight: 600 }}>{item.label}</Typography>} />
@@ -107,7 +104,8 @@ export const Settings = () => {
             ))}
           </List>
         </Stack>
-        <DialogHandle open={isOpen} onClose={closeHandleDialog} />
+        <DialogHandle open={isOpenHandle} onClose={closeHandleDialog} />
+        <DialogInviteCodes open={isOpenCode} onClose={closeCodeDialog} />
       </HistoryLayout>
     </Layout>
   );
