@@ -18,6 +18,7 @@ export const usePost = () => {
   const updateAuthorFeedViewer = useStore((state) => state.updateAuthorFeedViewer);
   const updateNotificationViewer = useStore((state) => state.updateNotificationViewer);
   const updatePostThreadViewer = useStore((state) => state.updatePostThreadViewer);
+  const updateSearchViewer = useStore((state) => state.updateSearchViewer);
 
   const onUploadBlob = useCallback(
     (data: BlobRequest) => {
@@ -56,8 +57,9 @@ export const usePost = () => {
       updateAuthorFeedViewer(post);
       updateNotificationViewer(post);
       updatePostThreadViewer(post);
+      updateSearchViewer(post);
     },
-    [updateTimelineViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer]
+    [updateTimelineViewer, updateAuthorFeedViewer, updateNotificationViewer, updatePostThreadViewer, updateSearchViewer]
   );
 
   const onDeletePost = useCallback(

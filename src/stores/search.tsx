@@ -12,6 +12,7 @@ export interface SearchSlice {
   searchedPosts: AppBskyFeedDefs.PostView[];
   searchPost: (q: string) => Promise<void>;
   searchActor: (q: string) => Promise<void>;
+  updateSearchViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
 export const createSearchSlice: StateCreator<SearchSlice & MessageSlice, [], [], SearchSlice> = (set, get) => ({
@@ -19,7 +20,6 @@ export const createSearchSlice: StateCreator<SearchSlice & MessageSlice, [], [],
   searchedActors: [],
   searchedPosts: [],
   searchPost: async (q: string) => {
-    // TODO 検索結果をいいね、リポストした場合の画面更新
     try {
       if (!q) return;
       const searched = await fetch(`${SEARCH_URI}/posts?q=${q}`);
@@ -58,5 +58,9 @@ export const createSearchSlice: StateCreator<SearchSlice & MessageSlice, [], [],
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to search post URIs" }, e);
     }
+  },
+  updateSearchViewer: (post: AppBskyFeedDefs.PostView) => {
+    const searchedPosts = _.map(get().searchedPosts, (subject) => (subject.uri === post.uri ? post : subject));
+    set({ searchedPosts });
   },
 });
