@@ -1,6 +1,6 @@
 import { ReactNode, Suspense } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import SideMenu from "@/components/SideMenu";
 import MenuTemplate from "@/templates/MenuTemplate";
@@ -27,9 +27,9 @@ export const Layout = (props: Props) => {
           </Suspense>
         </Grid>
         <Grid>
-          <Box sx={{ height: "95vh", overflow: "hidden", width: 480, minWidth: 480 }} component="main">
+          <Stack sx={{ width: 480, minWidth: 480, height: "95vh" }} component="main">
             {props.children}
-          </Box>
+          </Stack>
         </Grid>
       </Grid>
       <Message />

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import NavigationIcon from "@mui/icons-material/Navigation";
 
 type Props = {
@@ -58,7 +59,7 @@ export const ScrollLayout = (props: Props) => {
   }, []);
 
   return (
-    <Box>
+    <Stack sx={{ overflow: "hidden" }}>
       <Fade in={hasScroll}>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Fab variant="extended" size="medium" color="primary" onClick={scrollTop} sx={{ mb: -5, opacity: 0.7 }}>
@@ -68,13 +69,13 @@ export const ScrollLayout = (props: Props) => {
         </Box>
       </Fade>
       <Box
-        sx={{ height: "95vh", overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
+        sx={{ overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
         onScroll={handleBottomScroll}
         ref={ref}
       >
         {props.children}
       </Box>
-    </Box>
+    </Stack>
   );
 };
 

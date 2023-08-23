@@ -81,9 +81,7 @@ export const Post = (props: Props) => {
             <Typography color={grey[500]} variant="caption" noWrap>
               {dateLabel}
             </Typography>
-            {_.includes(["reply", "quote", "mention"], props.notification.reason) && (
-              <DropDownMenu items={menuItems} size="tiny" />
-            )}
+            {_.includes(["reply", "quote", "mention"], props.notification.reason) && <DropDownMenu items={menuItems} />}
           </Stack>
         </Stack>
         {!_.includes(["reply", "quote", "mention"], props.notification.reason) && (

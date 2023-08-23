@@ -147,7 +147,7 @@ export const Feed = (props: Props) => {
             </Box>
           ))
         ) : (
-          <LinearProgress />
+          <LinearProgress sx={{ borderRadius: 1 }} />
         )}
       </AccordionDetails>
     </FeedAccordion>

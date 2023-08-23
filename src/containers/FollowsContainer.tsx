@@ -52,7 +52,7 @@ export const FollowsContainer = (props: Props) => {
             </Collapse>
           ))}
       </TransitionGroup>
-      <LinearProgress />
+      <LinearProgress sx={{ borderRadius: 1 }} />
     </ScrollLayout>
   );
 };
