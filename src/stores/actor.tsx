@@ -10,12 +10,9 @@ export interface ActorSlice {
   actor?: AppBskyActorDefs.ProfileViewDetailed;
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
   authorCursor: string;
-  preferences: AppBskyActorDefs.Preferences;
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
-  getPreferences: () => Promise<void>;
-  updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
@@ -28,7 +25,6 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
   me: undefined,
   authorCursor: "",
   authorFeed: [],
-  preferences: [],
   getMe: async () => {
     try {
       const session = get().session;
@@ -56,22 +52,6 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
         const authorFeed = _.concat(get().authorFeed, res.data.feed);
         set({ authorFeed, authorCursor: res.data.cursor });
       }
-    } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
-    }
-  },
-  getPreferences: async () => {
-    try {
-      const res = await agent.api.app.bsky.actor.getPreferences();
-      set({ preferences: res.data.preferences });
-    } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
-    }
-  },
-  updatePreferences: async (preferences: AppBskyActorDefs.Preferences) => {
-    try {
-      await agent.api.app.bsky.actor.putPreferences({ preferences });
-      set({ preferences: preferences });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }

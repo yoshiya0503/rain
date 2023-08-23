@@ -9,6 +9,7 @@ import { SocialGraphSlice, createSocialGraphSlice } from "@/stores/social_graph"
 import { IdentitySlice, createIdentitySlice } from "@/stores/identity";
 import { FeedGeneratorSlice, createFeedGeneratorSlice } from "@/stores/feed_generator";
 import { SearchSlice, createSearchSlice } from "@/stores/search";
+import { PreferenceSlice, createPreferenceSlice } from "@/stores/preference";
 import { LayoutSlice, createLayoutSlice } from "@/stores/layout";
 
 type StoreSlice = ActorSlice &
@@ -21,6 +22,7 @@ type StoreSlice = ActorSlice &
   FeedGeneratorSlice &
   SearchSlice &
   MessageSlice &
+  PreferenceSlice &
   LayoutSlice;
 
 export const useStore = create<StoreSlice>()((...a) => ({
@@ -34,5 +36,6 @@ export const useStore = create<StoreSlice>()((...a) => ({
   ...createIdentitySlice(...a),
   ...createFeedGeneratorSlice(...a),
   ...createSearchSlice(...a),
+  ...createPreferenceSlice(...a),
   ...createLayoutSlice(...a),
 }));
