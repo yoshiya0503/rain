@@ -10,13 +10,16 @@ import ScrollLayout from "@/templates/ScrollLayout";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
+import UnreadPosts from "@/components/UnreadPosts";
 import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 export const TimelineContainer = () => {
   const timeline = useStore((state) => state.timeline);
+  const unreadTimeline = useStore((state) => state.unreadTimeline);
   const getTimeline = useStore((state) => state.getTimeline);
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
+  const drainTimeline = useStore((state) => state.drainTimeline);
   const [isOpenPost, openPostDialog, closePostDialog] = useDialog();
   const [isOpenImage, openImageDialog, closeImageDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
@@ -51,8 +54,13 @@ export const TimelineContainer = () => {
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <ScrollLayout onScrollLimit={onScrollLimit} unread={unreadTimeline}>
       <TransitionGroup>
+        {_.size(unreadTimeline) ? (
+          <Collapse key="unread">
+            <UnreadPosts onClick={drainTimeline} unread={unreadTimeline} />
+          </Collapse>
+        ) : null}
         {_.map(timeline, (item) => (
           <Collapse key={item.post.cid}>
             <Box sx={{ mt: 1, mb: 1 }}>

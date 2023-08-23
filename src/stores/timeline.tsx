@@ -11,10 +11,13 @@ export type BlobResponse = ComAtprotoRepoUploadBlob.OutputSchema;
 
 export interface TimelineSlice {
   timeline: AppBskyFeedDefs.FeedViewPost[];
+  unreadTimeline: AppBskyFeedDefs.FeedViewPost[];
   timelineCursor: string;
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
   getTimeline: () => Promise<void | boolean>;
   getInitialTimeline: () => Promise<void>;
+  reloadTimeline: () => Promise<void>;
+  drainTimeline: () => void;
   uploadBlob: (data: BlobRequest) => Promise<BlobResponse | undefined>;
   post: (record: Record) => Promise<void>;
   deletePost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
@@ -32,10 +35,10 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
   timelineCursor: "",
   authorCursor: "",
   timeline: [],
+  unreadTimeline: [],
   authorFeed: [],
   getTimeline: async () => {
     try {
-      // TODO リアルタイムで新規投稿をチェックしたい
       const res = await agent.getTimeline({ cursor: get().timelineCursor, limit: 100 });
       if (!res.data.cursor) return true;
       const filteredFeed = get().filterFeed(res.data.feed);
@@ -63,6 +66,7 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
             filterList = _.concat(filterList, f.reply.parent.cid);
           }
         }
+        filterList = _.concat(filterList, f.post.cid);
         return true;
       })
       .value();
@@ -72,6 +76,20 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
     while (_.size(get().timeline) < 10 && !isLastOrder) {
       isLastOrder = await get().getTimeline();
     }
+  },
+  reloadTimeline: async () => {
+    const res = await agent.getTimeline();
+    if (!res.data.cursor) return;
+    const filteredFeed = get().filterFeed(res.data.feed);
+    const first = _.first(get().timeline);
+    if (!first) return;
+    const index = _.findIndex(filteredFeed, (f) => f.post.uri === first.post.uri);
+    if (index === 0) return;
+    set({ unreadTimeline: _.take(filteredFeed, index) });
+    return;
+  },
+  drainTimeline: () => {
+    set({ timeline: _.concat(get().unreadTimeline, get().timeline), unreadTimeline: [] });
   },
   post: async (record: Record) => {
     try {

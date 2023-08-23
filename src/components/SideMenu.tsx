@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
@@ -18,30 +17,25 @@ import Create from "@mui/icons-material/CreateRounded";
 import ProfileHeader from "@/components/ProfileHeader";
 import DialogPost from "@/components/DialogPost";
 import useMe from "@/hooks/useMe";
-import useNotification from "@/hooks/useNotification";
+import useRealtime from "@/hooks/useRealtime";
 import useDialog from "@/hooks/useDialog";
-
-const INTERVAL = 10 * 1000;
 
 export const SideMenu = () => {
   const me = useMe();
-  const { unreadCount, countUnreadNotifications } = useNotification();
+  const { unreadCount, unreadTimeline } = useRealtime();
   const navigate = useNavigate();
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
 
-  /*
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      await countUnreadNotifications();
-    }, INTERVAL);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [countUnreadNotifications]);
-  */
-
   const menus = [
-    { name: "Home", icon: <Home />, href: "/" },
+    {
+      name: "Home",
+      icon: (
+        <Badge color="primary" variant="dot" invisible={!_.size(unreadTimeline)}>
+          <Home />
+        </Badge>
+      ),
+      href: "/",
+    },
     { name: "Search", icon: <Search />, href: "/search" },
     { name: "Feeds", icon: <Feed />, href: "/feeds" },
     {
