@@ -13,7 +13,7 @@ type Props = {
 
 export const Layout = (props: Props) => {
   return (
-    <Container sx={{ display: "flex", p: 2 }}>
+    <Container sx={{ p: 2 }}>
       <Grid container spacing={4}>
         <Grid>
           <Suspense fallback={<MenuTemplate />}>
