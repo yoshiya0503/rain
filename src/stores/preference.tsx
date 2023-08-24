@@ -7,8 +7,13 @@ import agent from "@/agent";
 
 export interface PreferenceSlice {
   preferences: AppBskyActorDefs.Preferences;
+  inviteCodes: { used: boolean; code: string }[];
+  appPasswords: { name: string; createdAt: string }[];
   getPreferences: () => Promise<void>;
   updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
+  getInviteCodes: () => Promise<void>;
+  listAppPasswords: () => Promise<void>;
+  createAppPassword: (name: string) => Promise<string | void>;
 }
 
 export const createPreferenceSlice: StateCreator<
@@ -18,6 +23,8 @@ export const createPreferenceSlice: StateCreator<
   PreferenceSlice
 > = (set, get) => ({
   preferences: [],
+  inviteCodes: [],
+  appPasswords: [],
   getPreferences: async () => {
     try {
       const res = await agent.api.app.bsky.actor.getPreferences();
@@ -32,6 +39,36 @@ export const createPreferenceSlice: StateCreator<
       set({ preferences: preferences });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
+    }
+  },
+  getInviteCodes: async () => {
+    try {
+      const res = await agent.api.com.atproto.server.getAccountInviteCodes();
+      const inviteCodes = _.chain(res.data.codes)
+        .map((code) => ({ used: !_.isEmpty(code.uses), code: code.code }))
+        .sortBy("used")
+        .value();
+      set({ inviteCodes });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch invite codes" }, e);
+    }
+  },
+  listAppPasswords: async () => {
+    try {
+      const res = await agent.api.com.atproto.server.listAppPasswords();
+      const appPasswords = _.map(res.data.passwords, (item) => ({ name: item.name, createdAt: item.createdAt }));
+      set({ appPasswords });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch app passwords" }, e);
+    }
+  },
+  createAppPassword: async (name: string) => {
+    try {
+      const res = await agent.api.com.atproto.server.createAppPassword({ name });
+      await get().listAppPasswords();
+      return res.data.password;
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch app passwords" }, e);
     }
   },
 });

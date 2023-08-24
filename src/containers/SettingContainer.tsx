@@ -21,6 +21,7 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import ProfileHeader from "@/components/ProfileHeader";
 import DialogHandle from "@/components/DialogHandle";
 import DialogInviteCodes from "@/components/DialogInviteCodes";
+import DialogPasswords from "@/components/DialogPasswords";
 import useMe from "@/hooks/useMe";
 import useAuthentication from "@/hooks/useAuthentication";
 import useDialog from "@/hooks/useDialog";
@@ -28,20 +29,25 @@ import useDialog from "@/hooks/useDialog";
 export const Settings = () => {
   const me = useMe();
   const preferences = useStore((state) => state.preferences);
+  const inviteCodes = useStore((state) => state.inviteCodes);
+  const appPasswords = useStore((state) => state.appPasswords);
   const { onLogout } = useAuthentication();
   const getPreferences = useStore((state) => state.getPreferences);
+  const getInviteCodes = useStore((state) => state.getInviteCodes);
+  const listAppPasswords = useStore((state) => state.listAppPasswords);
   const [isOpenHandle, openHandleDialog, closeHandleDialog] = useDialog();
   const [isOpenCode, openCodeDialog, closeCodeDialog] = useDialog();
+  const [isOpenPassword, openPasswordDialog, closePasswordDialog] = useDialog();
 
   if (_.isEmpty(preferences)) {
-    throw getPreferences();
+    throw Promise.all([getPreferences(), getInviteCodes(), listAppPasswords()]);
   }
 
   const specialMenu = [
     { name: "inviteCode", label: "Invite Code", icon: <ConfirmationNumberIcon />, onClick: openCodeDialog },
   ];
   const menu = [
-    { name: "appPassword", label: "Add Password", icon: <KeyRoundedIcon />, onClick: () => {} },
+    { name: "appPassword", label: "Add Password", icon: <KeyRoundedIcon />, onClick: openPasswordDialog },
     { name: "savedFeed", label: "Saved Feed", icon: <RssFeedRoundedIcon />, onClick: () => {} },
     { name: "contentLanguage", label: "Content Language", icon: <GTranslateRoundedIcon />, onClick: () => {} },
     { name: "changeHandle", label: "Change Handle", icon: <AlternateEmailIcon />, onClick: openHandleDialog },
@@ -102,7 +108,8 @@ export const Settings = () => {
         </List>
       </Stack>
       <DialogHandle open={isOpenHandle} onClose={closeHandleDialog} />
-      <DialogInviteCodes open={isOpenCode} onClose={closeCodeDialog} />
+      <DialogInviteCodes open={isOpenCode} onClose={closeCodeDialog} inviteCodes={inviteCodes} />
+      <DialogPasswords open={isOpenPassword} onClose={closePasswordDialog} passwords={appPasswords} />
     </>
   );
 };

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import UnreadPosts from "@/components/UnreadPosts";
@@ -72,10 +73,16 @@ export const ScrollLayout = (props: Props) => {
             size="medium"
             color="primary"
             onClick={scrollTop}
-            sx={{ mb: -5, opacity: 0.7, textTransform: "none" }}
+            sx={{ mb: -5, opacity: 0.85, textTransform: "none" }}
           >
-            <NavigationIcon />
-            {_.size(props.unread) ? <UnreadPosts unread={props.unread || []} /> : "TOP"}
+            {_.size(props.unread) ? (
+              <UnreadPosts unread={props.unread || []} />
+            ) : (
+              <Stack direction="row" sx={{ alignItems: "center", justifyContent: "center" }}>
+                <NavigationIcon fontSize="small" />
+                <Typography variant="caption">TOP</Typography>
+              </Stack>
+            )}
           </Fab>
         </Box>
       </Fade>
