@@ -2,7 +2,7 @@ import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
 import { useNavigate } from "react-router-dom";
-import { Record, BlobRequest } from "@/stores/feed";
+import { Record, BlobRequest } from "@/stores/timeline";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 export const usePost = () => {
@@ -35,7 +35,8 @@ export const usePost = () => {
   );
 
   const updateViewer = useCallback(
-    (post: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
+    (p: AppBskyFeedDefs.PostView, action: "like" | "repost", resourceURI?: string) => {
+      const post = { ...p };
       if (_.has(post.viewer, action)) {
         if (_.isNumber(post.likeCount) && action === "like") {
           post.likeCount -= 1;

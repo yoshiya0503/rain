@@ -23,8 +23,10 @@ export interface TimelineSlice {
   deletePost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
   repost: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
   deleteRepost: (record: AppBskyFeedDefs.PostView) => Promise<void>;
-  like: (record: AppBskyFeedDefs.PostView) => Promise<void | { cid: string; uri: string }>;
-  deleteLike: (record: AppBskyFeedDefs.PostView) => Promise<void>;
+  like: (
+    record: AppBskyFeedDefs.PostView | AppBskyFeedDefs.GeneratorView
+  ) => Promise<void | { cid: string; uri: string }>;
+  deleteLike: (record: AppBskyFeedDefs.PostView | AppBskyFeedDefs.GeneratorView) => Promise<void>;
   updateTimelineViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
 
@@ -138,16 +140,16 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
       get().createFailedMessage({ status: "error", description: "failed to repost" }, e);
     }
   },
-  like: async (post: AppBskyFeedDefs.PostView) => {
+  like: async (subject: AppBskyFeedDefs.PostView | AppBskyFeedDefs.GeneratorView) => {
     try {
-      return await agent.like(post.uri, post.cid);
+      return await agent.like(subject.uri, subject.cid);
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to like" }, e);
     }
   },
-  deleteLike: async (post: AppBskyFeedDefs.PostView) => {
+  deleteLike: async (subject: AppBskyFeedDefs.PostView | AppBskyFeedDefs.GeneratorView) => {
     try {
-      await agent.deleteLike(post.viewer?.like || "");
+      await agent.deleteLike(subject.viewer?.like || "");
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to like" }, e);
     }

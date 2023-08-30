@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -16,6 +16,7 @@ type Props = {
 // TODO コンテンツの上じゃなくて横のほうがいいかもしれない
 export const HistoryLayout = (props: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [keyword, setKeyword] = useState<string>(props.keyword || "");
   const [isFocus, setFocus] = useState<boolean>(false);
 
@@ -29,10 +30,10 @@ export const HistoryLayout = (props: Props) => {
   const onSearch = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        navigate(`/search?q=${keyword}`);
+        navigate(`${location.pathname}?q=${keyword}`);
       }
     },
-    [keyword, navigate]
+    [keyword, navigate, location]
   );
 
   const onFocus = useCallback(() => {
