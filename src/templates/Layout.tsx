@@ -17,11 +17,7 @@ export const Layout = (props: Props) => {
       <Grid container spacing={4}>
         <Grid>
           <Suspense fallback={<MenuTemplate />}>
-            <Paper
-              component="nav"
-              variant="outlined"
-              sx={{ minWidth: 210, maxWidth: 240, height: 450, borderRadius: 3 }}
-            >
+            <Paper component="nav" variant="outlined" sx={{ width: 240, height: 440, borderRadius: 3 }}>
               <SideMenu />
             </Paper>
           </Suspense>
