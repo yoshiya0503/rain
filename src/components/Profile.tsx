@@ -173,7 +173,7 @@ export const Profile = (props: Props) => {
               <Typography variant="caption">posts</Typography>
             </Stack>
           </Stack>
-          <Typography variant="caption">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Text>{props.actor.description}</Text>
           </Typography>
         </Stack>

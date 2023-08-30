@@ -133,7 +133,7 @@ export const Feed = (props: Props) => {
             <FavoriteIcon fontSize="small" sx={{ color: pink[400] }} />
             <Typography variant="body2">{props.feed.likeCount}</Typography>
           </Stack>
-          <Typography variant="caption">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Text>{props.feed.description}</Text>
           </Typography>
         </Stack>
