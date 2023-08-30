@@ -107,7 +107,7 @@ export const DialogPost = (props: Props) => {
   const isNotPostable = MAX_TEXT_LENGTH < text.length || !text.length;
 
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={onClean}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="primary" />
       </Backdrop>

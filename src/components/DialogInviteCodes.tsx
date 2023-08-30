@@ -28,7 +28,7 @@ export const DialogInviteCodes = (props: Props) => {
     []
   );
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <DialogTitle>Invite Your Friends</DialogTitle>
       <DialogContent>
         <List>

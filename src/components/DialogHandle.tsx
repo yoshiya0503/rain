@@ -36,7 +36,7 @@ export const DialogHandle = (props: Props) => {
   };
 
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="primary" />
       </Backdrop>
