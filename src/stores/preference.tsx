@@ -9,12 +9,13 @@ export interface PreferenceSlice {
   preferences: AppBskyActorDefs.Preferences;
   inviteCodes: { used: boolean; code: string }[];
   appPasswords: { name: string; createdAt: string }[];
+  createdHash: string;
   getPreferences: () => Promise<void>;
   updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
   getInviteCodes: () => Promise<void>;
   listAppPasswords: () => Promise<void>;
   createAppPassword: (name: string) => Promise<string | void>;
-  deleteAppPasswords: (name: string) => Promise<void>;
+  deleteAppPassword: (name: string) => Promise<void>;
 }
 
 export const createPreferenceSlice: StateCreator<
@@ -26,6 +27,7 @@ export const createPreferenceSlice: StateCreator<
   preferences: [],
   inviteCodes: [],
   appPasswords: [],
+  createdHash: '',
   getPreferences: async () => {
     try {
       const res = await agent.api.app.bsky.actor.getPreferences();
@@ -72,7 +74,7 @@ export const createPreferenceSlice: StateCreator<
       get().createFailedMessage({ status: "error", description: "failed to create app passwords" }, e);
     }
   },
-  deleteAppPasswords: async (name: string) => {
+  deleteAppPassword: async (name: string) => {
     try {
       await agent.api.com.atproto.server.revokeAppPassword({ name });
       await get().listAppPasswords();

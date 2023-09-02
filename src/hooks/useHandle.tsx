@@ -26,8 +26,8 @@ export const useHandle = () => {
   }, [handle, updateHandle]);
 
   const onClearHandle = useCallback(() => {
-    updateHandle("");
-  }, [updateHandle]);
+    setHandle("");
+  }, [setHandle]);
 
   return { handle, onChangeHandle, onUpdateHandle, onClearHandle };
 };

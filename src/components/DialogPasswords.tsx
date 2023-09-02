@@ -7,10 +7,14 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
@@ -24,32 +28,58 @@ type Props = {
 
 export const DialogInviteCodes = (props: Props) => {
   const [password, setPassword] = useState<string>("");
+  const [created, setCreated] = useState<string>("");
   const createAppPassword = useStore((state) => state.createAppPassword);
   const deleteAppPassword = useStore((state) => state.deleteAppPassword);
 
   const onDelete = useCallback(
-    (name: string) => () => {
+    (name: string) => async () => {
       deleteAppPassword(name);
     },
     [deleteAppPassword]
   );
 
-  const onAddPassword = useCallback(() => {
-    createAppPassword(password);
-  }, [password, createAppPassword]);
+  const onAddPassword = useCallback(async () => {
+    const created = (await createAppPassword(password)) || "";
+    setCreated(created);
+  }, [password, createAppPassword, setCreated]);
 
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      // TODO 公式と同じバリデーション
       setPassword(e.currentTarget.value);
     },
     [setPassword]
   );
 
+  const onClear = useCallback(() => {
+    props.onClose();
+    setPassword("");
+    setCreated("");
+  }, [props, setPassword, setCreated]);
+
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={onClear}>
       <DialogTitle>App Passwords</DialogTitle>
       <DialogContent>
+        <Stack spacing={1}>
+          <DialogContentText variant="body2">
+            Please enter a unique name for this App Password or use our randomly generated one.
+          </DialogContentText>
+          <Stack direction="row" spacing={1} justifyContent="space-between">
+            <TextField sx={{ width: "80%" }} size="small" label="new password" onChange={onChangePassword} />
+            <Button sx={{ borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={onAddPassword}>
+              Add
+            </Button>
+          </Stack>
+          {created && (
+            <Stack direction="row" spacing={1}>
+              <KeyRoundedIcon color="primary" />
+              <Typography sx={{ borderRadius: 5, fontWeight: 600 }} variant="body1" color="primary">
+                {created}
+              </Typography>
+            </Stack>
+          )}
+        </Stack>
         <List>
           {_.map(props.passwords, (password) => (
             <ListItem
@@ -74,12 +104,9 @@ export const DialogInviteCodes = (props: Props) => {
         </List>
       </DialogContent>
       <Divider />
-      <DialogActions sx={{ alignItems: "center", justifyContent: "flex-end" }}>
-        <Button sx={{ borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={props.onClose}>
-          Close
-        </Button>
-        <Button sx={{ borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={props.onClose}>
-          Add New Password
+      <DialogActions sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Button sx={{ width: "50%", borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={onClear}>
+          DONE
         </Button>
       </DialogActions>
     </Dialog>
