@@ -29,7 +29,7 @@ export const Login = () => {
 
   return (
     <CenterLayout>
-      <Card sx={{ width: "30vw", height: "60vh", mt: "-50%", p: 3 }} variant="outlined">
+      <Card sx={{ minWidth: 480, minHeight: 480, width: "30vw", height: "60vh", p: 3 }} variant="outlined">
         <CardHeader title="RAIN" />
         <CardContent>
           <Stack direction="column" spacing={1}>
