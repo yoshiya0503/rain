@@ -2,7 +2,7 @@ import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
-import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyActorProfile } from "@atproto/api";
+import { AppBskyActorDefs } from "@atproto/api";
 import agent from "@/agent";
 
 export interface PreferenceSlice {
@@ -27,7 +27,7 @@ export const createPreferenceSlice: StateCreator<
   preferences: [],
   inviteCodes: [],
   appPasswords: [],
-  createdHash: '',
+  createdHash: "",
   getPreferences: async () => {
     try {
       const res = await agent.api.app.bsky.actor.getPreferences();
