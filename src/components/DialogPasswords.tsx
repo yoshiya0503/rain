@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useStore } from "@/stores";
 import { grey } from "@mui/material/colors";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
@@ -17,19 +18,34 @@ import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
 type Props = {
   passwords: { name: string; createdAt: string }[];
   open: boolean;
-  onAddPassword?: (name: string) => void;
-  onDeletePassword?: (mame: string) => void;
   onClose: () => void;
   onSend?: () => void;
 };
 
 export const DialogInviteCodes = (props: Props) => {
+  const [password, setPassword] = useState<string>("");
+  const createAppPassword = useStore((state) => state.createAppPassword);
+  const deleteAppPassword = useStore((state) => state.deleteAppPassword);
+
   const onDelete = useCallback(
     (name: string) => () => {
-      props.onDeletePassword(name);
+      deleteAppPassword(name);
     },
-    [props]
+    [deleteAppPassword]
   );
+
+  const onAddPassword = useCallback(() => {
+    createAppPassword(password);
+  }, [password, createAppPassword]);
+
+  const onChangePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // TODO 公式と同じバリデーション
+      setPassword(e.currentTarget.value);
+    },
+    [setPassword]
+  );
+
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <DialogTitle>App Passwords</DialogTitle>
@@ -60,10 +76,10 @@ export const DialogInviteCodes = (props: Props) => {
       <Divider />
       <DialogActions sx={{ alignItems: "center", justifyContent: "flex-end" }}>
         <Button sx={{ borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={props.onClose}>
-          Add New Password
+          Close
         </Button>
         <Button sx={{ borderRadius: 5, fontWeight: 600 }} variant="contained" onClick={props.onClose}>
-          Close
+          Add New Password
         </Button>
       </DialogActions>
     </Dialog>

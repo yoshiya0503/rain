@@ -39,7 +39,7 @@ export const Settings = () => {
   const [isOpenCode, openCodeDialog, closeCodeDialog] = useDialog();
   const [isOpenPassword, openPasswordDialog, closePasswordDialog] = useDialog();
 
-  if (_.isEmpty(preferences)) {
+  if (_.isEmpty(preferences) || _.isEmpty(inviteCodes) || _.isEmpty(appPasswords)) {
     throw Promise.all([getPreferences(), getInviteCodes(), listAppPasswords()]);
   }
 

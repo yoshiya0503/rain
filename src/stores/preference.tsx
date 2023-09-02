@@ -14,6 +14,7 @@ export interface PreferenceSlice {
   getInviteCodes: () => Promise<void>;
   listAppPasswords: () => Promise<void>;
   createAppPassword: (name: string) => Promise<string | void>;
+  deleteAppPasswords: (name: string) => Promise<void>;
 }
 
 export const createPreferenceSlice: StateCreator<
@@ -68,7 +69,15 @@ export const createPreferenceSlice: StateCreator<
       await get().listAppPasswords();
       return res.data.password;
     } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed fetch app passwords" }, e);
+      get().createFailedMessage({ status: "error", description: "failed to create app passwords" }, e);
+    }
+  },
+  deleteAppPasswords: async (name: string) => {
+    try {
+      await agent.api.com.atproto.server.revokeAppPassword({ name });
+      await get().listAppPasswords();
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed to revoke app passwords" }, e);
     }
   },
 });
