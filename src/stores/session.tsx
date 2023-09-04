@@ -59,7 +59,7 @@ export const createSessionSlice: StateCreator<SessionSlice & MessageSlice, [], [
       };
       set({ session });
     } catch (e) {
-      get().createMessage({ status: "error", description: "token expired" });
+      get().createMessage({ status: "info", description: "token expired" });
       set({ session: null });
     }
   },
