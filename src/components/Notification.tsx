@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
+import ReportIcon from "@mui/icons-material/ReportRounded";
 import { grey } from "@mui/material/colors";
 import NotificationAvatars from "@/components/NotificationAvatars";
 import NotificationImages from "@/components/NotificationImages";
@@ -25,6 +26,7 @@ type Props = {
   otherAuthors: AppBskyActorDefs.ProfileView[];
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
+  onOpenReport?: (post: AppBskyFeedDefs.PostView) => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
 };
@@ -32,6 +34,7 @@ type Props = {
 export const Post = (props: Props) => {
   const { onShare, onViewThread } = usePost();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
+  // TODO 通知画面から通報する機能
 
   const menuItems = [
     {
@@ -48,6 +51,14 @@ export const Post = (props: Props) => {
       icon: <MuteIcon />,
       action: () => {
         console.log("mute");
+      },
+    },
+    {
+      name: "report",
+      icon: <ReportIcon />,
+      label: "Report",
+      action: () => {
+        props.onOpenReport && props.reasonReply && props.onOpenReport(props.reasonReply);
       },
     },
   ];

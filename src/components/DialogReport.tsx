@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { useCallback, useState } from "react";
 import { useStore } from "@/stores";
 import Button from "@mui/material/Button";
@@ -14,10 +15,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { ComAtprotoModerationDefs, AppBskyActorDefs } from "@atproto/api";
+import { ComAtprotoModerationDefs, AppBskyActorDefs, AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
-  actor: AppBskyActorDefs.ProfileViewDetailed;
+  actor?: AppBskyActorDefs.ProfileViewDetailed;
+  post?: AppBskyFeedDefs.PostView;
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -28,7 +30,8 @@ const MAX_TEXT_LENGTH = 300;
 export const DialogReport = (props: Props) => {
   const [reason, setReason] = useState<string>("");
   const [reasonType, setReasonType] = useState<string>("");
-  const report = useStore((state) => state.report);
+  const reportActor = useStore((state) => state.reportActor);
+  const reportPost = useStore((state) => state.reportPost);
 
   const onChangeReason = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,10 +56,30 @@ export const DialogReport = (props: Props) => {
     props.onClose();
     setReason("");
     setReasonType("");
-    report(reason, reasonType, props.actor.did);
-  }, [props, reason, setReason, reasonType, setReasonType, report]);
+    if (props.actor) {
+      reportActor(reason, reasonType, props.actor.did);
+    }
+    if (props.post) {
+      reportPost(reason, reasonType, props.post.cid, props.post.uri);
+    }
+  }, [props, reason, setReason, reasonType, setReasonType, reportActor, reportPost]);
 
   const isNotSendable = MAX_TEXT_LENGTH < reason.length || !reason.length;
+
+  const reportMenus = props.post
+    ? [
+        { value: ComAtprotoModerationDefs.REASONMISLEADING, label: "Misleading Account" },
+        { value: ComAtprotoModerationDefs.REASONSPAM, label: "Spam" },
+        { value: ComAtprotoModerationDefs.REASONVIOLATION, label: "Violates" },
+        { value: ComAtprotoModerationDefs.REASONRUDE, label: "Rude" },
+        { value: ComAtprotoModerationDefs.REASONSEXUAL, label: "Sexual" },
+        { value: ComAtprotoModerationDefs.REASONOTHER, label: "Other" },
+      ]
+    : [
+        { value: ComAtprotoModerationDefs.REASONMISLEADING, label: "Misleading Account" },
+        { value: ComAtprotoModerationDefs.REASONSPAM, label: "Spam" },
+        { value: ComAtprotoModerationDefs.REASONVIOLATION, label: "Violates" },
+      ];
 
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={onClear}>
@@ -65,13 +88,9 @@ export const DialogReport = (props: Props) => {
         <Stack spacing={1}>
           <DialogContentText component="div">
             <RadioGroup onChange={onRadioReason}>
-              <FormControlLabel
-                value={ComAtprotoModerationDefs.REASONMISLEADING}
-                control={<Radio />}
-                label="Misleading Account"
-              />
-              <FormControlLabel value={ComAtprotoModerationDefs.REASONSPAM} control={<Radio />} label="Spam" />
-              <FormControlLabel value={ComAtprotoModerationDefs.REASONVIOLATION} control={<Radio />} label="Violates" />
+              {_.map(reportMenus, (menu) => (
+                <FormControlLabel value={menu.value} control={<Radio />} label={menu.label} />
+              ))}
             </RadioGroup>
           </DialogContentText>
           <TextField

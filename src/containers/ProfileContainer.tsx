@@ -11,7 +11,9 @@ import Profile from "@/components/Profile";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
+import DialogReport from "@/components/DialogReport";
 import useDialog from "@/hooks/useDialog";
+import useMe from "@/hooks/useMe";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
@@ -19,10 +21,12 @@ type Props = {
 };
 
 export const ProfileContainer = (props: Props) => {
+  const me = useMe();
   const actor = useStore((state) => state.actor);
   const authorFeed = useStore((state) => state.authorFeed);
   const getProfile = useStore((state) => state.getProfile);
   const getAuthorFeed = useStore((state) => state.getAuthorFeed);
+  const [isOpenReport, openReportDialog, closeReportDialog] = useDialog();
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [isOpenImage, openImageDialog, closeImageDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
@@ -55,6 +59,14 @@ export const ProfileContainer = (props: Props) => {
     [openImageDialog, setImages]
   );
 
+  const onOpenReport = useCallback(
+    (post: AppBskyFeedDefs.PostView) => {
+      setPost(post);
+      openReportDialog();
+    },
+    [openReportDialog, setPost]
+  );
+
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
@@ -66,9 +78,11 @@ export const ProfileContainer = (props: Props) => {
             <Box sx={{ mt: 1, mb: 1 }}>
               {AppBskyFeedDefs.isPostView(item.reply?.root) && item.reply?.root && (
                 <Post
+                  me={me}
                   post={item.reply.root}
                   onOpenPost={onOpenPost}
                   onOpenImage={onOpenImage}
+                  onOpenReport={onOpenReport}
                   reason={item.reason}
                   hasReply
                 />
@@ -77,14 +91,23 @@ export const ProfileContainer = (props: Props) => {
                 item.reply?.parent &&
                 item.reply?.parent.cid !== item.reply?.root.cid && (
                   <Post
+                    me={me}
                     post={item.reply.parent}
                     onOpenPost={onOpenPost}
                     onOpenImage={onOpenImage}
+                    onOpenReport={onOpenReport}
                     reason={item.reason}
                     hasReply
                   />
                 )}
-              <Post post={item.post} onOpenPost={onOpenPost} onOpenImage={onOpenImage} reason={item.reason} />
+              <Post
+                me={me}
+                post={item.post}
+                onOpenPost={onOpenPost}
+                onOpenImage={onOpenImage}
+                onOpenReport={onOpenReport}
+                reason={item.reason}
+              />
               <Divider />
             </Box>
           </Collapse>
@@ -93,6 +116,7 @@ export const ProfileContainer = (props: Props) => {
       <LinearProgress sx={{ borderRadius: 1 }} />
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
+      <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
     </ScrollLayout>
   );
 };
