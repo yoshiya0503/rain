@@ -88,8 +88,8 @@ export const DialogReport = (props: Props) => {
         <Stack spacing={1}>
           <DialogContentText component="div">
             <RadioGroup onChange={onRadioReason}>
-              {_.map(reportMenus, (menu) => (
-                <FormControlLabel value={menu.value} control={<Radio />} label={menu.label} />
+              {_.map(reportMenus, (menu, key) => (
+                <FormControlLabel key={key} value={menu.value} control={<Radio />} label={menu.label} />
               ))}
             </RadioGroup>
           </DialogContentText>

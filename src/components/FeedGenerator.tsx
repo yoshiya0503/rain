@@ -1,6 +1,5 @@
-import _ from "lodash";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { grey, pink } from "@mui/material/colors";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -26,11 +25,14 @@ type Props = {
 
 export const FeedGenerator = (props: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onViewCreator = useCallback(() => {
     const uri = `/profile/${props.feed.creator.handle}`;
-    navigate(uri);
-  }, [props, navigate]);
+    if (location.pathname !== uri) {
+      navigate(uri);
+    }
+  }, [props, navigate, location]);
 
   const { isSaved, isPinned, onToggleLike, onToggleSave, onTogglePin, onShare } = useFeedGenerator(
     props.feed,

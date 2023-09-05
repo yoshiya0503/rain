@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -34,6 +34,7 @@ type Props = {
 export const Profile = (props: Props) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const me = useMe();
   const [isOpenProfile, openProfileDialog, closeProfileDialog] = useDialog();
   const [isOpenReport, openReportDialog, closeReportDialog] = useDialog();
@@ -57,8 +58,10 @@ export const Profile = (props: Props) => {
 
   const onViewFollow = useCallback(() => {
     const uri = `/profile/${props.actor.handle}/follows`;
-    navigate(uri);
-  }, [props, navigate]);
+    if (location.pathname !== uri) {
+      navigate(uri);
+    }
+  }, [props, navigate, location]);
 
   const isMe = me.did === props.actor.did;
   const muteLabel = props.actor?.viewer?.muted ? "Unmute" : "Mute";

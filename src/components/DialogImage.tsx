@@ -61,7 +61,7 @@ export const DialogImage = (props: Props) => {
               image={image?.thumb}
               alt={image?.alt}
             />
-            <ImageListItemBar subtitle={image?.alt} position="bottom" />
+            {image?.alt && <ImageListItemBar subtitle={image?.alt} position="bottom" />}
           </CardActionArea>
           <IconButton
             size="large"

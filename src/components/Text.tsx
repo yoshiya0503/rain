@@ -12,6 +12,7 @@ type RenderProps = {
   content: ReactNode;
 };
 
+// TODO replace by rich text
 export const Text = (props: Props) => {
   const render = ({ attributes, content }: RenderProps) => {
     return (

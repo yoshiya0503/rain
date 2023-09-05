@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -24,6 +24,7 @@ export const SideMenu = () => {
   const me = useMe();
   const { unreadCount, unreadTimeline } = useRealtime();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
 
   const menus = [
@@ -52,7 +53,9 @@ export const SideMenu = () => {
   ];
 
   const onClickMenu = (href: string) => () => {
-    navigate(href);
+    if (location.pathname !== href) {
+      navigate(href);
+    }
   };
 
   return (

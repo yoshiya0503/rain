@@ -1,12 +1,13 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Record, BlobRequest } from "@/stores/timeline";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 export const usePost = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const post = useStore((state) => state.post);
   const uploadBlob = useStore((state) => state.uploadBlob);
   const deletePost = useStore((state) => state.deletePost);
@@ -113,10 +114,11 @@ export const usePost = () => {
       if (document.getSelection()?.toString()) return;
       const id = _.last(_.split(post.uri, "/"));
       const url = `/profile/${post.author.handle}/post/${id}`;
-      //TODO 同じページへのnavigateをスキップしないと履歴に積まれる
-      navigate(url);
+      if (location.pathname !== url) {
+        navigate(url);
+      }
     },
-    [navigate]
+    [navigate, location]
   );
 
   return { onUploadBlob, onPost, onDeletePost, onRepost, onDeleteRepost, onLike, onDeleteLike, onShare, onViewThread };
