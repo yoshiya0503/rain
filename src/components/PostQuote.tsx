@@ -1,6 +1,4 @@
 import _ from "lodash";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import CardContent from "@mui/material/CardContent";
@@ -13,6 +11,7 @@ import PostImages from "@/components/PostImages";
 import PostFeed from "@/components/PostFeed";
 import Text from "@/components/Text";
 import usePost from "@/hooks/usePost";
+import useLocale from "@/hooks/useLocale";
 import {
   AppBskyFeedDefs,
   AppBskyFeedPost,
@@ -29,8 +28,7 @@ type Props = {
 
 export const PostQuote = (props: Props) => {
   const { onViewThread } = usePost();
-
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.record.indexedAt), { locale: ja });
+  const { locale } = useLocale();
 
   return (
     <Card variant="outlined" sx={{ borderRadius: 3 }}>
@@ -46,7 +44,7 @@ export const PostQuote = (props: Props) => {
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
               <ProfileHeader profile={props.record.author} size="small" />
               <Typography color={grey[500]} variant="caption">
-                {dateLabel}
+                {locale(props.record.indexedAt)}
               </Typography>
             </Stack>
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">

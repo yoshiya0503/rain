@@ -1,7 +1,5 @@
 import _ from "lodash";
 import { useCallback } from "react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -18,6 +16,7 @@ import PostActions from "@/components/PostActions";
 import Attachments from "@/components/Attachments";
 import Text from "@/components/Text";
 import usePost from "@/hooks/usePost";
+import useLocale from "@/hooks/useLocale";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
 import { AppBskyEmbedImages } from "@atproto/api";
 
@@ -33,6 +32,7 @@ type Props = {
 
 export const Post = (props: Props) => {
   const { onShare, onViewThread } = usePost();
+  const { locale } = useLocale();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
   // TODO 通知画面から通報する機能
 
@@ -63,7 +63,6 @@ export const Post = (props: Props) => {
     },
   ];
 
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.notification.indexedAt), { locale: ja });
   const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
   const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.notification.reason}しました`;
 
@@ -90,7 +89,7 @@ export const Post = (props: Props) => {
           </Stack>
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {dateLabel}
+              {locale(props.notification.indexedAt)}
             </Typography>
             {_.includes(["reply", "quote", "mention"], props.notification.reason) && <DropDownMenu items={menuItems} />}
           </Stack>

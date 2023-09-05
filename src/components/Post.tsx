@@ -1,5 +1,3 @@
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -17,6 +15,7 @@ import PostStats from "@/components/PostStats";
 import Text from "@/components/Text";
 import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
+import useLocale from "@/hooks/useLocale";
 import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyEmbedImages, AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
@@ -33,6 +32,7 @@ type Props = {
 // TODO mute threads
 export const Post = (props: Props) => {
   const { onDeletePost, onShare, onViewThread } = usePost();
+  const { locale } = useLocale();
 
   const isMe = props.me.did === props.post.author.did;
   const menuItems = isMe
@@ -97,8 +97,6 @@ export const Post = (props: Props) => {
         },
       ];
 
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.post.indexedAt), { locale: ja });
-
   return (
     <Stack direction="row" spacing={1} onClick={onViewThread(props.post)}>
       <AvatarThread profile={props.post.author} hasReply={props.hasReply} />
@@ -113,7 +111,7 @@ export const Post = (props: Props) => {
           <ProfileHeader profile={props.post.author} disableAvatar />
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {dateLabel}
+              {locale(props.post.indexedAt)}
             </Typography>
             <DropDownMenu items={menuItems} />
           </Stack>
