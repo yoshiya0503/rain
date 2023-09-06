@@ -144,18 +144,19 @@ export const DialogPost = (props: Props) => {
               endAdornment: (
                 <InputAdornment position="end">
                   <Stack sx={{ mt: 3 }} direction="column" alignSelf="flex-start">
-                    <IconButton color="primary" component="label">
+                    <input
+                      id="file"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                      onChange={onUpload}
+                      onClick={(e) => {
+                        e.currentTarget.value = "";
+                      }}
+                    />
+                    <IconButton htmlFor="file" color="primary" component="label">
                       <AttachFileRoundedIcon sx={{ transform: "rotate(45deg)" }} fontSize="small" />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        hidden
-                        onChange={onUpload}
-                        onClick={(e) => {
-                          e.currentTarget.value = "";
-                        }}
-                      />
                     </IconButton>
                   </Stack>
                 </InputAdornment>
