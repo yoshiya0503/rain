@@ -82,15 +82,15 @@ export const DialogContentFilter = (props: Props) => {
     <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <DialogTitle>Content Filter</DialogTitle>
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText component="div">
           <Stack direction="row" spacing={2} alignItems="center">
             <Switch checked={!!adultPref?.enabled} onChange={onToggleAdult} />
             Enable Sexual Content
           </Stack>
         </DialogContentText>
         {_.map(contentLabelPref, (pref: AppBskyActorDefs.ContentLabelPref) => (
-          <>
-            <Box sx={{ mt: 1, mb: 1 }} key={pref.label}>
+          <Box key={pref.label}>
+            <Box sx={{ mt: 1, mb: 1 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Stack>
                   <Typography variant="body2">{_.get(label, pref.label).title}</Typography>
@@ -124,7 +124,7 @@ export const DialogContentFilter = (props: Props) => {
               </Stack>
             </Box>
             <Divider flexItem />
-          </>
+          </Box>
         ))}
       </DialogContent>
       <Divider />

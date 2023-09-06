@@ -65,6 +65,7 @@ export const TimelineContainer = () => {
 
   const title = type === "reply" ? "Reply" : "Quote";
 
+  // TODO 投稿後にcidのpostがundefinedになることがある
   return (
     <ScrollLayout onScrollLimit={onScrollLimit} unread={unreadTimeline}>
       <TransitionGroup>
@@ -74,7 +75,7 @@ export const TimelineContainer = () => {
           </Collapse>
         ) : null}
         {_.map(timeline, (item) => (
-          <Collapse key={item.post.cid}>
+          <Collapse key={item.post?.cid}>
             <Box sx={{ mt: 1, mb: 1 }}>
               {AppBskyFeedDefs.isPostView(item.reply?.root) && item.reply?.root && (
                 <Post
@@ -89,7 +90,7 @@ export const TimelineContainer = () => {
               )}
               {AppBskyFeedDefs.isPostView(item.reply?.parent) &&
                 item.reply?.parent &&
-                item.reply?.parent.cid !== item.reply?.root.cid && (
+                item.reply?.parent?.cid !== item.reply?.root?.cid && (
                   <Post
                     me={me}
                     post={item.reply.parent}
