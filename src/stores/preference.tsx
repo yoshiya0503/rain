@@ -2,7 +2,7 @@ import _ from "lodash";
 import { StateCreator } from "zustand";
 import { MessageSlice } from "@/stores/message";
 import { SessionSlice } from "@/stores/session";
-import { AppBskyActorDefs } from "@atproto/api";
+import { AppBskyFeedDefs, AppBskyActorDefs } from "@atproto/api";
 import agent from "@/agent";
 
 export interface PreferenceSlice {
@@ -10,6 +10,7 @@ export interface PreferenceSlice {
   inviteCodes: { used: boolean; code: string }[];
   appPasswords: { name: string; createdAt: string }[];
   createdHash: string;
+  savedFeeds: AppBskyFeedDefs.GeneratorView[];
   getPreferences: () => Promise<void>;
   updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
   getInviteCodes: () => Promise<void>;
@@ -27,11 +28,15 @@ export const createPreferenceSlice: StateCreator<
   preferences: [],
   inviteCodes: [],
   appPasswords: [],
+  savedFeeds: [],
   createdHash: "",
   getPreferences: async () => {
     try {
       const res = await agent.api.app.bsky.actor.getPreferences();
-      set({ preferences: res.data.preferences });
+      const feedPref = _.find(res.data.preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
+      const feeds = (AppBskyActorDefs.isSavedFeedsPref(feedPref) && feedPref?.saved) || [];
+      const feedResponse = await agent.api.app.bsky.feed.getFeedGenerators({ feeds });
+      set({ preferences: res.data.preferences, savedFeeds: feedResponse.data.feeds });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }

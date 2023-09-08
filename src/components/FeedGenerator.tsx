@@ -34,10 +34,7 @@ export const FeedGenerator = (props: Props) => {
     }
   }, [props, navigate, location]);
 
-  const { isSaved, isPinned, onToggleLike, onToggleSave, onTogglePin, onShare } = useFeedGenerator(
-    props.feed,
-    props.preferences
-  );
+  const { isSaved, isPinned, onToggleLike, onToggleSave, onTogglePin, onShare } = useFeedGenerator();
 
   return (
     <Card>
@@ -81,20 +78,28 @@ export const FeedGenerator = (props: Props) => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleSave();
+                  onToggleSave(props.feed, props.preferences);
                 }}
               >
-                {isSaved ? <RssFeedRoundedIcon /> : <RssFeedRoundedIcon color="disabled" />}
+                {isSaved(props.feed, props.preferences) ? (
+                  <RssFeedRoundedIcon />
+                ) : (
+                  <RssFeedRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onTogglePin();
+                  onTogglePin(props.feed, props.preferences);
                 }}
               >
-                {isPinned ? <PushPinRoundedIcon /> : <PushPinRoundedIcon color="disabled" />}
+                {isPinned(props.feed, props.preferences) ? (
+                  <PushPinRoundedIcon />
+                ) : (
+                  <PushPinRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"

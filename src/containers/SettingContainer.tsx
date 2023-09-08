@@ -23,6 +23,7 @@ import DialogHandle from "@/components/DialogHandle";
 import DialogInviteCodes from "@/components/DialogInviteCodes";
 import DialogPasswords from "@/components/DialogPasswords";
 import DialogContentFilter from "@/components/DialogContentFilter";
+import DialogFeed from "@/components/DialogFeed";
 import useMe from "@/hooks/useMe";
 import useAuthentication from "@/hooks/useAuthentication";
 import useDialog from "@/hooks/useDialog";
@@ -30,6 +31,7 @@ import useDialog from "@/hooks/useDialog";
 export const Settings = () => {
   const me = useMe();
   const preferences = useStore((state) => state.preferences);
+  const savedFeeds = useStore((state) => state.savedFeeds);
   const inviteCodes = useStore((state) => state.inviteCodes);
   const appPasswords = useStore((state) => state.appPasswords);
   const { onLogout } = useAuthentication();
@@ -40,6 +42,7 @@ export const Settings = () => {
   const [isOpenCode, openCodeDialog, closeCodeDialog] = useDialog();
   const [isOpenPassword, openPasswordDialog, closePasswordDialog] = useDialog();
   const [isOpenFilter, openFilterDialog, closeFilterDialog] = useDialog();
+  const [isOpenFeed, openFeedDialog, closeFeedDialog] = useDialog();
 
   if (_.isEmpty(preferences) || _.isEmpty(inviteCodes) || _.isEmpty(appPasswords)) {
     throw Promise.all([getPreferences(), getInviteCodes(), listAppPasswords()]);
@@ -50,7 +53,7 @@ export const Settings = () => {
   ];
   const menu = [
     { name: "appPassword", label: "Add Password", icon: <KeyRoundedIcon />, onClick: openPasswordDialog },
-    { name: "savedFeed", label: "Saved Feed", icon: <RssFeedRoundedIcon />, onClick: () => {} },
+    { name: "savedFeed", label: "Saved Feed", icon: <RssFeedRoundedIcon />, onClick: openFeedDialog },
     { name: "deck", label: "Home Customize", icon: <ViewComfyRoundedIcon />, onClick: () => {} },
     { name: "changeHandle", label: "Change Handle", icon: <AlternateEmailIcon />, onClick: openHandleDialog },
   ];
@@ -113,6 +116,7 @@ export const Settings = () => {
       <DialogInviteCodes open={isOpenCode} onClose={closeCodeDialog} inviteCodes={inviteCodes} />
       <DialogPasswords open={isOpenPassword} onClose={closePasswordDialog} passwords={appPasswords} />
       <DialogContentFilter open={isOpenFilter} onClose={closeFilterDialog} preferences={preferences} />
+      <DialogFeed open={isOpenFeed} onClose={closeFeedDialog} feeds={savedFeeds} preferences={preferences} />
     </>
   );
 };

@@ -55,7 +55,7 @@ export const Feed = (props: Props) => {
     navigate(uri);
   }, [props, navigate]);
 
-  const { isSaved, isPinned, onToggleSave, onTogglePin } = useFeedGenerator(props.feed, props.preferences);
+  const { isSaved, isPinned, onToggleSave, onTogglePin } = useFeedGenerator();
 
   return (
     <FeedAccordion sx={{ borderRadius: 3 }} onChange={onChangeFeed} expanded={props.expanded}>
@@ -89,20 +89,28 @@ export const Feed = (props: Props) => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleSave();
+                  onToggleSave(props.feed, props.preferences);
                 }}
               >
-                {isSaved ? <RssFeedRoundedIcon /> : <RssFeedRoundedIcon color="disabled" />}
+                {isSaved(props.feed, props.preferences) ? (
+                  <RssFeedRoundedIcon />
+                ) : (
+                  <RssFeedRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onTogglePin();
+                  onTogglePin(props.feed, props.preferences);
                 }}
               >
-                {isPinned ? <PushPinRoundedIcon /> : <PushPinRoundedIcon color="disabled" />}
+                {isPinned(props.feed, props.preferences) ? (
+                  <PushPinRoundedIcon />
+                ) : (
+                  <PushPinRoundedIcon color="disabled" />
+                )}
               </IconButton>
             </Stack>
           </Stack>
