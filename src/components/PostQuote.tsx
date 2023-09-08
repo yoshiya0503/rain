@@ -28,7 +28,7 @@ type Props = {
 
 export const PostQuote = (props: Props) => {
   const { onViewThread } = usePost();
-  const { locale } = useLocale();
+  const { fromNow } = useLocale();
 
   return (
     <Card variant="outlined" sx={{ borderRadius: 3 }}>
@@ -44,7 +44,7 @@ export const PostQuote = (props: Props) => {
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
               <ProfileHeader profile={props.record.author} size="small" />
               <Typography color={grey[500]} variant="caption">
-                {locale(props.record.indexedAt)}
+                {fromNow(props.record.indexedAt)}
               </Typography>
             </Stack>
             <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">

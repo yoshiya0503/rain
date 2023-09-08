@@ -16,7 +16,7 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
-// import GTranslateRoundedIcon from "@mui/icons-material/GTranslateRounded";
+import ViewComfyRoundedIcon from "@mui/icons-material/ViewComfyRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import ProfileHeader from "@/components/ProfileHeader";
 import DialogHandle from "@/components/DialogHandle";
@@ -51,7 +51,7 @@ export const Settings = () => {
   const menu = [
     { name: "appPassword", label: "Add Password", icon: <KeyRoundedIcon />, onClick: openPasswordDialog },
     { name: "savedFeed", label: "Saved Feed", icon: <RssFeedRoundedIcon />, onClick: () => {} },
-    // { name: "contentLanguage", label: "Content Language", icon: <GTranslateRoundedIcon />, onClick: () => {} },
+    { name: "deck", label: "Home Customize", icon: <ViewComfyRoundedIcon />, onClick: () => {} },
     { name: "changeHandle", label: "Change Handle", icon: <AlternateEmailIcon />, onClick: openHandleDialog },
   ];
 

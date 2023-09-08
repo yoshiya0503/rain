@@ -19,7 +19,7 @@ import useLocale from "@/hooks/useLocale";
 import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyEmbedImages, AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
-  me: AppBskyActorDefs.ProfileView;
+  me?: AppBskyActorDefs.ProfileView;
   post: AppBskyFeedDefs.PostView;
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
@@ -32,9 +32,9 @@ type Props = {
 // TODO mute threads
 export const Post = (props: Props) => {
   const { onDeletePost, onShare, onViewThread } = usePost();
-  const { locale } = useLocale();
+  const { fromNow } = useLocale();
 
-  const isMe = props.me.did === props.post.author.did;
+  const isMe = props.me?.did === props.post.author.did;
   const menuItems = isMe
     ? [
         {
@@ -111,7 +111,7 @@ export const Post = (props: Props) => {
           <ProfileHeader profile={props.post.author} disableAvatar />
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {locale(props.post.indexedAt)}
+              {fromNow(props.post.indexedAt)}
             </Typography>
             <DropDownMenu items={menuItems} />
           </Stack>

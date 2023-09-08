@@ -35,7 +35,6 @@ export const useFeedGenerator = (feed: AppBskyFeedDefs.GeneratorView, preference
   const onToggleSave = useCallback(() => {
     if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
     const update = _.map(preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
       if (isSaved) return { ...p, saved: _.reject(feedPref.saved, (uri) => uri === feed.uri) };
       return { ...p, saved: _.concat(feedPref.saved, feed.uri) };
     });
@@ -45,7 +44,6 @@ export const useFeedGenerator = (feed: AppBskyFeedDefs.GeneratorView, preference
   const onTogglePin = useCallback(() => {
     if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
     const update = _.map(preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
       if (isPinned) return { ...p, pinned: _.reject(feedPref.pinned, (uri) => uri === feed.uri) };
       return { ...p, pinned: _.concat(feedPref.pinned, feed.uri) };
     });

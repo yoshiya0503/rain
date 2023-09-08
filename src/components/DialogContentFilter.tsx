@@ -1,8 +1,6 @@
 import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
-import Box from "@mui/material/Box";
-import { grey } from "@mui/material/colors";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -14,6 +12,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import { AppBskyActorDefs } from "@atproto/api";
 
@@ -88,16 +89,12 @@ export const DialogContentFilter = (props: Props) => {
             Enable Sexual Content
           </Stack>
         </DialogContentText>
-        {_.map(contentLabelPref, (pref: AppBskyActorDefs.ContentLabelPref) => (
-          <Box key={pref.label}>
-            <Box sx={{ mt: 1, mb: 1 }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Stack>
-                  <Typography variant="body2">{_.get(label, pref.label).title}</Typography>
-                  <Typography variant="caption" color={grey[400]}>
-                    {_.get(label, pref.label).description}
-                  </Typography>
-                </Stack>
+        <List>
+          {_.map(contentLabelPref, (pref: AppBskyActorDefs.ContentLabelPref) => (
+            <ListItem
+              key={pref.label}
+              divider
+              secondaryAction={
                 <ToggleButtonGroup
                   color="primary"
                   size="small"
@@ -121,11 +118,12 @@ export const DialogContentFilter = (props: Props) => {
                     </Typography>
                   </ToggleButton>
                 </ToggleButtonGroup>
-              </Stack>
-            </Box>
-            <Divider flexItem />
-          </Box>
-        ))}
+              }
+            >
+              <ListItemText primary={_.get(label, pref.label).title} secondary={_.get(label, pref.label).description} />
+            </ListItem>
+          ))}
+        </List>
       </DialogContent>
       <Divider />
       <DialogActions sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

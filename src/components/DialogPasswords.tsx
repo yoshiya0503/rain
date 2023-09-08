@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { useCallback, useState } from "react";
 import { useStore } from "@/stores";
-import { grey } from "@mui/material/colors";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -18,6 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+import useLocale from "@/hooks/useLocale";
 
 type Props = {
   passwords: { name: string; createdAt: string }[];
@@ -27,6 +27,7 @@ type Props = {
 };
 
 export const DialogInviteCodes = (props: Props) => {
+  const { locale } = useLocale();
   const [password, setPassword] = useState<string>("");
   const [created, setCreated] = useState<string>("");
   const createAppPassword = useStore((state) => state.createAppPassword);
@@ -91,14 +92,7 @@ export const DialogInviteCodes = (props: Props) => {
                 </IconButton>
               }
             >
-              <ListItemText
-                primary={<Typography sx={{ fontWeight: 600 }}>{password.name}</Typography>}
-                secondary={
-                  <Typography variant="caption" color={grey[400]}>
-                    {password.createdAt}
-                  </Typography>
-                }
-              />
+              <ListItemText primary={password.name} secondary={locale(password.createdAt)} />
             </ListItem>
           ))}
         </List>

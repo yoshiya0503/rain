@@ -12,13 +12,13 @@ type Props = {
 };
 
 export const FeedBrief = (props: Props) => {
-  const { locale } = useLocale();
+  const { fromNow } = useLocale();
   return (
     <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
         <ProfileHeader profile={props.brief.author} size="small" />
         <Typography color={grey[500]} variant="caption">
-          {locale(props.brief.indexedAt)}
+          {fromNow(props.brief.indexedAt)}
         </Typography>
       </Stack>
       <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">

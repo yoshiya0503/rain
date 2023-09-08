@@ -32,7 +32,7 @@ type Props = {
 
 export const Post = (props: Props) => {
   const { onShare, onViewThread } = usePost();
-  const { locale } = useLocale();
+  const { fromNow } = useLocale();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
   // TODO 通知画面から通報する機能
 
@@ -89,7 +89,7 @@ export const Post = (props: Props) => {
           </Stack>
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {locale(props.notification.indexedAt)}
+              {fromNow(props.notification.indexedAt)}
             </Typography>
             {_.includes(["reply", "quote", "mention"], props.notification.reason) && <DropDownMenu items={menuItems} />}
           </Stack>
