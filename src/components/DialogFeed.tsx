@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { useCallback } from "react";
+import { useStore } from "@/stores";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
@@ -27,13 +28,15 @@ type Props = {
 };
 
 export const DialogFeed = (props: Props) => {
+  const updateSavedFeedViewer = useStore((state) => state.updateSavedFeedViewer);
   const { isPinned, onToggleSave, onTogglePin } = useFeedGenerator();
 
   const onDelete = useCallback(
     (feed: AppBskyFeedDefs.GeneratorView) => async () => {
       onToggleSave(feed, props.preferences);
+      updateSavedFeedViewer(feed)
     },
-    [props, onToggleSave]
+    [props, onToggleSave, updateSavedFeedViewer]
   );
 
   return (

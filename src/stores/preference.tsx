@@ -17,6 +17,7 @@ export interface PreferenceSlice {
   listAppPasswords: () => Promise<void>;
   createAppPassword: (name: string) => Promise<string | void>;
   deleteAppPassword: (name: string) => Promise<void>;
+  updateSavedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => void;
 }
 
 export const createPreferenceSlice: StateCreator<
@@ -86,5 +87,9 @@ export const createPreferenceSlice: StateCreator<
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to revoke app passwords" }, e);
     }
+  },
+  updateSavedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => {
+    const savedFeeds = _.reject(get().savedFeeds, (f) => f.cid === feed.cid);
+    set({ savedFeeds });
   },
 });
