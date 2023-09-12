@@ -1,6 +1,11 @@
 import _ from "lodash";
 import { useNavigate, useLocation } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import Paper from "@mui/material/Paper";
+import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -20,7 +25,11 @@ import useMe from "@/hooks/useMe";
 import useRealtime from "@/hooks/useRealtime";
 import useDialog from "@/hooks/useDialog";
 
-export const SideMenu = () => {
+type Props = {
+  type?: "drawer" | "paper";
+};
+
+export const SideMenu = (props: Props) => {
   const me = useMe();
   const { unreadCount, unreadTimeline } = useRealtime();
   const navigate = useNavigate();
@@ -58,31 +67,79 @@ export const SideMenu = () => {
     }
   };
 
+  if (props.type === "drawer") {
+    const DRAWER_WIDTH = 72;
+    return (
+      <Drawer
+        component="nav"
+        sx={{
+          width: DRAWER_WIDTH,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: DRAWER_WIDTH,
+            overflow: "hidden",
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <List>
+          <ListItem>
+            <Avatar
+              alt={me.displayName}
+              src={me.avatar}
+              onClick={(e) => {
+                e.stopPropagation();
+                const uri = `/profile/${me.handle}`;
+                if (location.pathname !== uri) {
+                  navigate(uri);
+                }
+              }}
+            />
+          </ListItem>
+          {_.map(menus, (menu, key) => (
+            <ListItem key={key} onClick={onClickMenu(menu.href)}>
+              <IconButton>{menu.icon}</IconButton>
+            </ListItem>
+          ))}
+          <ListItem>
+            <Fab color="primary" onClick={openPostDialog} size="small">
+              <Create />
+            </Fab>
+            <DialogPost title="Post" open={isOpen} onClose={closePostDialog} />
+          </ListItem>
+        </List>
+      </Drawer>
+    );
+  }
+
   return (
-    <List>
-      <ListItem>
-        <ProfileHeader profile={me} size="large" />
-      </ListItem>
-      {_.map(menus, (menu, key) => (
-        <ListItem key={key} onClick={onClickMenu(menu.href)} disablePadding>
-          <ListItemButton sx={{ borderRadius: 6 }}>
-            <ListItemIcon>{menu.icon}</ListItemIcon>
-            <ListItemText primary={menu.name} />
-          </ListItemButton>
+    <Paper component="nav" variant="outlined" sx={{ width: 240, height: 540, borderRadius: 3 }}>
+      <List>
+        <ListItem>
+          <ProfileHeader profile={me} size="large" />
         </ListItem>
-      ))}
-      <ListItem>
-        <Button
-          sx={{ width: "100%", borderRadius: 6, fontWeight: 600 }}
-          variant="contained"
-          startIcon={<Create />}
-          onClick={openPostDialog}
-        >
-          New Post
-        </Button>
-        <DialogPost title="Post" open={isOpen} onClose={closePostDialog} />
-      </ListItem>
-    </List>
+        {_.map(menus, (menu, key) => (
+          <ListItem key={key} onClick={onClickMenu(menu.href)}>
+            <ListItemButton sx={{ borderRadius: 6 }}>
+              <ListItemIcon>{menu.icon}</ListItemIcon>
+              <ListItemText primary={menu.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        <ListItem>
+          <Button
+            sx={{ width: "100%", borderRadius: 6, fontWeight: 600 }}
+            variant="contained"
+            startIcon={<Create />}
+            onClick={openPostDialog}
+          >
+            New Post
+          </Button>
+          <DialogPost title="Post" open={isOpen} onClose={closePostDialog} />
+        </ListItem>
+      </List>
+    </Paper>
   );
 };
 

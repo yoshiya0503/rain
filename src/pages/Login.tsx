@@ -14,6 +14,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Stack from "@mui/material/Stack";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import KeyRoundedIcon from "@mui/icons-material/KeyRounded";
+import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
 import CenterLayout from "@/templates/CenterLayout";
 import useAuthentication from "@/hooks/useAuthentication";
 
@@ -30,7 +31,10 @@ export const Login = () => {
   return (
     <CenterLayout>
       <Card sx={{ minWidth: 480, minHeight: 480, width: "30vw", height: "60vh", p: 3 }} variant="outlined">
-        <CardHeader title="RAIN" />
+        <CardHeader
+          title={<Typography variant="h5">RAIN</Typography>}
+          avatar={<WaterDropOutlinedIcon color="primary" sx={{ fontSize: 32 }} />}
+        />
         <CardContent>
           <Stack direction="column" spacing={1}>
             <Box>
