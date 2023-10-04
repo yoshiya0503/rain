@@ -11,10 +11,11 @@ import ListItemText from "@mui/material/ListItemText";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from "@mui/material/DialogContentText";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 
 type Props = {
-  inviteCodes: { used: boolean; code: string }[];
+  inviteCodes: { used: boolean; code: string }[] | null;
   open: boolean;
   onClose: () => void;
   onSend?: () => void;
@@ -30,6 +31,12 @@ export const DialogInviteCodes = (props: Props) => {
   return (
     <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <DialogTitle>Invite Your Friends</DialogTitle>
+      {_.isEmpty(props.inviteCodes) && (
+        <DialogContent>
+          <DialogContentText>No invite codes available...</DialogContentText>
+          <DialogContentText>If you want to check invite codes, you can not use app password.</DialogContentText>
+        </DialogContent>
+      )}
       <DialogContent>
         <List>
           {_.map(props.inviteCodes, (code) => (

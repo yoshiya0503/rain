@@ -3,6 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import SideMenu from "@/components/SideMenu";
+import SideBar from "@/components/SideBar";
 import MenuTemplate from "@/templates/MenuTemplate";
 import Message from "@/components/Message";
 import NotificationsContainer from "@/containers/NotificationsContainer";
@@ -13,6 +14,7 @@ type Props = {
   children: ReactNode;
 };
 
+/*
 export const Layout = (props: Props) => {
   const query = useQuery();
   const keyword = query.get("q") || "";
@@ -45,8 +47,8 @@ export const Layout = (props: Props) => {
     </Container>
   );
 };
+*/
 
-/*
 export const Layout = (props: Props) => {
   return (
     <Container sx={{ p: 2 }}>
@@ -61,11 +63,15 @@ export const Layout = (props: Props) => {
             {props.children}
           </Stack>
         </Grid>
+        <Grid>
+          <Suspense fallback={<MenuTemplate />}>
+            <SideBar />
+          </Suspense>
+        </Grid>
       </Grid>
       <Message />
     </Container>
   );
 };
-*/
 
 export default Layout;

@@ -2,12 +2,15 @@ import _ from "lodash";
 import { useCallback } from "react";
 import { useStore } from "@/stores";
 import { AppBskyFeedDefs, AppBskyActorDefs } from "@atproto/api";
+// TODO feedのpinのtoggleがサイドパネルで更新されてない
 
 export const useFeedGenerator = () => {
   const like = useStore((state) => state.like);
   const deleteLike = useStore((state) => state.deleteLike);
   const updatePreferences = useStore((state) => state.updatePreferences);
   const updateFeedViewer = useStore((state) => state.updateFeedViewer);
+  const updateSavedFeedViewer = useStore((state) => state.updateSavedFeedViewer);
+  const updatePinnedFeedViewer = useStore((state) => state.updatePinnedFeedViewer);
 
   const updateViewer = useCallback(
     (f: AppBskyFeedDefs.GeneratorView, resourceURI?: string) => {
@@ -49,8 +52,9 @@ export const useFeedGenerator = () => {
         return p;
       });
       updatePreferences(update);
+      updateSavedFeedViewer(feed);
     },
-    [updatePreferences]
+    [updatePreferences, updateSavedFeedViewer]
   );
 
   const onTogglePin = useCallback(
@@ -64,8 +68,9 @@ export const useFeedGenerator = () => {
         return p;
       });
       updatePreferences(update);
+      updatePinnedFeedViewer(feed);
     },
-    [updatePreferences]
+    [updatePreferences, updatePinnedFeedViewer]
   );
 
   const onLike = useCallback(

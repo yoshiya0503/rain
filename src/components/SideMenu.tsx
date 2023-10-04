@@ -14,7 +14,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Badge from "@mui/material/Badge";
 import Home from "@mui/icons-material/HomeRounded";
 import Search from "@mui/icons-material/SearchRounded";
-import Feed from "@mui/icons-material/FeedRounded";
+import Tag from "@mui/icons-material/TagRounded";
 import Notifications from "@mui/icons-material/NotificationsRounded";
 import AccountCircle from "@mui/icons-material/AccountCircleRounded";
 import Settings from "@mui/icons-material/SettingsRounded";
@@ -47,7 +47,7 @@ export const SideMenu = (props: Props) => {
       href: "/",
     },
     { name: "Search", icon: <Search />, href: "/search" },
-    { name: "Feeds", icon: <Feed />, href: "/feeds" },
+    { name: "Feeds", icon: <Tag />, href: "/feeds" },
     {
       name: "Notifications",
       icon: (

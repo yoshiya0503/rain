@@ -10,9 +10,11 @@ export interface ActorSlice {
   actor?: AppBskyActorDefs.ProfileViewDetailed;
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
   authorCursor: string;
+  suggestions?: AppBskyActorDefs.ProfileViewDetailed[];
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
+  getSuggestions: () => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
 }
@@ -25,6 +27,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
   me: undefined,
   authorCursor: "",
   authorFeed: [],
+  suggestions: undefined,
   getMe: async () => {
     try {
       const session = get().session;
@@ -54,6 +57,14 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       }
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
+    }
+  },
+  getSuggestions: async () => {
+    try {
+      const res = await agent.getSuggestions();
+      set({ suggestions: res.data.actors });
+    } catch (e) {
+      get().createFailedMessage({ status: "error", description: "failed fetch suggestions" }, e);
     }
   },
   updateProfile: async (record: AppBskyActorProfile.Record) => {
