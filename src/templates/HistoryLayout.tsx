@@ -8,7 +8,6 @@ import Search from "@/components/Search";
 type Props = {
   children: ReactNode;
   search?: boolean;
-  keyword?: string;
 };
 
 // TODO コンテンツの上じゃなくて横のほうがいいかもしれない
@@ -21,7 +20,7 @@ export const HistoryLayout = (props: Props) => {
         <IconButton size="small" color="primary" onClick={() => navigate(-1)}>
           <ArrowBackIosNewRoundedIcon fontSize="inherit" />
         </IconButton>
-        {props.search && <Search keyword={props.keyword} />}
+        {props.search && <Search />}
       </Stack>
       {props.children}
     </>
