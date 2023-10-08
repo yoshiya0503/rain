@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import SideMenu from "@/components/SideMenu";
 import SideBar from "@/components/SideBar";
 import MenuTemplate from "@/templates/MenuTemplate";
-import SideBarTemplate from "@/templates/SidebarTemplate";
+import SideBarTemplate from "@/templates/SideBarTemplate";
 import Message from "@/components/Message";
 import NotificationsContainer from "@/containers/NotificationsContainer";
 import FeedsContainer from "@/containers/FeedsContainer";
