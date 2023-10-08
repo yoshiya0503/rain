@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
@@ -12,17 +12,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
-import Search from "@mui/icons-material/SearchRounded";
 import useSuggestion from "@/hooks/useSuggestion";
 import usePreference from "@/hooks/usePreference";
+import Search from "@/components/Search";
 import { AppBskyActorDefs, AppBskyFeedDefs } from "@atproto/api";
 // TODO フォローボタン
-// TODO pinが更新されたときに、feedの表示を変えたい
 
 export const SideBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const suggestions = useSuggestion();
-  const { pinnedFeeds } = usePreference();
+  const { preferences, savedFeeds } = usePreference();
+
+  const feedPref = _.find(preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
+  const pinned = (AppBskyActorDefs.isSavedFeedsPref(feedPref) && feedPref?.pinned) || [];
+  const pinnedFeeds = _.filter(savedFeeds, (f) => _.includes(pinned, f.uri));
 
   const onViewFeedGenerator = useCallback(
     (feed: AppBskyFeedDefs.GeneratorView) => () => {
@@ -39,13 +43,14 @@ export const SideBar = () => {
         navigate(uri);
       }
     },
-    [navigate]
+    [navigate, location]
   );
 
   const actors = _.take(suggestions, 3);
 
   return (
     <Stack spacing={2}>
+      <Search />
       <Paper component="nav" variant="outlined" sx={{ width: 360, maxheight: 300, borderRadius: 3 }}>
         <List>
           <ListItem>

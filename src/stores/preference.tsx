@@ -11,15 +11,12 @@ export interface PreferenceSlice {
   appPasswords?: { name: string; createdAt: string }[];
   createdHash: string;
   savedFeeds: AppBskyFeedDefs.GeneratorView[];
-  pinnedFeeds: AppBskyFeedDefs.GeneratorView[];
   getPreferences: () => Promise<void>;
   updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
   getInviteCodes: () => Promise<void>;
   listAppPasswords: () => Promise<void>;
   createAppPassword: (name: string) => Promise<string | void>;
   deleteAppPassword: (name: string) => Promise<void>;
-  updateSavedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => void;
-  updatePinnedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => void;
 }
 
 export const createPreferenceSlice: StateCreator<
@@ -32,17 +29,14 @@ export const createPreferenceSlice: StateCreator<
   inviteCodes: undefined,
   appPasswords: undefined,
   savedFeeds: [],
-  pinnedFeeds: [],
   createdHash: "",
   getPreferences: async () => {
     try {
       const res = await agent.api.app.bsky.actor.getPreferences();
       const feedPref = _.find(res.data.preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
       const saved = (AppBskyActorDefs.isSavedFeedsPref(feedPref) && feedPref?.saved) || [];
-      const pinned = (AppBskyActorDefs.isSavedFeedsPref(feedPref) && feedPref?.pinned) || [];
       const feedResponse = await agent.api.app.bsky.feed.getFeedGenerators({ feeds: saved });
-      const pinnedFeeds = _.filter(feedResponse.data.feeds, (f) => _.includes(pinned, f.uri));
-      set({ preferences: res.data.preferences, savedFeeds: feedResponse.data.feeds, pinnedFeeds });
+      set({ preferences: res.data.preferences, savedFeeds: feedResponse.data.feeds });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
@@ -50,7 +44,7 @@ export const createPreferenceSlice: StateCreator<
   updatePreferences: async (preferences: AppBskyActorDefs.Preferences) => {
     try {
       await agent.api.app.bsky.actor.putPreferences({ preferences });
-      set({ preferences: preferences });
+      set({ preferences });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
@@ -93,13 +87,5 @@ export const createPreferenceSlice: StateCreator<
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to revoke app passwords" }, e);
     }
-  },
-  updateSavedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => {
-    const savedFeeds = _.reject(get().savedFeeds, (f) => f.cid === feed.cid);
-    set({ savedFeeds });
-  },
-  updatePinnedFeedViewer: (feed: AppBskyFeedDefs.GeneratorView) => {
-    const pinnedFeeds = _.reject(get().pinnedFeeds, (f) => f.cid === feed.cid);
-    set({ pinnedFeeds });
   },
 });
