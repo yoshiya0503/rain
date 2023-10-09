@@ -17,6 +17,7 @@ export interface ActorSlice {
   getSuggestions: () => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
+  updateSuggestionViewer: (actor: string) => void;
 }
 
 export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionSlice, [], [], ActorSlice> = (
@@ -96,5 +97,9 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       return f;
     });
     set({ authorFeed });
+  },
+  updateSuggestionViewer: (actor: string) => {
+    const suggestions = _.reject(get().suggestions, (suggest) => suggest.did === actor);
+    set({ suggestions });
   },
 });

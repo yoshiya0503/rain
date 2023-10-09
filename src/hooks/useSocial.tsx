@@ -12,6 +12,7 @@ export const useSocial = () => {
   const mute = useStore((state) => state.mute);
   const unmute = useStore((state) => state.unmute);
   const updateFollowViewer = useStore((state) => state.updateFollowViwer);
+  const updateSuggestionViewer = useStore((state) => state.updateSuggestionViewer);
   // TODO フォロー画面の更新
 
   const onFollow = useCallback(
@@ -19,8 +20,9 @@ export const useSocial = () => {
       await follow(actor.did);
       await getProfile(actor.handle);
       // updateFollowViewer(actor, "followers");
+      updateSuggestionViewer(actor.did);
     },
-    [follow, getProfile, updateFollowViewer]
+    [follow, getProfile, updateFollowViewer, updateSuggestionViewer]
   );
 
   const onUnFollow = useCallback(

@@ -12,9 +12,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
+import Search from "@/components/Search";
 import useSuggestion from "@/hooks/useSuggestion";
 import usePreference from "@/hooks/usePreference";
-import Search from "@/components/Search";
+import useSocial from "@/hooks/useSocial";
 import { AppBskyActorDefs, AppBskyFeedDefs } from "@atproto/api";
 // TODO フォローボタン
 
@@ -23,6 +24,7 @@ export const SideBar = () => {
   const location = useLocation();
   const suggestions = useSuggestion();
   const { preferences, savedFeeds } = usePreference();
+  const { onFollow } = useSocial();
 
   const feedPref = _.find(preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
   const pinned = (AppBskyActorDefs.isSavedFeedsPref(feedPref) && feedPref?.pinned) || [];
@@ -46,13 +48,13 @@ export const SideBar = () => {
     [navigate, location]
   );
 
-  const actors = _.take(suggestions, 3);
+  const actors = _.take(suggestions, 4);
 
   return (
     <Stack spacing={2}>
       <Search />
       <Paper component="nav" variant="outlined" sx={{ width: 360, maxheight: 300, borderRadius: 3 }}>
-        <List>
+        <List dense>
           <ListItem>
             <Typography sx={{ fontWeight: 600 }}>Feeds</Typography>
           </ListItem>
@@ -63,23 +65,34 @@ export const SideBar = () => {
                 <ListItemAvatar>
                   <Avatar sx={{ width: 32, height: 32 }} alt={feed.avatar} src={feed.avatar} variant="rounded" />
                 </ListItemAvatar>
-                <ListItemText primary={feed.displayName} />
+                <ListItemText primary={feed.displayName} secondary={`by @${feed.creator.handle}`} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Paper>
       <Paper component="nav" variant="outlined" sx={{ width: 360, height: 280, borderRadius: 3 }}>
-        <List>
+        <List dense>
           <ListItem>
             <Typography sx={{ fontWeight: 600 }}>Suggested Follows</Typography>
           </ListItem>
           <Divider />
+          {_.isEmpty(actors) && (
+            <ListItem>
+              <Typography sx={{ fontWeight: 600 }} color="gray">
+                No Suggestions, Please Reload The Page
+              </Typography>
+            </ListItem>
+          )}
           {_.map(actors, (actor, key) => (
             <ListItem
               key={key}
               secondaryAction={
-                <Button sx={{ width: "100%", borderRadius: 6, fontWeight: 600 }} variant="contained">
+                <Button
+                  sx={{ width: "100%", borderRadius: 6, fontWeight: 600 }}
+                  variant="contained"
+                  onClick={() => onFollow(actor)}
+                >
                   Follow
                 </Button>
               }
