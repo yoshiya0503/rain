@@ -10,14 +10,14 @@ export interface ActorSlice {
   actor?: AppBskyActorDefs.ProfileViewDetailed;
   authorFeed: AppBskyFeedDefs.FeedViewPost[];
   authorCursor: string;
-  preferences: AppBskyActorDefs.Preferences;
+  suggestions?: AppBskyActorDefs.ProfileViewDetailed[];
   getMe: () => Promise<void>;
   getProfile: (actor: string) => Promise<void>;
   getAuthorFeed: (actor: string, isReset: boolean) => Promise<void>;
-  getPreferences: () => Promise<void>;
-  updatePreferences: (preferences: AppBskyActorDefs.Preferences) => Promise<void>;
+  getSuggestions: () => Promise<void>;
   updateProfile: (record: AppBskyActorProfile.Record) => Promise<void>;
   updateAuthorFeedViewer: (post: AppBskyFeedDefs.PostView) => void;
+  updateSuggestionViewer: (actor: string) => void;
 }
 
 export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionSlice, [], [], ActorSlice> = (
@@ -28,7 +28,7 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
   me: undefined,
   authorCursor: "",
   authorFeed: [],
-  preferences: [],
+  suggestions: undefined,
   getMe: async () => {
     try {
       const session = get().session;
@@ -60,20 +60,12 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }
   },
-  getPreferences: async () => {
+  getSuggestions: async () => {
     try {
-      const res = await agent.api.app.bsky.actor.getPreferences();
-      set({ preferences: res.data.preferences });
+      const res = await agent.getSuggestions();
+      set({ suggestions: res.data.actors });
     } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
-    }
-  },
-  updatePreferences: async (preferences: AppBskyActorDefs.Preferences) => {
-    try {
-      await agent.api.app.bsky.actor.putPreferences({ preferences });
-      set({ preferences: preferences });
-    } catch (e) {
-      get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
+      get().createFailedMessage({ status: "error", description: "failed fetch suggestions" }, e);
     }
   },
   updateProfile: async (record: AppBskyActorProfile.Record) => {
@@ -105,5 +97,9 @@ export const createActorSlice: StateCreator<ActorSlice & MessageSlice & SessionS
       return f;
     });
     set({ authorFeed });
+  },
+  updateSuggestionViewer: (actor: string) => {
+    const suggestions = _.reject(get().suggestions, (suggest) => suggest.did === actor);
+    set({ suggestions });
   },
 });

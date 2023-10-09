@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -19,6 +19,7 @@ import ShareIcon from "@mui/icons-material/ShareRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
 import DropDownMenu from "@/components/DropDownMenu";
 import DialogProfile from "@/components/DialogProfile";
+import DialogReport from "@/components/DialogReport";
 import Text from "@/components/Text";
 import useSocial from "@/hooks/useSocial";
 import useDialog from "@/hooks/useDialog";
@@ -26,7 +27,6 @@ import useMe from "@/hooks/useMe";
 import { AppBskyActorDefs } from "@atproto/api";
 
 // TODO Add to list
-// TODO moderation report
 type Props = {
   actor: AppBskyActorDefs.ProfileViewDetailed;
 };
@@ -34,8 +34,10 @@ type Props = {
 export const Profile = (props: Props) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
   const me = useMe();
-  const [isOpen, openProfileDialog, closeProfileDialog] = useDialog();
+  const [isOpenProfile, openProfileDialog, closeProfileDialog] = useDialog();
+  const [isOpenReport, openReportDialog, closeReportDialog] = useDialog();
   const { onFollow, onUnFollow, onMute, onUnMute, onBlock, onUnBlock, onShare } = useSocial();
 
   const onToggleFollow = useCallback(() => {
@@ -56,8 +58,10 @@ export const Profile = (props: Props) => {
 
   const onViewFollow = useCallback(() => {
     const uri = `/profile/${props.actor.handle}/follows`;
-    navigate(uri);
-  }, [props, navigate]);
+    if (location.pathname !== uri) {
+      navigate(uri);
+    }
+  }, [props, navigate, location]);
 
   const isMe = me.did === props.actor.did;
   const muteLabel = props.actor?.viewer?.muted ? "Unmute" : "Mute";
@@ -69,7 +73,7 @@ export const Profile = (props: Props) => {
         { name: "add_to_list", icon: <AddIcon />, label: "Add To List", action: onClickShare },
         { name: "mute", icon: <MuteIcon />, label: muteLabel, action: onToggleMute },
         { name: "block", icon: <BlockIcon />, label: blockLabel, action: onToggleBlock },
-        { name: "report", icon: <ReportIcon />, label: "Report", action: onToggleMute },
+        { name: "report", icon: <ReportIcon />, label: "Report", action: openReportDialog },
       ];
 
   return (
@@ -173,12 +177,13 @@ export const Profile = (props: Props) => {
               <Typography variant="caption">posts</Typography>
             </Stack>
           </Stack>
-          <Typography variant="caption">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Text>{props.actor.description}</Text>
           </Typography>
         </Stack>
       </CardContent>
-      <DialogProfile open={isOpen} onClose={closeProfileDialog} />
+      <DialogProfile open={isOpenProfile} onClose={closeProfileDialog} />
+      <DialogReport actor={props.actor} open={isOpenReport} onClose={closeReportDialog} />
     </Card>
   );
 };

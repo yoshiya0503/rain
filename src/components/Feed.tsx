@@ -18,6 +18,7 @@ import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import Text from "@/components/Text";
 import FeedBrief from "@/components/FeedBrief";
+import useFeedGenerator from "@/hooks/useFeedGenerator";
 import { AppBskyFeedDefs, AppBskyActorDefs } from "@atproto/api";
 
 const FeedAccordion = styled((props: AccordionProps) => <Accordion disableGutters elevation={0} square {...props} />)(
@@ -54,31 +55,7 @@ export const Feed = (props: Props) => {
     navigate(uri);
   }, [props, navigate]);
 
-  const feedPref = _.find(props.preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
-  const isSaved =
-    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.saved, (uri) => props.feed.uri === uri);
-  const isPinned =
-    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.pinned, (uri) => props.feed.uri === uri);
-
-  const onToggleSave = useCallback(() => {
-    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
-    const preferences = _.map(props.preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
-      if (isSaved) return { ...p, saved: _.reject(feedPref.saved, (uri) => uri === props.feed.uri) };
-      return { ...p, saved: _.concat(feedPref.saved, props.feed.uri) };
-    });
-    props.updatePreferences(preferences);
-  }, [props, feedPref, isSaved]);
-
-  const onTogglePin = useCallback(() => {
-    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
-    const preferences = _.map(props.preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
-      if (isPinned) return { ...p, pinned: _.reject(feedPref.pinned, (uri) => uri === props.feed.uri) };
-      return { ...p, pinned: _.concat(feedPref.pinned, props.feed.uri) };
-    });
-    props.updatePreferences(preferences);
-  }, [props, feedPref, isPinned]);
+  const { isSaved, isPinned, onToggleSave, onTogglePin } = useFeedGenerator();
 
   return (
     <FeedAccordion sx={{ borderRadius: 3 }} onChange={onChangeFeed} expanded={props.expanded}>
@@ -112,20 +89,28 @@ export const Feed = (props: Props) => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleSave();
+                  onToggleSave(props.feed, props.preferences);
                 }}
               >
-                {isSaved ? <RssFeedRoundedIcon /> : <RssFeedRoundedIcon color="disabled" />}
+                {isSaved(props.feed, props.preferences) ? (
+                  <RssFeedRoundedIcon />
+                ) : (
+                  <RssFeedRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onTogglePin();
+                  onTogglePin(props.feed, props.preferences);
                 }}
               >
-                {isPinned ? <PushPinRoundedIcon /> : <PushPinRoundedIcon color="disabled" />}
+                {isPinned(props.feed, props.preferences) ? (
+                  <PushPinRoundedIcon />
+                ) : (
+                  <PushPinRoundedIcon color="disabled" />
+                )}
               </IconButton>
             </Stack>
           </Stack>
@@ -133,7 +118,7 @@ export const Feed = (props: Props) => {
             <FavoriteIcon fontSize="small" sx={{ color: pink[400] }} />
             <Typography variant="body2">{props.feed.likeCount}</Typography>
           </Stack>
-          <Typography variant="caption">
+          <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">
             <Text>{props.feed.description}</Text>
           </Typography>
         </Stack>
@@ -147,7 +132,7 @@ export const Feed = (props: Props) => {
             </Box>
           ))
         ) : (
-          <LinearProgress />
+          <LinearProgress sx={{ borderRadius: 1 }} />
         )}
       </AccordionDetails>
     </FeedAccordion>

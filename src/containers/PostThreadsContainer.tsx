@@ -8,8 +8,10 @@ import CenterLayout from "@/templates/CenterLayout";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
+import DialogReport from "@/components/DialogReport";
 import NotFound from "@/components/NotFound";
 import useDialog from "@/hooks/useDialog";
+import useMe from "@/hooks/useMe";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 type Props = {
@@ -18,6 +20,7 @@ type Props = {
 };
 
 export const PostThreadsContainer = (props: Props) => {
+  const me = useMe();
   const thread = useStore((state) => state.thread);
   const threadSubject = useStore((state) => state.threadSubject);
   const threadParent = useStore((state) => state.threadParent);
@@ -26,6 +29,7 @@ export const PostThreadsContainer = (props: Props) => {
   const getPostThread = useStore((state) => state.getPostThread);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [isOpenImage, openImageDialog, closeImageDialog] = useDialog();
+  const [isOpenReport, openReportDialog, closeReportDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
   const [images, setImages] = useState<AppBskyEmbedImages.ViewImage[]>();
   const [type, setType] = useState<"reply" | "quote">();
@@ -54,6 +58,14 @@ export const PostThreadsContainer = (props: Props) => {
     [openImageDialog, setImages]
   );
 
+  const onOpenReport = useCallback(
+    (post: AppBskyFeedDefs.PostView) => {
+      setPost(post);
+      openReportDialog();
+    },
+    [openReportDialog, setPost]
+  );
+
   const title = type === "reply" ? "Reply" : "Quote";
 
   if (_.isEmpty(thread)) {
@@ -69,19 +81,36 @@ export const PostThreadsContainer = (props: Props) => {
     <ScrollLayout>
       <Box sx={{ mt: 1, mb: 1 }}>
         {_.map(threadParent, (item) => (
-          <Post key={item.cid} post={item} onOpenPost={onOpenPost} onOpenImage={onOpenImage} hasReply />
+          <Post
+            key={item.cid}
+            me={me}
+            post={item}
+            onOpenPost={onOpenPost}
+            onOpenImage={onOpenImage}
+            onOpenReport={onOpenReport}
+            hasReply
+          />
         ))}
-        <Post post={thread.post} onOpenPost={onOpenPost} onOpenImage={onOpenImage} showStats />
+        <Post
+          me={me}
+          post={thread.post}
+          onOpenPost={onOpenPost}
+          onOpenImage={onOpenImage}
+          onOpenReport={onOpenReport}
+          showStats
+        />
         <Divider />
       </Box>
       {_.map(threadReplies, (reply, key) => (
         <Box key={key} sx={{ mt: 1, mb: 1 }}>
           {_.map(reply, (item, index) => (
             <Post
+              me={me}
               key={item.cid}
               post={item}
               onOpenPost={onOpenPost}
               onOpenImage={onOpenImage}
+              onOpenReport={onOpenReport}
               hasReply={_.size(reply) - 1 !== index}
             />
           ))}
@@ -90,6 +119,7 @@ export const PostThreadsContainer = (props: Props) => {
       ))}
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
+      <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
     </ScrollLayout>
   );
 };

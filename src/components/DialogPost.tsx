@@ -16,7 +16,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternateRounded";
+import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
@@ -107,19 +107,11 @@ export const DialogPost = (props: Props) => {
   const isNotPostable = MAX_TEXT_LENGTH < text.length || !text.length;
 
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={onClean}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={props.onClose}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="primary" />
       </Backdrop>
-      <DialogTitle>
-        <Stack spacing={1} alignItems="flex-start">
-          {props.title}
-          <IconButton color="primary" component="label">
-            <AddPhotoAlternateIcon />
-            <input type="file" accept="image/*" multiple hidden onChange={onUpload} />
-          </IconButton>
-        </Stack>
-      </DialogTitle>
+      <DialogTitle>{props.title}</DialogTitle>
       <DialogContent>
         {props.post && props.type === "reply" && (
           <Box sx={{ p: 2, mt: 1, mb: 2, border: 1, borderRadius: 2, borderColor: grey[700] }}>
@@ -146,6 +138,26 @@ export const DialogPost = (props: Props) => {
                 <InputAdornment position="start">
                   <Stack alignSelf="flex-end">
                     <Avatar sx={{ width: 48, height: 48 }} src={me.avatar} />
+                  </Stack>
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Stack sx={{ mt: 3 }} direction="column" alignSelf="flex-start">
+                    <input
+                      id="file"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                      onChange={onUpload}
+                      onClick={(e) => {
+                        e.currentTarget.value = "";
+                      }}
+                    />
+                    <IconButton htmlFor="file" color="primary" component="label">
+                      <AttachFileRoundedIcon sx={{ transform: "rotate(45deg)" }} fontSize="small" />
+                    </IconButton>
                   </Stack>
                 </InputAdornment>
               ),

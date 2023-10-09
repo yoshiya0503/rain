@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
@@ -13,6 +13,7 @@ type Props = {
 
 export const ProfileHeader = (props: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   let sx = { width: 42, height: 42 };
   if (props.size === "small") {
@@ -33,7 +34,9 @@ export const ProfileHeader = (props: Props) => {
       onClick={(e) => {
         e.stopPropagation();
         const uri = `/profile/${props.profile.handle}`;
-        navigate(uri);
+        if (location.pathname !== uri) {
+          navigate(uri);
+        }
       }}
     >
       {!props.disableAvatar && <Avatar alt={props.profile.displayName} src={props.profile.avatar} sx={sx} />}

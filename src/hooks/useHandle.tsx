@@ -25,7 +25,11 @@ export const useHandle = () => {
     updateHandle(`${handle}.bsky.social`);
   }, [handle, updateHandle]);
 
-  return { handle, onChangeHandle, onUpdateHandle };
+  const onClearHandle = useCallback(() => {
+    setHandle("");
+  }, [setHandle]);
+
+  return { handle, onChangeHandle, onUpdateHandle, onClearHandle };
 };
 
 export default useHandle;

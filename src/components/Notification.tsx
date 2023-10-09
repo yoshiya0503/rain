@@ -1,13 +1,12 @@
 import _ from "lodash";
 import { useCallback } from "react";
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import MuteIcon from "@mui/icons-material/VolumeOff";
 import ShareIcon from "@mui/icons-material/Share";
+import ReportIcon from "@mui/icons-material/ReportRounded";
 import { grey } from "@mui/material/colors";
 import NotificationAvatars from "@/components/NotificationAvatars";
 import NotificationImages from "@/components/NotificationImages";
@@ -17,6 +16,7 @@ import PostActions from "@/components/PostActions";
 import Attachments from "@/components/Attachments";
 import Text from "@/components/Text";
 import usePost from "@/hooks/usePost";
+import useLocale from "@/hooks/useLocale";
 import { AppBskyActorDefs, AppBskyFeedDefs, AppBskyFeedPost, AppBskyNotificationListNotifications } from "@atproto/api";
 import { AppBskyEmbedImages } from "@atproto/api";
 
@@ -25,12 +25,14 @@ type Props = {
   otherAuthors: AppBskyActorDefs.ProfileView[];
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
+  onOpenReport?: (post: AppBskyFeedDefs.PostView) => void;
   reasonSubject?: AppBskyFeedDefs.PostView;
   reasonReply?: AppBskyFeedDefs.PostView;
 };
 
 export const Post = (props: Props) => {
   const { onShare, onViewThread } = usePost();
+  const { fromNow } = useLocale();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
 
   const menuItems = [
@@ -50,9 +52,16 @@ export const Post = (props: Props) => {
         console.log("mute");
       },
     },
+    {
+      name: "report",
+      icon: <ReportIcon />,
+      label: "Report",
+      action: () => {
+        props.onOpenReport && props.reasonReply && props.onOpenReport(props.reasonReply);
+      },
+    },
   ];
 
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.notification.indexedAt), { locale: ja });
   const multiAuthorMessage = 1 <= _.size(props.otherAuthors) ? `他${_.size(props.otherAuthors)}人 ` : "";
   const message = `${props.notification.author.handle} ${multiAuthorMessage}が${props.notification.reason}しました`;
 
@@ -79,11 +88,9 @@ export const Post = (props: Props) => {
           </Stack>
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {dateLabel}
+              {fromNow(props.notification.indexedAt)}
             </Typography>
-            {_.includes(["reply", "quote", "mention"], props.notification.reason) && (
-              <DropDownMenu items={menuItems} size="tiny" />
-            )}
+            {_.includes(["reply", "quote", "mention"], props.notification.reason) && <DropDownMenu items={menuItems} />}
           </Stack>
         </Stack>
         {!_.includes(["reply", "quote", "mention"], props.notification.reason) && (

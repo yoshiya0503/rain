@@ -1,35 +1,73 @@
 import { ReactNode, Suspense } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import SideMenu from "@/components/SideMenu";
+import SideBar from "@/components/SideBar";
 import MenuTemplate from "@/templates/MenuTemplate";
-import Paper from "@mui/material/Paper";
+import SideBarTemplate from "@/templates/SideBarTemplate";
 import Message from "@/components/Message";
+import NotificationsContainer from "@/containers/NotificationsContainer";
+import FeedsContainer from "@/containers/FeedsContainer";
+import useQuery from "@/hooks/useQuery";
 
 type Props = {
   children: ReactNode;
 };
 
+/*
 export const Layout = (props: Props) => {
+  const query = useQuery();
+  const keyword = query.get("q") || "";
+
   return (
-    <Container sx={{ display: "flex", p: 2 }}>
+    <Container sx={{ p: 2 }} maxWidth={false}>
       <Grid container spacing={4}>
         <Grid>
           <Suspense fallback={<MenuTemplate />}>
-            <Paper
-              component="nav"
-              variant="outlined"
-              sx={{ minWidth: 210, maxWidth: 240, height: 450, borderRadius: 3 }}
-            >
-              <SideMenu />
-            </Paper>
+            <SideMenu type="drawer" />
           </Suspense>
         </Grid>
         <Grid>
-          <Box sx={{ height: "95vh", overflow: "hidden", width: 480, minWidth: 480 }} component="main">
+          <Stack sx={{ width: 420, minWidth: 420, height: "95vh" }} component="main">
             {props.children}
-          </Box>
+          </Stack>
+        </Grid>
+        <Grid>
+          <Stack sx={{ width: 420, minWidth: 420, height: "95vh" }} component="main">
+            <FeedsContainer keyword={keyword} />
+          </Stack>
+        </Grid>
+        <Grid>
+          <Stack sx={{ width: 420, minWidth: 420, height: "95vh" }} component="main">
+            <NotificationsContainer />
+          </Stack>
+        </Grid>
+      </Grid>
+      <Message />
+    </Container>
+  );
+};
+*/
+
+export const Layout = (props: Props) => {
+  return (
+    <Container sx={{ p: 2 }}>
+      <Grid container spacing={4}>
+        <Grid>
+          <Suspense fallback={<MenuTemplate />}>
+            <SideMenu type="paper" />
+          </Suspense>
+        </Grid>
+        <Grid>
+          <Stack sx={{ width: 480, minWidth: 480, height: "95vh" }} component="main">
+            {props.children}
+          </Stack>
+        </Grid>
+        <Grid>
+          <Suspense fallback={<SideBarTemplate />}>
+            <SideBar />
+          </Suspense>
         </Grid>
       </Grid>
       <Message />

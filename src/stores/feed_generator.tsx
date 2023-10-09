@@ -16,6 +16,7 @@ export interface FeedGeneratorSlice {
   getFeedGenerator: (feed: string) => Promise<AppBskyFeedDefs.GeneratorView | undefined>;
   getFeedBrief: (feed: string) => Promise<void>;
   getFeed: (feed: string, isReset: boolean) => Promise<void>;
+  updateFeedViewer: (feedGenerator: AppBskyFeedDefs.GeneratorView) => void;
 }
 
 export const createFeedGeneratorSlice: StateCreator<FeedGeneratorSlice & MessageSlice, [], [], FeedGeneratorSlice> = (
@@ -72,5 +73,8 @@ export const createFeedGeneratorSlice: StateCreator<FeedGeneratorSlice & Message
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed to fetch feed" }, e);
     }
+  },
+  updateFeedViewer: (feedGenerator: AppBskyFeedDefs.GeneratorView) => {
+    set({ feedGenerator });
   },
 });

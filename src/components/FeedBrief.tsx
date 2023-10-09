@@ -1,11 +1,10 @@
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
 import ProfileHeader from "@/components/ProfileHeader";
 import Text from "@/components/Text";
 import Attachments from "@/components/Attachments";
+import useLocale from "@/hooks/useLocale";
 import { AppBskyFeedDefs, AppBskyFeedPost } from "@atproto/api";
 
 type Props = {
@@ -13,13 +12,13 @@ type Props = {
 };
 
 export const FeedBrief = (props: Props) => {
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.brief.indexedAt), { locale: ja });
+  const { fromNow } = useLocale();
   return (
     <Stack sx={{ mt: 1, mb: 1 }} spacing={1}>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
         <ProfileHeader profile={props.brief.author} size="small" />
         <Typography color={grey[500]} variant="caption">
-          {dateLabel}
+          {fromNow(props.brief.indexedAt)}
         </Typography>
       </Stack>
       <Typography sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }} variant="caption">

@@ -13,6 +13,7 @@ type Props = {
 };
 
 export const TabLayout = (props: Props) => {
+  // TODO Toolbarを使ったら簡単かも
   const [tab, onChangeTab] = useTabs();
   return (
     <TabContext value={tab}>
@@ -24,8 +25,8 @@ export const TabLayout = (props: Props) => {
         </TabList>
       </Box>
       {_.map(props.children, (component, key) => (
-        <TabPanel sx={{ m: 0, p: 0 }} key={key} value={_.toString(key)}>
-          {component}
+        <TabPanel key={key} value={_.toString(key)} sx={{ m: 0, p: 0 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", height: "84vh" }}>{component}</Box>
         </TabPanel>
       ))}
     </TabContext>

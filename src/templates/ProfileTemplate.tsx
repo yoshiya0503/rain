@@ -6,7 +6,7 @@ import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const ProfileTemplate = () => {
   return (
-    <>
+    <Stack>
       <Card sx={{ m: 1, maxWidth: 480, maxHeight: 400 }}>
         <Skeleton variant="rectangular" height={140} />
         <CardContent>
@@ -24,7 +24,7 @@ export const ProfileTemplate = () => {
         </CardContent>
       </Card>
       <TimelineTemplate />
-    </>
+    </Stack>
   );
 };
 

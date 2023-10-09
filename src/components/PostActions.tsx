@@ -47,7 +47,7 @@ export const PostActions = (props: Props) => {
         onClick={onToggleLike}
       >
         {props.post.viewer?.like ? (
-          <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 1000 } : {})}>
+          <Grow in={!!props.post.viewer?.like} {...(props.post.viewer?.like ? { timeout: 500 } : {})}>
             <FavoriteIcon sx={{ color: pink["A200"] }} fontSize="small" />
           </Grow>
         ) : (
@@ -59,7 +59,7 @@ export const PostActions = (props: Props) => {
         onClick={onToggleRePost}
       >
         {props.post.viewer?.repost ? (
-          <Grow in={!!props.post.viewer?.repost} {...(props.post.viewer?.repost ? { timeout: 1000 } : {})}>
+          <Grow in={!!props.post.viewer?.repost} {...(props.post.viewer?.repost ? { timeout: 500 } : {})}>
             <LoopIcon fontSize="small" sx={{ color: green["A400"] }} />
           </Grow>
         ) : (

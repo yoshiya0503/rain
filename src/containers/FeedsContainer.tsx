@@ -51,7 +51,7 @@ export const FeedsContainer = (props: Props) => {
           />
         </Box>
       ))}
-      <LinearProgress />
+      <LinearProgress sx={{ borderRadius: 1 }} />
     </ScrollLayout>
   );
 };

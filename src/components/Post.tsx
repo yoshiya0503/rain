@@ -1,5 +1,3 @@
-import { formatDistanceToNowStrict } from "date-fns";
-import { ja } from "date-fns/locale";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -7,6 +5,7 @@ import MuteIcon from "@mui/icons-material/VolumeOff";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import LoopIcon from "@mui/icons-material/Loop";
+import ReportIcon from "@mui/icons-material/ReportRounded";
 import { grey, green } from "@mui/material/colors";
 import AvatarThread from "@/components/AvatarThread";
 import ProfileHeader from "@/components/ProfileHeader";
@@ -16,48 +15,87 @@ import PostStats from "@/components/PostStats";
 import Text from "@/components/Text";
 import Attachments from "@/components/Attachments";
 import usePost from "@/hooks/usePost";
-import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyEmbedImages } from "@atproto/api";
+import useLocale from "@/hooks/useLocale";
+import { AppBskyFeedDefs, AppBskyFeedPost, AppBskyEmbedImages, AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
+  me?: AppBskyActorDefs.ProfileView;
   post: AppBskyFeedDefs.PostView;
   onOpenPost?: (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => void;
   onOpenImage?: (images: AppBskyEmbedImages.ViewImage[]) => void;
+  onOpenReport?: (post: AppBskyFeedDefs.PostView) => void;
   reason?: AppBskyFeedDefs.ReasonRepost | { [k: string]: unknown; $type: string };
   hasReply?: boolean;
   showStats?: boolean;
 };
 
+// TODO mute threads
 export const Post = (props: Props) => {
   const { onDeletePost, onShare, onViewThread } = usePost();
-  const menuItems = [
-    {
-      name: "share",
-      label: "Share",
-      icon: <ShareIcon />,
-      action: () => {
-        onShare(props.post);
-      },
-    },
-    {
-      name: "mute",
-      label: props.post?.viewer?.muted ? "Unmute" : "Mute",
-      icon: <MuteIcon />,
-      action: () => {
-        console.log("mute");
-      },
-    },
-    // TODO 自分の投稿と挙動が違う
-    {
-      name: "delete",
-      label: "Delete Post",
-      icon: <DeleteIcon />,
-      action: () => {
-        onDeletePost(props.post);
-      },
-    },
-  ];
+  const { fromNow } = useLocale();
 
-  const dateLabel = formatDistanceToNowStrict(Date.parse(props.post.indexedAt), { locale: ja });
+  const isMe = props.me?.did === props.post.author.did;
+  const menuItems = isMe
+    ? [
+        {
+          name: "share",
+          label: "Share",
+          icon: <ShareIcon />,
+          action: () => {
+            onShare(props.post);
+          },
+        },
+        {
+          name: "mute",
+          label: props.post?.viewer?.muted ? "Unmute" : "Mute",
+          icon: <MuteIcon />,
+          action: () => {
+            console.log("mute");
+          },
+        },
+        {
+          name: "report",
+          icon: <ReportIcon />,
+          label: "Report",
+          action: () => {
+            props.onOpenReport && props.onOpenReport(props.post);
+          },
+        },
+        {
+          name: "delete",
+          label: "Delete Post",
+          icon: <DeleteIcon />,
+          action: () => {
+            onDeletePost(props.post);
+          },
+        },
+      ]
+    : [
+        {
+          name: "share",
+          label: "Share",
+          icon: <ShareIcon />,
+          action: () => {
+            onShare(props.post);
+          },
+        },
+        {
+          name: "mute",
+          label: props.post?.viewer?.muted ? "Unmute" : "Mute",
+          icon: <MuteIcon />,
+          action: () => {
+            console.log("mute");
+          },
+        },
+        {
+          name: "report",
+          icon: <ReportIcon />,
+          label: "Report",
+          action: () => {
+            props.onOpenReport && props.onOpenReport(props.post);
+          },
+        },
+      ];
 
   return (
     <Stack direction="row" spacing={1} onClick={onViewThread(props.post)}>
@@ -73,7 +111,7 @@ export const Post = (props: Props) => {
           <ProfileHeader profile={props.post.author} disableAvatar />
           <Stack direction="row" alignItems="center">
             <Typography color={grey[500]} variant="caption" noWrap>
-              {dateLabel}
+              {fromNow(props.post.indexedAt)}
             </Typography>
             <DropDownMenu items={menuItems} />
           </Stack>

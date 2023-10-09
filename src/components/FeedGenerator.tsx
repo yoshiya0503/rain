@@ -1,6 +1,5 @@
-import _ from "lodash";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { grey, pink } from "@mui/material/colors";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -10,10 +9,12 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import FeedRoundedIcon from "@mui/icons-material/FeedRounded";
 import FavoriteIcon from "@mui/icons-material/FavoriteRounded";
+import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import ShareIcon from "@mui/icons-material/ShareRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import Text from "@/components/Text";
+import useFeedGenerator from "@/hooks/useFeedGenerator";
 import { AppBskyFeedDefs, AppBskyActorDefs } from "@atproto/api";
 
 type Props = {
@@ -24,45 +25,16 @@ type Props = {
 
 export const FeedGenerator = (props: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onViewCreator = useCallback(() => {
     const uri = `/profile/${props.feed.creator.handle}`;
-    navigate(uri);
-  }, [props, navigate]);
+    if (location.pathname !== uri) {
+      navigate(uri);
+    }
+  }, [props, navigate, location]);
 
-  const feedPref = _.find(props.preferences, (p) => AppBskyActorDefs.isSavedFeedsPref(p));
-  const isSaved =
-    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.saved, (uri) => props.feed.uri === uri);
-  const isPinned =
-    AppBskyActorDefs.isSavedFeedsPref(feedPref) && _.find(feedPref.pinned, (uri) => props.feed.uri === uri);
-
-  const onToggleSave = useCallback(() => {
-    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
-    const preferences = _.map(props.preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
-      if (isSaved) return { ...p, saved: _.reject(feedPref.saved, (uri) => uri === props.feed.uri) };
-      return { ...p, saved: _.concat(feedPref.saved, props.feed.uri) };
-    });
-    props.updatePreferences(preferences);
-  }, [props, feedPref, isSaved]);
-
-  const onTogglePin = useCallback(() => {
-    if (!AppBskyActorDefs.isSavedFeedsPref(feedPref)) return;
-    const preferences = _.map(props.preferences, (p) => {
-      if (!AppBskyActorDefs.isSavedFeedsPref(p)) return p;
-      if (isPinned) return { ...p, pinned: _.reject(feedPref.pinned, (uri) => uri === props.feed.uri) };
-      return { ...p, pinned: _.concat(feedPref.pinned, props.feed.uri) };
-    });
-    props.updatePreferences(preferences);
-  }, [props, feedPref, isPinned]);
-
-  const onClickShare = useCallback(() => {
-    const url = _.chain(props.feed.uri)
-      .replace("at://", "https://bsky.app/profile/")
-      .replace("/app.bsky.feed.generator/", "/feed/")
-      .value();
-    navigator.clipboard.writeText(url);
-  }, [props]);
+  const { isSaved, isPinned, onToggleLike, onToggleSave, onTogglePin, onShare } = useFeedGenerator();
 
   return (
     <Card>
@@ -85,7 +57,18 @@ export const FeedGenerator = (props: Props) => {
             </Stack>
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
-            <FavoriteIcon sx={{ color: pink[400] }} />
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleLike(props.feed);
+              }}
+            >
+              {props.feed.viewer?.like ? (
+                <FavoriteIcon sx={{ color: pink[400] }} />
+              ) : (
+                <FavoriteBorderRoundedIcon sx={{ color: pink[400] }} />
+              )}
+            </IconButton>
             <Typography variant="body1">{props.feed.likeCount} Likes</Typography>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
@@ -95,27 +78,35 @@ export const FeedGenerator = (props: Props) => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onToggleSave();
+                  onToggleSave(props.feed, props.preferences);
                 }}
               >
-                {isSaved ? <RssFeedRoundedIcon /> : <RssFeedRoundedIcon color="disabled" />}
+                {isSaved(props.feed, props.preferences) ? (
+                  <RssFeedRoundedIcon />
+                ) : (
+                  <RssFeedRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onTogglePin();
+                  onTogglePin(props.feed, props.preferences);
                 }}
               >
-                {isPinned ? <PushPinRoundedIcon /> : <PushPinRoundedIcon color="disabled" />}
+                {isPinned(props.feed, props.preferences) ? (
+                  <PushPinRoundedIcon />
+                ) : (
+                  <PushPinRoundedIcon color="disabled" />
+                )}
               </IconButton>
               <IconButton
                 size="small"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClickShare();
+                  onShare(props.feed);
                 }}
               >
                 <ShareIcon />

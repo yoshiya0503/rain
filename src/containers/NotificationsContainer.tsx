@@ -10,6 +10,7 @@ import ScrollLayout from "@/templates/ScrollLayout";
 import Notification from "@/components/Notification";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
+import DialogReport from "@/components/DialogReport";
 import useDialog from "@/hooks/useDialog";
 import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
@@ -21,6 +22,7 @@ export const NotificationContainer = () => {
   const listNotifications = useStore((state) => state.listNotifications);
   const [isOpen, openPostDialog, closePostDialog] = useDialog();
   const [isOpenImage, openImageDialog, closeImageDialog] = useDialog();
+  const [isOpenReport, openReportDialog, closeReportDialog] = useDialog();
   const [post, setPost] = useState<AppBskyFeedDefs.PostView>();
   const [images, setImages] = useState<AppBskyEmbedImages.ViewImage[]>();
   const [type, setType] = useState<"reply" | "quote">();
@@ -52,6 +54,14 @@ export const NotificationContainer = () => {
     [openImageDialog, setImages]
   );
 
+  const onOpenReport = useCallback(
+    (post: AppBskyFeedDefs.PostView) => {
+      setPost(post);
+      openReportDialog();
+    },
+    [openReportDialog, setPost]
+  );
+
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
@@ -71,6 +81,7 @@ export const NotificationContainer = () => {
                   reasonReply={reasonReply}
                   onOpenPost={onOpenPost}
                   onOpenImage={onOpenImage}
+                  onOpenReport={onOpenReport}
                 />
                 <Divider />
               </Box>
@@ -78,9 +89,10 @@ export const NotificationContainer = () => {
           );
         })}
       </TransitionGroup>
-      <LinearProgress />
+      <LinearProgress sx={{ borderRadius: 1 }} />
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
+      <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
     </ScrollLayout>
   );
 };

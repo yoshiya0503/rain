@@ -25,8 +25,8 @@ type Props = {
 export const DialogHandle = (props: Props) => {
   const me = useMe();
   const { open, withBackdrop } = useBackdrop();
-  const { handle, onChangeHandle, onUpdateHandle } = useHandle();
-  const disabled = false;
+  const { handle, onChangeHandle, onUpdateHandle, onClearHandle } = useHandle();
+  const disabled = !handle;
 
   const onSend = async () => {
     withBackdrop(async () => {
@@ -35,8 +35,13 @@ export const DialogHandle = (props: Props) => {
     });
   };
 
+  const onClear = async () => {
+    onClearHandle();
+    props.onClose();
+  };
+
   return (
-    <Dialog open={props.open} fullWidth maxWidth="sm" onClose={props.onClose}>
+    <Dialog open={props.open} fullWidth maxWidth="sm" PaperProps={{ sx: { borderRadius: 3 } }} onClose={onClear}>
       <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="primary" />
       </Backdrop>
@@ -65,7 +70,7 @@ export const DialogHandle = (props: Props) => {
       </DialogContent>
       <DialogActions>
         <Box>
-          <Button onClick={props.onClose}>Cancel</Button>
+          <Button onClick={onClear}>Cancel</Button>
           <Button onClick={onSend} disabled={disabled}>
             Save
           </Button>
