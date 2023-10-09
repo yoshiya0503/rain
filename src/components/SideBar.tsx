@@ -17,7 +17,6 @@ import useSuggestion from "@/hooks/useSuggestion";
 import usePreference from "@/hooks/usePreference";
 import useSocial from "@/hooks/useSocial";
 import { AppBskyActorDefs, AppBskyFeedDefs } from "@atproto/api";
-// TODO フォローボタン
 
 export const SideBar = () => {
   const navigate = useNavigate();

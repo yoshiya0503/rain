@@ -34,7 +34,6 @@ export const Post = (props: Props) => {
   const { onShare, onViewThread } = usePost();
   const { fromNow } = useLocale();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
-  // TODO 通知画面から通報する機能
 
   const menuItems = [
     {
