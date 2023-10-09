@@ -4,7 +4,7 @@
 ![React](https://badges.aleen42.com/src/react.svg)
 ![Typescript](https://github.com/aleen42/badges/raw/master/src/typescript.svg)
 
-simple and beautiful bluesky client for web.
+**_Simple and beautiful bluesky client for web._**
 
 <img width="1388" alt="スクリーンショット 2023-10-09 15 33 54" src="https://github.com/yoshiya0503/rain/assets/5334715/0963573d-d586-42fa-86ec-867e62851bfe">
 
