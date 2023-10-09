@@ -1,5 +1,9 @@
 # ☔Rain
 
+![Vercel](https://vercelbadge.vercel.app/api/yoshiya0503/rain)
+![React](https://badges.aleen42.com/src/react.svg)
+![Typescript](https://github.com/aleen42/badges/raw/master/src/typescript.svg)
+
 simple and beautiful bluesky client for web.
 
 <img width="1388" alt="スクリーンショット 2023-10-09 15 33 54" src="https://github.com/yoshiya0503/rain/assets/5334715/0963573d-d586-42fa-86ec-867e62851bfe">
