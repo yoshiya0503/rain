@@ -30,7 +30,7 @@ export const Login = () => {
 
   return (
     <CenterLayout>
-      <Card sx={{ minWidth: 480, minHeight: 480, width: "30vw", height: "60vh", p: 3 }} variant="outlined">
+      <Card sx={{ maxWidth: 450, maxHeight: 450, width: "90vw", height: "65vh", p: 3 }} variant="outlined">
         <CardHeader
           title={<Typography variant="h5">RAIN</Typography>}
           avatar={<WaterDropOutlinedIcon color="primary" sx={{ fontSize: 32 }} />}
