@@ -98,7 +98,7 @@ export const Post = (props: Props) => {
       ];
 
   return (
-    <Stack direction="row" spacing={1} onClick={onViewThread(props.post)}>
+    <Stack sx={{ pr: 1, pl: 1 }} direction="row" spacing={1} onClick={onViewThread(props.post)}>
       <AvatarThread profile={props.post.author} hasReply={props.hasReply} />
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
