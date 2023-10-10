@@ -2,6 +2,8 @@ import _ from "lodash";
 import { ReactNode, UIEvent, useRef, useState, useEffect, useCallback } from "react";
 import { useStore } from "@/stores";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
@@ -20,6 +22,8 @@ type Props = {
 const SHOW_SCROLL_THREASHOLD = 3000;
 
 export const ScrollLayout = (props: Props) => {
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down("sm"));
   const { pathname } = useLocation();
   const ref = useRef<HTMLDivElement>(null);
   const [hasScroll, setHasScroll] = useState<boolean>(false);
@@ -73,7 +77,7 @@ export const ScrollLayout = (props: Props) => {
             size="medium"
             color="primary"
             onClick={scrollTop}
-            sx={{ mb: -5, opacity: 0.85, textTransform: "none" }}
+            sx={{ mb: isPhone ? -20 : -5, opacity: 0.85, textTransform: "none" }}
           >
             {_.size(props.unread) ? (
               <UnreadPosts unread={props.unread || []} />
