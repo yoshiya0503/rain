@@ -28,23 +28,23 @@ export const BottomMenu = () => {
       name: "Home",
       icon: (
         <Badge color="primary" variant="dot" invisible={!_.size(unreadTimeline)}>
-          <Home />
+          <Home sx={{ width: 32, height: 32 }} />
         </Badge>
       ),
       href: "/",
     },
-    { name: "Search", icon: <Search />, href: "/search" },
-    { name: "Feeds", icon: <Tag />, href: "/feeds" },
+    { name: "Search", icon: <Search sx={{ width: 32, height: 32 }} />, href: "/search" },
+    { name: "Feeds", icon: <Tag sx={{ width: 32, height: 32 }} />, href: "/feeds" },
     {
       name: "Notifications",
       icon: (
         <Badge badgeContent={unreadCount} color="primary">
-          <Notifications />
+          <Notifications sx={{ width: 32, height: 32 }} />
         </Badge>
       ),
       href: "/notifications",
     },
-    { name: "Profile", icon: <Avatar sx={{ width: 28, height: 28 }} src={me.avatar} />, href: `/profile/${me.handle}` },
+    { name: "Profile", icon: <Avatar sx={{ width: 32, height: 32 }} src={me.avatar} />, href: `/profile/${me.handle}` },
   ];
 
   const onClickMenu = (href: string) => {
@@ -62,8 +62,9 @@ export const BottomMenu = () => {
       >
         <Create />
       </Fab>
-      <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={3}>
+      <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={8}>
         <BottomNavigation
+          sx={{ pb: 2 }}
           value={location.pathname}
           onChange={(_, href) => {
             onClickMenu(href);
