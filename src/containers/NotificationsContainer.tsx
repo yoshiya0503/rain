@@ -16,7 +16,7 @@ import { AppBskyFeedDefs, AppBskyEmbedImages } from "@atproto/api";
 
 export const NotificationContainer = () => {
   const reducedNotifications = useStore((state) => state.reducedNotifications);
-  // const unreadCount = useStore((state) => state.unreadCount);
+  const unreadCount = useStore((state) => state.unreadCount);
   const reasonSubjects = useStore((state) => state.reasonSubjects);
   const reasonReplies = useStore((state) => state.reasonReplies);
   const updateSeen = useStore((state) => state.updateSeen);
@@ -28,10 +28,8 @@ export const NotificationContainer = () => {
   const [images, setImages] = useState<AppBskyEmbedImages.ViewImage[]>();
   const [type, setType] = useState<"reply" | "quote">();
 
-  if (_.isEmpty(reducedNotifications)) {
-    throw listNotifications();
-  } else {
-    updateSeen();
+  if (_.isEmpty(reducedNotifications) || unreadCount) {
+    throw Promise.all([listNotifications(), updateSeen()]);
   }
 
   const onScrollLimit = useCallback(() => {
