@@ -78,7 +78,7 @@ export const SideBar = () => {
           <Divider />
           {_.isEmpty(actors) && (
             <ListItem>
-              <Typography sx={{ fontWeight: 600 }} color="gray">
+              <Typography sx={{ fontWeight: 600 }} color="grey">
                 No Suggestions, Please Reload The Page
               </Typography>
             </ListItem>

@@ -11,7 +11,7 @@ export const Feeds = () => {
 
   return (
     <Layout>
-      <HistoryLayout search >
+      <HistoryLayout search>
         <Suspense fallback={<TimelineTemplate />}>
           <FeedsContainer keyword={keyword} />
         </Suspense>

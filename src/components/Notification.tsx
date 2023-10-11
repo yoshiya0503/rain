@@ -71,7 +71,7 @@ export const Post = (props: Props) => {
   }, [onViewThread, props.reasonSubject, props.reasonReply]);
 
   return (
-    <Stack direction="row" spacing={1} onClick={onViewReason}>
+    <Stack sx={{ pr: 1, pl: 1 }} direction="row" spacing={1} onClick={onViewReason}>
       <Divider
         sx={{ bgcolor: "primary.main", borderRightWidth: 1.5, mb: 2 }}
         orientation="vertical"

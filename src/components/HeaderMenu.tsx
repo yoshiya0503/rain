@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { useNavigate, useLocation } from "react-router-dom";
+import { grey } from "@mui/material/colors";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -20,14 +21,14 @@ export const HeaderMenu = () => {
   return (
     <AppBar sx={{ backdropFilter: "blur(12px)" }} color="transparent" enableColorOnDark>
       <Toolbar>
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-          <MenuIcon />
+        <IconButton>
+          <MenuIcon sx={{ width: 32, height: 32, color: grey[400] }} />
         </IconButton>
         <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
           ☔
         </Typography>
         <IconButton>
-          <Settings />
+          <Settings sx={{ width: 32, height: 32, color: grey[400] }} />
         </IconButton>
       </Toolbar>
     </AppBar>
