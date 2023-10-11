@@ -91,7 +91,7 @@ export const ScrollLayout = (props: Props) => {
         </Box>
       </Fade>
       <Box
-        sx={{ overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
+        sx={{ pt: isPhone ? 7 : 0, overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
         onScroll={handleBottomScroll}
         ref={ref}
       >

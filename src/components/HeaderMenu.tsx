@@ -18,7 +18,7 @@ export const HeaderMenu = () => {
   };
 
   return (
-    <AppBar sx={{ backdropFilter: "blur(24px)" }} color="transparent" enableColorOnDark>
+    <AppBar sx={{ backdropFilter: "blur(12px)" }} color="transparent" enableColorOnDark>
       <Toolbar>
         <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
