@@ -9,10 +9,10 @@ import TimelineContainer from "@/containers/TimelineContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
 export const Home = () => {
-  const getTimeline = useStore((state) => state.getTimeline);
-  const unreadTimeline = useStore((state) => state.unreadTimeline);
   const theme = useTheme();
   const isPhone = useMediaQuery(theme.breakpoints.down("sm"));
+  const getTimeline = useStore((state) => state.getTimeline);
+  const unreadTimeline = useStore((state) => state.unreadTimeline);
 
   const onScrollLimit = useCallback(() => {
     getTimeline();
