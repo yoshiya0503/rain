@@ -71,13 +71,14 @@ export const ScrollLayout = (props: Props) => {
   return (
     <Stack sx={{ overflow: "hidden" }}>
       <Fade in={hasScroll}>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box zIndex={1300} display="flex" justifyContent="center" alignItems="center">
           <Fab
             variant="extended"
             size="medium"
             color="primary"
             onClick={scrollTop}
-            sx={{ mb: isPhone ? -20 : -5, opacity: 0.85, textTransform: "none" }}
+            //sx={{ mb: isPhone ? -20 : -5, opacity: 0.85, textTransform: "none" }}
+            sx={{ mb: -5, opacity: 0.85, textTransform: "none" }}
           >
             {_.size(props.unread) ? (
               <UnreadPosts unread={props.unread || []} />

@@ -1,12 +1,10 @@
 import _ from "lodash";
-import { useCallback } from "react";
 import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CenterLayout from "@/templates/CenterLayout";
 import NotFound from "@/components/NotFound";
 import Follow from "@/components/Follow";
-import ScrollLayout from "@/templates/ScrollLayout";
 
 type Props = {
   handle: string;
@@ -14,7 +12,6 @@ type Props = {
 };
 
 export const RepostedContainer = (props: Props) => {
-  const uri = useStore((state) => state.uri);
   const seenURI = useStore((state) => state.seenRepostedURI);
   const repostedBy = useStore((state) => state.repostedBy);
   const getRepostedBy = useStore((state) => state.getRepostedBy);
@@ -27,10 +24,6 @@ export const RepostedContainer = (props: Props) => {
     })();
   }
 
-  const onScrollLimit = useCallback(() => {
-    getRepostedBy(uri, false);
-  }, [getRepostedBy, uri]);
-
   if (_.isEmpty(repostedBy)) {
     return (
       <CenterLayout>
@@ -40,7 +33,7 @@ export const RepostedContainer = (props: Props) => {
   }
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       {_.map(repostedBy, (item, key) => (
         <Box key={key}>
           <Box sx={{ mt: 1, mb: 1 }}>
@@ -49,7 +42,7 @@ export const RepostedContainer = (props: Props) => {
           <Divider />
         </Box>
       ))}
-    </ScrollLayout>
+    </>
   );
 };
 

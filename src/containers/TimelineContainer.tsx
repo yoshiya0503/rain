@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
@@ -20,7 +19,6 @@ export const TimelineContainer = () => {
   const me = useMe();
   const timeline = useStore((state) => state.timeline);
   const unreadTimeline = useStore((state) => state.unreadTimeline);
-  const getTimeline = useStore((state) => state.getTimeline);
   const getInitialTimeline = useStore((state) => state.getInitialTimeline);
   const drainTimeline = useStore((state) => state.drainTimeline);
   const [isOpenPost, openPostDialog, closePostDialog] = useDialog();
@@ -33,10 +31,6 @@ export const TimelineContainer = () => {
   if (_.isEmpty(timeline)) {
     throw getInitialTimeline();
   }
-
-  const onScrollLimit = useCallback(() => {
-    getTimeline();
-  }, [getTimeline]);
 
   const onOpenPost = useCallback(
     (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
@@ -67,7 +61,7 @@ export const TimelineContainer = () => {
 
   // TODO 投稿後にcidのpostがundefinedになることがある
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit} unread={unreadTimeline}>
+    <>
       <TransitionGroup>
         {_.size(unreadTimeline) ? (
           <Collapse key="unread">
@@ -118,7 +112,7 @@ export const TimelineContainer = () => {
       <DialogPost title={title} open={isOpenPost} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 

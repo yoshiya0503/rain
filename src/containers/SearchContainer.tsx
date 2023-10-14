@@ -4,7 +4,6 @@ import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CenterLayout from "@/templates/CenterLayout";
-import ScrollLayout from "@/templates/ScrollLayout";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
 import DialogReport from "@/components/DialogReport";
@@ -78,7 +77,7 @@ export const SearchContainer = (props: Props) => {
   }
 
   return (
-    <ScrollLayout>
+    <>
       {props.type === "posts" &&
         _.map(searchedPosts, (post, key) => (
           <Box key={key} sx={{ mt: 1, mb: 1 }}>
@@ -96,7 +95,7 @@ export const SearchContainer = (props: Props) => {
       <DialogPost title={title} open={isOpenPost} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 

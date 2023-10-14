@@ -1,12 +1,10 @@
 import _ from "lodash";
-import { useCallback } from "react";
 import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import CenterLayout from "@/templates/CenterLayout";
 import NotFound from "@/components/NotFound";
 import Follow from "@/components/Follow";
-import ScrollLayout from "@/templates/ScrollLayout";
 
 type Props = {
   handle: string;
@@ -14,7 +12,6 @@ type Props = {
 };
 
 export const LikedContainer = (props: Props) => {
-  const uri = useStore((state) => state.uri);
   const seenURI = useStore((state) => state.seenLikedURI);
   const likedBy = useStore((state) => state.likedBy);
   const getLikedBy = useStore((state) => state.getLikedBy);
@@ -27,10 +24,6 @@ export const LikedContainer = (props: Props) => {
     })();
   }
 
-  const onScrollLimit = useCallback(() => {
-    getLikedBy(uri, false);
-  }, [getLikedBy, uri]);
-
   if (_.isEmpty(likedBy)) {
     return (
       <CenterLayout>
@@ -40,7 +33,7 @@ export const LikedContainer = (props: Props) => {
   }
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       {_.map(likedBy, (item, key) => (
         <Box key={key}>
           <Box sx={{ mt: 1, mb: 1 }}>
@@ -49,7 +42,7 @@ export const LikedContainer = (props: Props) => {
           <Divider />
         </Box>
       ))}
-    </ScrollLayout>
+    </>
   );
 };
 

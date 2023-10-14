@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import ScrollLayout from "@/templates/ScrollLayout";
 import CenterLayout from "@/templates/CenterLayout";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
@@ -78,7 +77,7 @@ export const PostThreadsContainer = (props: Props) => {
 
   // TODO ページ遷移にアニメーションを付けたい
   return (
-    <ScrollLayout>
+    <>
       <Box sx={{ mt: 1, mb: 1 }}>
         {_.map(threadParent, (item) => (
           <Post
@@ -120,7 +119,7 @@ export const PostThreadsContainer = (props: Props) => {
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 

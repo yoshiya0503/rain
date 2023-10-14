@@ -1,12 +1,10 @@
 import _ from "lodash";
-import { useCallback } from "react";
 import { useStore } from "@/stores";
 import { TransitionGroup } from "react-transition-group";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import Follow from "@/components/Follow";
 
 type Props = {
@@ -25,13 +23,8 @@ export const FollowsContainer = (props: Props) => {
     throw Promise.all([getFollows(props.handle, true), getFollowers(props.handle, true)]);
   }
 
-  const onScrollLimit = useCallback(() => {
-    if (props.type === "follows") return getFollows(props.handle, false);
-    if (props.type === "followers") return getFollowers(props.handle, false);
-  }, [getFollows, getFollowers, props.handle, props.type]);
-
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       <TransitionGroup>
         {props.type === "follows" &&
           _.map(follows, (item) => (
@@ -53,7 +46,7 @@ export const FollowsContainer = (props: Props) => {
           ))}
       </TransitionGroup>
       <LinearProgress sx={{ borderRadius: 1 }} />
-    </ScrollLayout>
+    </>
   );
 };
 

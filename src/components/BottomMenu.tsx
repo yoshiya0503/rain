@@ -62,7 +62,7 @@ export const BottomMenu = () => {
       >
         <Create />
       </Fab>
-      <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }} elevation={8}>
+      <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={8}>
         <BottomNavigation
           sx={{ pb: 2 }}
           value={location.pathname}

@@ -19,7 +19,7 @@ export const useSearch = () => {
   const onSearch = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        const path = location.pathname === "/" ? "/search" : location.pathname;
+        const path = location.pathname === "/feeds" ? "/feeds" : "/search";
         navigate(`${path}?q=${keyword}`);
       }
     },

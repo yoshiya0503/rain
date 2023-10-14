@@ -19,7 +19,14 @@ export const HeaderMenu = () => {
   };
 
   return (
-    <AppBar sx={{ backdropFilter: "blur(12px)" }} color="transparent" enableColorOnDark>
+    <AppBar
+      sx={{ backdropFilter: "blur(12px)" }}
+      color="transparent"
+      enableColorOnDark
+      component="nav"
+      // staticにすると透過が難しい
+      // position="static"
+    >
       <Toolbar>
         <IconButton>
           <MenuIcon sx={{ width: 32, height: 32, color: grey[400] }} />
