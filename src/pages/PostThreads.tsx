@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "@/templates/Layout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import ScrollLayout from "@/templates/ScrollLayout";
 import PostThreadsContainer from "@/containers/PostThreadsContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
@@ -12,11 +12,11 @@ export const PostThreads = () => {
   return (
     <Layout>
       <ScrollLayout>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <PostThreadsContainer handle={handle || ""} id={id || ""} />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

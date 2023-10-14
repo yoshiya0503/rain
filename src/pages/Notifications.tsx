@@ -1,7 +1,7 @@
 import { Suspense, useCallback } from "react";
 import { useStore } from "@/stores";
 import Layout from "@/templates/Layout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import ScrollLayout from "@/templates/ScrollLayout";
 import NotificationsContainer from "@/containers/NotificationsContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
@@ -16,11 +16,11 @@ export const Notifications = () => {
   return (
     <Layout>
       <ScrollLayout onScrollLimit={onScrollLimit}>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <NotificationsContainer />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

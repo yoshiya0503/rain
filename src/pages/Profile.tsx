@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
 import Layout from "@/templates/Layout";
 import ScrollLayout from "@/templates/ScrollLayout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import ProfileTemplate from "@/templates/ProfileTemplate";
 import ProfileContainer from "@/containers/ProfileContainer";
 
@@ -18,9 +18,9 @@ export const ProfilePage = () => {
   return (
     <Layout>
       <ScrollLayout onScrollLimit={onScrollLimit}>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<ProfileTemplate />}>{handle && <ProfileContainer handle={handle} />}</Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

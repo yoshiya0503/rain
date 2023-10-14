@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Layout from "@/templates/Layout";
 import SearchContainer from "@/containers/SearchContainer";
 import ScrollLayout from "@/templates/ScrollLayout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import TabLayout from "@/templates/TabLayout";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 import useQuery from "@/hooks/useQuery";
@@ -14,7 +14,7 @@ export const Search = () => {
   return (
     <Layout>
       <ScrollLayout>
-        <HistoryLayout search>
+        <HeaderLayout history>
           <TabLayout labels={["posts", "users"]}>
             <Suspense fallback={<TimelineTemplate />}>
               <SearchContainer keyword={keyword} type="posts" />
@@ -23,7 +23,7 @@ export const Search = () => {
               <SearchContainer keyword={keyword} type="users" />
             </Suspense>
           </TabLayout>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

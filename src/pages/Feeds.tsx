@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Layout from "@/templates/Layout";
 import FeedsContainer from "@/containers/FeedsContainer";
 import ScrollLayout from "@/templates/ScrollLayout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 import useQuery from "@/hooks/useQuery";
 
@@ -13,11 +13,11 @@ export const Feeds = () => {
   return (
     <Layout>
       <ScrollLayout>
-        <HistoryLayout search>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <FeedsContainer keyword={keyword} />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

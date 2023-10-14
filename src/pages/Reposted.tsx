@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
 import Layout from "@/templates/Layout";
 import ScrollLayout from "@/templates/ScrollLayout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import RepostedContainer from "@/containers/RepostedContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
@@ -19,11 +19,11 @@ export const Reposted = () => {
   return (
     <Layout>
       <ScrollLayout onScrollLimit={onScrollLimit}>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <RepostedContainer handle={handle || ""} id={id || ""} />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

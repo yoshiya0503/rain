@@ -62,7 +62,6 @@ export const Layout = (props: Props) => {
   if (isPhone) {
     return (
       <Box>
-        <HeaderMenu />
         <Stack sx={{ maxWidth: 480, height: "92vh" }} component="main">
           {props.children}
         </Stack>

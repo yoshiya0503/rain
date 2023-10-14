@@ -2,7 +2,7 @@ import { Suspense, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "@/stores";
 import Layout from "@/templates/Layout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import ScrollLayout from "@/templates/ScrollLayout";
 import FeedGeneratorContainer from "@/containers/FeedGeneratorContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
@@ -19,11 +19,11 @@ export const Feeds = () => {
   return (
     <Layout>
       <ScrollLayout onScrollLimit={onScrollLimit}>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <FeedGeneratorContainer did={did || ""} id={id || ""} />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );

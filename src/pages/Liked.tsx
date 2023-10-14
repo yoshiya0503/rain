@@ -3,7 +3,7 @@ import { useStore } from "@/stores";
 import { useParams } from "react-router-dom";
 import Layout from "@/templates/Layout";
 import ScrollLayout from "@/templates/ScrollLayout";
-import HistoryLayout from "@/templates/HistoryLayout";
+import HeaderLayout from "@/templates/HeaderLayout";
 import LikedContainer from "@/containers/LikedContainer";
 import TimelineTemplate from "@/templates/TimelineTemplate";
 
@@ -19,11 +19,11 @@ export const Liked = () => {
   return (
     <Layout>
       <ScrollLayout onScrollLimit={onScrollLimit}>
-        <HistoryLayout>
+        <HeaderLayout history>
           <Suspense fallback={<TimelineTemplate />}>
             <LikedContainer handle={handle || ""} id={id || ""} />
           </Suspense>
-        </HistoryLayout>
+        </HeaderLayout>
       </ScrollLayout>
     </Layout>
   );
