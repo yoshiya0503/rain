@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { grey, pink } from "@mui/material/colors";
@@ -41,7 +41,7 @@ type Props = {
   expanded?: boolean;
 };
 
-export const Feed = (props: Props) => {
+export const Feed = memo((props: Props) => {
   const navigate = useNavigate();
   const onChangeFeed = useCallback(() => {
     props.onChangeFeed(props.feed);
@@ -137,6 +137,6 @@ export const Feed = (props: Props) => {
       </AccordionDetails>
     </FeedAccordion>
   );
-};
+});
 
 export default Feed;

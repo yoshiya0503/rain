@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -16,7 +16,7 @@ type Props = {
   profile: AppBskyActorDefs.ProfileView;
 };
 
-export const Follow = (props: Props) => {
+export const Follow = memo((props: Props) => {
   const { onFollow, onUnFollow } = useSocial();
 
   const onToggleFollow = useCallback(() => {
@@ -62,6 +62,6 @@ export const Follow = (props: Props) => {
       </Typography>
     </Stack>
   );
-};
+});
 
 export default Follow;
