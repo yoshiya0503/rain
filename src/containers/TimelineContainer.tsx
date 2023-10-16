@@ -68,7 +68,7 @@ export const TimelineContainer = () => {
             <UnreadPosts onClick={drainTimeline} unread={unreadTimeline} />
           </Collapse>
         ) : null}
-        {_.map(timeline, (item) => (
+        {_.map(_.takeRight(timeline, 100), (item) => (
           <Collapse key={item.post?.cid}>
             <Box sx={{ mt: 1, mb: 1 }}>
               {AppBskyFeedDefs.isPostView(item.reply?.root) && item.reply?.root && (
