@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import Notification from "@/components/Notification";
 import DialogPost from "@/components/DialogPost";
 import DialogImage from "@/components/DialogImage";
@@ -31,10 +30,6 @@ export const NotificationContainer = () => {
   if (_.isEmpty(reducedNotifications) || unreadCount) {
     throw Promise.all([listNotifications(), updateSeen()]);
   }
-
-  const onScrollLimit = useCallback(() => {
-    listNotifications();
-  }, [listNotifications]);
 
   const onOpenPost = useCallback(
     (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
@@ -64,7 +59,7 @@ export const NotificationContainer = () => {
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       <TransitionGroup>
         {_.map(reducedNotifications, (item) => {
           const otherAuthors = _.chain(item).map("author").slice(1).value();
@@ -92,7 +87,7 @@ export const NotificationContainer = () => {
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 

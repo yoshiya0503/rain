@@ -1,12 +1,16 @@
 import { ReactNode, Suspense } from "react";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Grid from "@mui/material/Unstable_Grid2";
+import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import BottomMenu from "@/components/BottomMenu";
 import SideMenu from "@/components/SideMenu";
 import SideBar from "@/components/SideBar";
+import Message from "@/components/Message";
 import MenuTemplate from "@/templates/MenuTemplate";
 import SideBarTemplate from "@/templates/SideBarTemplate";
-import Message from "@/components/Message";
 import NotificationsContainer from "@/containers/NotificationsContainer";
 import FeedsContainer from "@/containers/FeedsContainer";
 import useQuery from "@/hooks/useQuery";
@@ -51,6 +55,20 @@ export const Layout = (props: Props) => {
 */
 
 export const Layout = (props: Props) => {
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down("sm"));
+
+  if (isPhone) {
+    return (
+      <Box>
+        <Stack sx={{ maxWidth: 480, height: "92vh" }} component="main">
+          {props.children}
+        </Stack>
+        <BottomMenu />
+      </Box>
+    );
+  }
+
   return (
     <Container sx={{ p: 2 }}>
       <Grid container spacing={4}>
@@ -60,7 +78,7 @@ export const Layout = (props: Props) => {
           </Suspense>
         </Grid>
         <Grid>
-          <Stack sx={{ width: 480, minWidth: 480, height: "95vh" }} component="main">
+          <Stack sx={{ maxWidth: 480, width: "100vw", height: "95vh" }} component="main">
             {props.children}
           </Stack>
         </Grid>

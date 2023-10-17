@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import Profile from "@/components/Profile";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
@@ -38,10 +37,6 @@ export const ProfileContainer = (props: Props) => {
     throw Promise.all([getProfile(props.handle), getAuthorFeed(props.handle, true)]);
   }
 
-  const onScrollLimit = useCallback(() => {
-    getAuthorFeed(props.handle, false);
-  }, [getAuthorFeed, props.handle]);
-
   const onOpenPost = useCallback(
     (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
       setPost(post);
@@ -70,7 +65,7 @@ export const ProfileContainer = (props: Props) => {
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       <Profile actor={actor} />
       <TransitionGroup>
         {_.map(authorFeed, (item) => (
@@ -117,7 +112,7 @@ export const ProfileContainer = (props: Props) => {
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 

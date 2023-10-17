@@ -3,7 +3,6 @@ import { useCallback, useState } from "react";
 import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import Feed from "@/components/Feed";
 import { AppBskyFeedDefs } from "@atproto/api";
 
@@ -38,9 +37,9 @@ export const FeedsContainer = (props: Props) => {
   );
 
   return (
-    <ScrollLayout>
+    <>
       {_.map(feedGenerators, (feedGenerator, index) => (
-        <Box key={index} sx={{ mt: 1, mb: 1 }}>
+        <Box key={index} sx={{ mb: 1 }}>
           <Feed
             feed={feedGenerator}
             preferences={preferences}
@@ -52,7 +51,7 @@ export const FeedsContainer = (props: Props) => {
         </Box>
       ))}
       <LinearProgress sx={{ borderRadius: 1 }} />
-    </ScrollLayout>
+    </>
   );
 };
 

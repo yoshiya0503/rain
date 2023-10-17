@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -30,7 +30,7 @@ type Props = {
   reasonReply?: AppBskyFeedDefs.PostView;
 };
 
-export const Post = (props: Props) => {
+export const Notification = memo((props: Props) => {
   const { onShare, onViewThread } = usePost();
   const { fromNow } = useLocale();
   // TODO フォローしてきた人のミニアバターを詳細にして出すとかいいかもしれない
@@ -71,7 +71,7 @@ export const Post = (props: Props) => {
   }, [onViewThread, props.reasonSubject, props.reasonReply]);
 
   return (
-    <Stack direction="row" spacing={1} onClick={onViewReason}>
+    <Stack sx={{ pr: 1, pl: 1 }} direction="row" spacing={1} onClick={onViewReason}>
       <Divider
         sx={{ bgcolor: "primary.main", borderRightWidth: 1.5, mb: 2 }}
         orientation="vertical"
@@ -128,6 +128,6 @@ export const Post = (props: Props) => {
       </Box>
     </Stack>
   );
-};
+});
 
-export default Post;
+export default Notification;

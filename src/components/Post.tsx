@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -30,7 +31,7 @@ type Props = {
 };
 
 // TODO mute threads
-export const Post = (props: Props) => {
+export const Post = memo((props: Props) => {
   const { onDeletePost, onShare, onViewThread } = usePost();
   const { fromNow } = useLocale();
 
@@ -98,7 +99,7 @@ export const Post = (props: Props) => {
       ];
 
   return (
-    <Stack direction="row" spacing={1} onClick={onViewThread(props.post)}>
+    <Stack sx={{ pr: 1, pl: 1 }} direction="row" spacing={1} onClick={onViewThread(props.post)}>
       <AvatarThread profile={props.post.author} hasReply={props.hasReply} />
       <Box sx={{ width: "100%" }}>
         {AppBskyFeedDefs.isReasonRepost(props.reason) && (
@@ -138,6 +139,6 @@ export const Post = (props: Props) => {
       </Box>
     </Stack>
   );
-};
+});
 
 export default Post;

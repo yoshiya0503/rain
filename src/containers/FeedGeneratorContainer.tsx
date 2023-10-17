@@ -4,7 +4,6 @@ import { useStore } from "@/stores";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import LinearProgress from "@mui/material/LinearProgress";
-import ScrollLayout from "@/templates/ScrollLayout";
 import FeedGenerator from "@/components/FeedGenerator";
 import Post from "@/components/Post";
 import DialogPost from "@/components/DialogPost";
@@ -36,9 +35,6 @@ export const FeedGeneratorContainer = (props: Props) => {
   if (_.isEmpty(feedGenerator) || isOthers || _.isEmpty(preferences)) {
     throw Promise.all([getFeedGenerator(uri), getFeed(uri, true), getPreferences()]);
   }
-  const onScrollLimit = useCallback(() => {
-    return getFeed(uri, false);
-  }, [getFeed, uri]);
 
   const onOpenPost = useCallback(
     (post: AppBskyFeedDefs.PostView, type: "reply" | "quote") => {
@@ -60,7 +56,7 @@ export const FeedGeneratorContainer = (props: Props) => {
   const title = type === "reply" ? "Reply" : "Quote";
 
   return (
-    <ScrollLayout onScrollLimit={onScrollLimit}>
+    <>
       <FeedGenerator feed={feedGenerator} preferences={preferences} updatePreferences={updatePreferences} />
       {_.map(feed, (item) => (
         <Box key={item.post.cid} sx={{ mt: 1, mb: 1 }}>
@@ -91,7 +87,7 @@ export const FeedGeneratorContainer = (props: Props) => {
       <LinearProgress sx={{ borderRadius: 1 }} />
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
-    </ScrollLayout>
+    </>
   );
 };
 
