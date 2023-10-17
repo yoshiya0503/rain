@@ -65,7 +65,7 @@ export const Settings = () => {
   return (
     <>
       <Stack spacing={2}>
-        <Stack direction="row" spacing={2}>
+        <Stack sx={{ p: 1 }} direction="row" spacing={2}>
           <ProfileHeader profile={me} />
           <Box>
             <Button variant="outlined" startIcon={<LogoutIcon />} onClick={onLogout}>
@@ -84,7 +84,7 @@ export const Settings = () => {
           ))}
         </List>
         <Divider />
-        <Typography sx={{ fontWeight: 800 }} variant="subtitle2" color={grey[400]}>
+        <Typography sx={{ p: 1, fontWeight: 800 }} variant="subtitle2" color={grey[400]}>
           Advance Setting
         </Typography>
         <List>
@@ -98,7 +98,7 @@ export const Settings = () => {
           ))}
         </List>
         <Divider />
-        <Typography sx={{ fontWeight: 800 }} variant="subtitle2" color={grey[400]}>
+        <Typography sx={{ p: 1, fontWeight: 800 }} variant="subtitle2" color={grey[400]}>
           Moderation
         </Typography>
         <List>

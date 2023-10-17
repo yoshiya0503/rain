@@ -45,7 +45,9 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
       if (!res.data.cursor) return true;
       const filteredFeed = get().filterFeed(res.data.feed);
       const timeline = _.concat(get().timeline, filteredFeed);
-      set({ timeline: _.takeRight(timeline, 100), timelineCursor: res.data.cursor });
+      // TODO リストが多いと重くなるのでチューニングする
+      // set({ timeline: _.takeRight(timeline, 150), timelineCursor: res.data.cursor });
+      set({ timeline, timelineCursor: res.data.cursor });
     } catch (e) {
       get().createFailedMessage({ status: "error", description: "failed fetch timeline" }, e);
     }

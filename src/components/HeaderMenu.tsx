@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -7,9 +8,9 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Settings from "@mui/icons-material/SettingsRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import Search from "@/components/Search";
+import DrawerMenu from "@/components/DrawerMenu";
 
 type Props = {
   search?: boolean;
@@ -23,15 +24,15 @@ export const HeaderMenu = (props: Props) => {
   const theme = useTheme();
   const isPhone = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const onClickMenu = (href: string) => {
-    if (location.pathname !== href) {
-      navigate(href);
-    }
-  };
-
-  const onBack = () => {
+  const back = useCallback(() => {
     navigate(-1);
-  };
+  }, [navigate]);
+
+  const setting = useCallback(() => {
+    if (location.pathname !== "/settings") {
+      navigate("/settings");
+    }
+  }, [navigate, location]);
 
   return (
     <AppBar
@@ -46,15 +47,11 @@ export const HeaderMenu = (props: Props) => {
     >
       <Toolbar variant={isPhone ? undefined : "dense"} disableGutters={isPhone ? false : true}>
         {props.history && (
-          <IconButton size="small" color="primary" onClick={onBack}>
+          <IconButton size="small" color="primary" onClick={back}>
             <ArrowBackIosNewRoundedIcon fontSize="small" />
           </IconButton>
         )}
-        {props.menu && (
-          <IconButton>
-            <MenuRoundedIcon sx={{ width: 32, height: 32, color: grey[400] }} />
-          </IconButton>
-        )}
+        {props.menu && <DrawerMenu />}
         {isPhone && !props.search && (
           <Typography variant="h5" sx={{ flexGrow: 1, textAlign: "center" }}>
             ☔
@@ -62,7 +59,7 @@ export const HeaderMenu = (props: Props) => {
         )}
         {props.search && <Search />}
         {isPhone && (
-          <IconButton>
+          <IconButton onClick={setting}>
             <Settings sx={{ width: 32, height: 32, color: grey[400] }} />
           </IconButton>
         )}
