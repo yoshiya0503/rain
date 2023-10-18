@@ -1,17 +1,17 @@
 import { Suspense } from "react";
 import SettingTemplate from "@/templates/SettingTemplate";
 import Layout from "@/templates/Layout";
-import HeaderLayout from "@/templates/HeaderLayout";
+import ScrollLayout from "@/templates/ScrollLayout";
 import SettingsContainer from "@/containers/SettingContainer";
 
 export const Settings = () => {
   return (
     <Layout>
-      <HeaderLayout history>
+      <ScrollLayout>
         <Suspense fallback={<SettingTemplate />}>
           <SettingsContainer />
         </Suspense>
-      </HeaderLayout>
+      </ScrollLayout>
     </Layout>
   );
 };

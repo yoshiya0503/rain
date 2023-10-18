@@ -37,7 +37,7 @@ export const HeaderMenu = (props: Props) => {
   return (
     <AppBar
       sx={{
-        position: "sticky",
+        position: !isPhone ? "sticky" : "fixed",
         backdropFilter: "blur(12px)",
       }}
       component="nav"

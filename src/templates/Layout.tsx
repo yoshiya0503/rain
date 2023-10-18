@@ -1,4 +1,6 @@
+import _ from "lodash";
 import { ReactNode, Suspense } from "react";
+import { useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -11,6 +13,7 @@ import SideBar from "@/components/SideBar";
 import Message from "@/components/Message";
 import MenuTemplate from "@/templates/MenuTemplate";
 import SideBarTemplate from "@/templates/SideBarTemplate";
+import HeaderMenu from "@/components/HeaderMenu";
 import NotificationsContainer from "@/containers/NotificationsContainer";
 import FeedsContainer from "@/containers/FeedsContainer";
 import useQuery from "@/hooks/useQuery";
@@ -57,10 +60,14 @@ export const Layout = (props: Props) => {
 export const Layout = (props: Props) => {
   const theme = useTheme();
   const isPhone = useMediaQuery(theme.breakpoints.down("sm"));
+  const location = useLocation();
+  const isHistory = _.includes(location.pathname, "profile/");
+  const isSearch = location.pathname === "/search" || location.pathname === "/feeds";
 
   if (isPhone) {
     return (
       <Box>
+        <HeaderMenu menu={!isHistory} history={isHistory} search={isSearch} />
         <Stack sx={{ maxWidth: 480, height: "92vh" }} component="main">
           {props.children}
         </Stack>
@@ -69,6 +76,7 @@ export const Layout = (props: Props) => {
     );
   }
 
+  // TODO search 履歴を含めたヘッダ
   return (
     <Container sx={{ p: 2 }}>
       <Grid container spacing={4}>

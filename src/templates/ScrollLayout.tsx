@@ -4,6 +4,7 @@ import { useStore } from "@/stores";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Toolbar from "@mui/material/Toolbar";
 import Fade from "@mui/material/Fade";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
@@ -95,6 +96,10 @@ export const ScrollLayout = (props: Props) => {
         onScroll={handleBottomScroll}
         ref={ref}
       >
+        {
+          // スクロールがヘッダの下に潜り込むように調整
+          isPhone && <Toolbar />
+        }
         {props.children}
       </Box>
     </Stack>
