@@ -56,7 +56,7 @@ export const BottomMenu = () => {
   return (
     <>
       <Fab
-        sx={{ position: "absolute", bottom: 72, right: 32, width: 64, height: 64 }}
+        sx={{ position: "fixed", bottom: 72, right: 32, width: 64, height: 64 }}
         color="primary"
         onClick={openPostDialog}
       >
