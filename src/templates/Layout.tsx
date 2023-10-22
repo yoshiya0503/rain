@@ -68,7 +68,7 @@ export const Layout = (props: Props) => {
     return (
       <Box>
         <HeaderMenu menu={!isHistory} history={isHistory} search={isSearch} />
-        <Stack sx={{ maxWidth: 480, height: "92vh" }} component="main">
+        <Stack sx={{ maxWidth: 480, height: "100vh" }} component="main">
           {props.children}
         </Stack>
         <BottomMenu />

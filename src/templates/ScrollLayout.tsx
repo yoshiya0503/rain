@@ -39,7 +39,7 @@ export const ScrollLayout = (props: Props) => {
     });
   }, [pathname, getScrollTop]);
 
-  const handleBottomScroll = useCallback(
+  const handleScroll = useCallback(
     (e: UIEvent<HTMLDivElement>) => {
       if (pathname === "/") {
         // TODO 別ページからバックで戻ってきた際に
@@ -78,7 +78,7 @@ export const ScrollLayout = (props: Props) => {
             size="small"
             color="primary"
             onClick={scrollTop}
-            sx={{ mb: isPhone ? -20 : -5, opacity: 0.85, textTransform: "none" }}
+            sx={{ mb: isPhone ? -31 : -5, opacity: 0.85, textTransform: "none" }}
           >
             {_.size(props.unread) ? (
               <UnreadPosts unread={props.unread || []} />
@@ -91,14 +91,10 @@ export const ScrollLayout = (props: Props) => {
           </Fab>
         </Box>
       </Fade>
-      <Box
-        sx={{ overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }}
-        onScroll={handleBottomScroll}
-        ref={ref}
-      >
+      <Box sx={{ overflowY: "scroll", "&::-webkit-scrollbar": { display: "none" } }} onScroll={handleScroll} ref={ref}>
         {
           // スクロールがヘッダの下に潜り込むように調整
-          isPhone && <Toolbar />
+          isPhone && <Toolbar sx={{ mt: 6 }} />
         }
         {props.children}
       </Box>

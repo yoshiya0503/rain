@@ -45,7 +45,11 @@ export const HeaderMenu = (props: Props) => {
       enableColorOnDark
       color="transparent"
     >
-      <Toolbar variant={isPhone ? undefined : "dense"} disableGutters={isPhone ? false : true}>
+      <Toolbar
+        sx={isPhone ? { pt: 6 } : {}}
+        variant={isPhone ? undefined : "dense"}
+        disableGutters={isPhone ? false : true}
+      >
         {props.history && (
           <IconButton size="small" color="primary" onClick={back}>
             <ArrowBackIosNewRoundedIcon fontSize="small" />
