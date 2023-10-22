@@ -33,7 +33,7 @@ export const PostImages = (props: Props) => {
 
   if (_.size(props.images) === 3) {
     return (
-      <ImageList sx={{ width: "100%", height: "100%" }} cols={4} rowHeight={200} onClick={onClickImage}>
+      <ImageList sx={{ width: "100%", height: "50vh" }} cols={4} rowHeight={200} onClick={onClickImage}>
         {_.map(props.images, (image, key) => (
           <ImageListItem key={key} cols={key === 0 ? 4 : 2}>
             <CardMedia
@@ -49,7 +49,7 @@ export const PostImages = (props: Props) => {
   }
 
   return (
-    <ImageList sx={{ width: "100%", height: "100%" }} rowHeight={200} onClick={onClickImage}>
+    <ImageList sx={{ width: "100%", maxHeight: "50vh" }} onClick={onClickImage}>
       {_.map(props.images, (image, key) => (
         <ImageListItem key={key}>
           <CardMedia
