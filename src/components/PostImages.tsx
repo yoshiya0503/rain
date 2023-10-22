@@ -49,7 +49,7 @@ export const PostImages = (props: Props) => {
   }
 
   return (
-    <ImageList sx={{ width: "100%", maxHeight: "50vh" }} onClick={onClickImage}>
+    <ImageList sx={{ width: "100%", maxHeight: "60vh" }} onClick={onClickImage}>
       {_.map(props.images, (image, key) => (
         <ImageListItem key={key}>
           <CardMedia
