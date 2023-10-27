@@ -11,7 +11,7 @@ type Props = {
 };
 
 const MAX = 128;
-const k = 1.0;
+const k = 0.4;
 const TIMEOUT = 10 * 1000;
 
 export const PullToRefreshLayout = (props: Props) => {
