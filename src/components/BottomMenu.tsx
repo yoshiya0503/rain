@@ -56,7 +56,7 @@ export const BottomMenu = () => {
   return (
     <>
       <Fab
-        sx={{ position: "fixed", bottom: 90, right: 32, width: 64, height: 64 }}
+        sx={{ position: "fixed", bottom: 100, right: 32, width: 64, height: 64 }}
         color="primary"
         onClick={openPostDialog}
       >
@@ -64,7 +64,7 @@ export const BottomMenu = () => {
       </Fab>
       <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={8}>
         <BottomNavigation
-          sx={{ pb: 2, height: "8vh" }}
+          sx={{ pb: 3, height: "10vh" }}
           value={location.pathname}
           onChange={(_, href) => {
             onClickMenu(href);

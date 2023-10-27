@@ -15,7 +15,7 @@ export interface TimelineSlice {
   timelineCursor: string;
   filterFeed: (feed: AppBskyFeedDefs.FeedViewPost[]) => AppBskyFeedDefs.FeedViewPost[];
   getTimeline: () => Promise<void | boolean>;
-  getInitialTimeline: () => Promise<void>;
+  getInitialTimeline: (isRefresh?: boolean) => Promise<void>;
   reloadTimeline: () => Promise<void>;
   drainTimeline: () => void;
   uploadBlob: (data: BlobRequest) => Promise<BlobResponse | undefined>;
@@ -35,10 +35,8 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
   get
 ) => ({
   timelineCursor: "",
-  authorCursor: "",
   timeline: [],
   unreadTimeline: [],
-  authorFeed: [],
   getTimeline: async () => {
     try {
       const res = await agent.getTimeline({ cursor: get().timelineCursor, limit: 100 });
@@ -75,7 +73,10 @@ export const createTimelineSlice: StateCreator<TimelineSlice & MessageSlice & Se
       })
       .value();
   },
-  getInitialTimeline: async () => {
+  getInitialTimeline: async (isRefresh?: boolean) => {
+    if (isRefresh) {
+      set({ timelineCursor: "", timeline: [], unreadTimeline: [] });
+    }
     let isLastOrder;
     while (_.size(get().timeline) < 10 && !isLastOrder) {
       isLastOrder = await get().getTimeline();

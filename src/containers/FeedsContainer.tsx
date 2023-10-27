@@ -50,7 +50,7 @@ export const FeedsContainer = (props: Props) => {
           />
         </Box>
       ))}
-      <LinearProgress sx={{ borderRadius: 1 }} />
+      <LinearProgress sx={{ borderRadius: 1, mb: 10 }} />
     </>
   );
 };

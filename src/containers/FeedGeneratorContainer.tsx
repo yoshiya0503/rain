@@ -84,7 +84,7 @@ export const FeedGeneratorContainer = (props: Props) => {
           <Divider />
         </Box>
       ))}
-      <LinearProgress sx={{ borderRadius: 1 }} />
+      <LinearProgress sx={{ borderRadius: 1, mb: 10 }} />
       <DialogPost title={title} open={isOpen} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
     </>

@@ -12,11 +12,13 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import UnreadPosts from "@/components/UnreadPosts";
+import PullToRefreshLayout from "@/templates/PullToRefreshLayout";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 type Props = {
   children: ReactNode;
   onScrollLimit?: () => void;
+  onRefresh?: () => Promise<void>;
   unread?: AppBskyFeedDefs.FeedViewPost[];
 };
 
@@ -96,7 +98,11 @@ export const ScrollLayout = (props: Props) => {
           // スクロールがヘッダの下に潜り込むように調整
           isPhone && <Toolbar sx={{ mt: 6 }} />
         }
-        {props.children}
+        {props.onRefresh ? (
+          <PullToRefreshLayout onRefresh={props.onRefresh}>{props.children}</PullToRefreshLayout>
+        ) : (
+          props.children
+        )}
       </Box>
     </Stack>
   );

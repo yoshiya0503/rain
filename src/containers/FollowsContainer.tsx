@@ -45,7 +45,7 @@ export const FollowsContainer = (props: Props) => {
             </Collapse>
           ))}
       </TransitionGroup>
-      <LinearProgress sx={{ borderRadius: 1 }} />
+      <LinearProgress sx={{ borderRadius: 1, mb: 10 }} />
     </>
   );
 };

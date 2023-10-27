@@ -108,7 +108,7 @@ export const TimelineContainer = () => {
           </Collapse>
         ))}
       </TransitionGroup>
-      <LinearProgress sx={{ borderRadius: 1 }} />
+      <LinearProgress sx={{ borderRadius: 1, mb: 10 }} />
       <DialogPost title={title} open={isOpenPost} post={post} type={type} onClose={closePostDialog} />
       <DialogImage open={isOpenImage} images={images} onClose={closeImageDialog} />
       <DialogReport post={post} open={isOpenReport} onClose={closeReportDialog} />
