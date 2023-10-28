@@ -77,7 +77,7 @@ export const ScrollLayout = (props: Props) => {
         <Box zIndex={1300} display="flex" justifyContent="center" alignItems="center">
           <Fab
             variant="extended"
-            size="small"
+            size="medium"
             color="primary"
             onClick={scrollTop}
             sx={{ mb: isPhone ? -31 : -5, opacity: 0.85, textTransform: "none" }}
