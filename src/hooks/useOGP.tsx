@@ -16,7 +16,7 @@ export const useOGP = () => {
       if (!result.error) {
         const article = {
           title: result.title,
-          uri: result.url,
+          uri: link,
           description: result.description,
           thumb: result.image,
         };
