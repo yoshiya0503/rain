@@ -20,7 +20,6 @@ export const PullToRefreshLayout = (props: Props) => {
   const getScrollTop = useStore((state) => state.getScrollTop);
   const [initialY, setInitialY] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [dy, setDy] = useState<number>(0);
 
   const onLoading = useCallback(async () => {
     setLoading(true);
@@ -33,6 +32,10 @@ export const PullToRefreshLayout = (props: Props) => {
     clearTimeout(timeout);
   }, [props]);
 
+  const appr = useCallback((dy: number) => {
+    return MAX * (1 - Math.exp((-k * dy) / MAX));
+  }, []);
+
   const onTouchStart = useCallback(
     (e: TouchEvent) => {
       const initialY = e.touches[0].clientY;
@@ -43,25 +46,31 @@ export const PullToRefreshLayout = (props: Props) => {
 
   const onTouchMove = useCallback(
     (e: TouchEvent) => {
+      const el = ref.current;
       const currentY = e.touches[0].clientY;
       const dy = currentY - initialY;
       if (100 < getScrollTop(pathname)) return;
       if (dy < 0) return;
-      setDy(dy);
+      if (el) el.style.transform = `translateY(${appr(dy)}px)`;
     },
-    [initialY, setDy, getScrollTop, pathname]
+    [ref, initialY, appr, getScrollTop, pathname]
   );
 
-  const onTouchEnd = useCallback(async () => {
-    const el = ref.current;
-    if (el) {
-      el.style.transition = "transform 0.2s";
-    }
-    setDy(0);
-    setInitialY(0);
-    if (dy < 100) return;
-    await onLoading();
-  }, [ref, dy, setInitialY, setDy, onLoading]);
+  const onTouchEnd = useCallback(
+    async (e: TouchEvent) => {
+      const el = ref.current;
+      if (el) {
+        el.style.transition = "transform 0.2s";
+        el.style.transform = "";
+      }
+      const currentY = e.changedTouches[0].clientY;
+      const dy = currentY - initialY;
+      setInitialY(0);
+      if (dy < 100) return;
+      await onLoading();
+    },
+    [ref, initialY, setInitialY, onLoading]
+  );
 
   const onTransitionEnd = useCallback(() => {
     const el = ref.current;
@@ -69,10 +78,6 @@ export const PullToRefreshLayout = (props: Props) => {
       el.style.transition = "";
     }
   }, [ref]);
-
-  const appr = useCallback(() => {
-    return MAX * (1 - Math.exp((-k * dy) / MAX));
-  }, [dy]);
 
   useEffect(() => {
     const el = ref.current;
@@ -89,7 +94,7 @@ export const PullToRefreshLayout = (props: Props) => {
   }, [ref, onTouchStart, onTouchMove, onTouchEnd, onTransitionEnd]);
 
   return (
-    <Box ref={ref} sx={{ transform: `translateY(${appr()}px)` }}>
+    <Box ref={ref}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <ArrowUpwardOutlinedIcon sx={{ position: "absolute", width: "100%", top: -40 }} color="primary" />
       </Box>
