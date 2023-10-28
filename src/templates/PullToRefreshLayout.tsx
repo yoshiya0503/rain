@@ -66,7 +66,7 @@ export const PullToRefreshLayout = (props: Props) => {
       const currentY = e.changedTouches[0].clientY;
       const dy = currentY - initialY;
       setInitialY(0);
-      if (dy < 100) return;
+      if (dy < 200) return;
       await onLoading();
     },
     [ref, initialY, setInitialY, onLoading]
